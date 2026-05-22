@@ -15,7 +15,7 @@ export default function AdaptiveTaskGenericPage({
 
     useEffect(() => {
         const prices_under_1 = [0.1, 0.5];
-        const prices_under_10 = Array.from({ length: 18 }, (_, i) => i * 0.5 + 1); // Generates [1, 1.5, 2, ..., 9.5]
+        const prices_under_10 = Array.from({ length: 9 }, (_, i) => i * 1 + 1); // Generates [1, 2, 3, ..., 9]
         const prices_above_10 = Array.from({ length: 10 }, (_, i) => i + 10); // Generates [10, 11, 12, ..., 19]
 
         const DEFAULT_PRICES = [
@@ -36,7 +36,7 @@ export default function AdaptiveTaskGenericPage({
 
     return (
         <ContentWrapper Title={`Hypothetical Purchase Task for ${Reinforcer} (${ResponseCount})`}>
-            {false && JSON.stringify(POSMGeneric, null, 2)}
+
 
             <CurrentQuestion ShowPastQuestions={true} />
 

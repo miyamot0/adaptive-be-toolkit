@@ -13,6 +13,9 @@ export const PastQuestion = ({
         <div className="flex flex-col w-full gap-4">
             <div className="py-2 flex flex-row justify-between gap-4 items-center">
                 <p className="grow text-gray-400">{Query}</p>
+                {
+                    //<Button className="max-w-16 disabled opacity-50">Saved</Button>
+                }
                 <Input
                     type="number"
                     min={0}
@@ -20,7 +23,7 @@ export const PastQuestion = ({
                     disabled
                     className="max-w-16 disabled opacity-50"
                 ></Input>
-                <Button className="max-w-16 disabled opacity-50">Saved</Button>
+
             </div>
         </div>
     );
