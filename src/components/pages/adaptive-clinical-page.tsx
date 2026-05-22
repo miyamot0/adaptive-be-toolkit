@@ -1,8 +1,4 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { evaluate_threshold } from "@/lib/helpers/thresholds";
-import { use, useEffect, useMemo, useState } from "react";
-import { PastQuestion } from "./past-question";
+import { use, useEffect, useMemo } from "react";
 import { ContentWrapper } from "../layout/content-wrapper";
 import { StateContext } from "../context/state-context";
 import { Chart, type AxisOptions } from "react-charts";
@@ -14,10 +10,22 @@ type BeliefMapping = {
     beliefs: number,
 }
 
+type RawDataMapping = {
+    x: number,
+    y: number,
+}
+
 type Series = {
     label: string,
     data: BeliefMapping[]
 }
+
+type SeriesRaw = {
+    label: string,
+    data: RawDataMapping[]
+}
+
+const max = 20
 
 export default function AdaptiveTaskGenericPage({
     Reinforcer,
@@ -38,7 +46,7 @@ export default function AdaptiveTaskGenericPage({
             ...prices_above_10,
         ];
 
-        POSMGeneric.init(DEFAULT_PRICES);
+        POSMGeneric.init(DEFAULT_PRICES, 0.5);
         const POSM_1 = POSMGeneric;
 
 
@@ -85,14 +93,59 @@ export default function AdaptiveTaskGenericPage({
         []
     )
 
+
+    const dataRaw: SeriesRaw[] = [
+        {
+            label: 'React Charts',
+            data: POSMGeneric.responses.map((response, index) => ({
+                x: response.Price,
+                y: response.Revenue,
+            })),
+        }
+    ]
+
+    const primaryAxisRaw = useMemo(
+        (): AxisOptions<RawDataMapping> => ({
+            getValue: datum => datum.x,
+            styles: {
+                tick: {
+                    fontSize: '12px',
+                    fill: '#333',
+                    fontWeight: 'bold',
+                },
+            },
+            min: 0,
+            max: max,
+        }),
+        []
+    )
+
+    const secondaryAxesRaw = useMemo(
+        (): AxisOptions<RawDataMapping>[] => [
+            {
+                getValue: datum => datum.y,
+                styles: {
+                    tick: {
+                        fontSize: '12px',
+                        fill: '#333',
+                        fontWeight: 'bold',
+                    },
+                },
+                elementType: 'bubble',
+                min: 0,
+            },
+        ],
+        []
+    )
+
     return (
         <ContentWrapper Title={`Hypothetical Purchase Task for ${Reinforcer}`}>
             {false && JSON.stringify(POSMGeneric, null, 2)}
 
             <CurrentQuestion ShowPastQuestions={true} />
 
-            <div className="flex flex-col w-full gap-4 min-h-100 bg-white">
-                {POSMGeneric.responses.length > 0 && (
+            <div className="grid grid-cols-2 w-full gap-4 min-h-100 bg-white">
+                <div>{POSMGeneric.responses.length > 0 && (
                     <Chart
                         className="tick-color"
                         options={{
@@ -101,7 +154,20 @@ export default function AdaptiveTaskGenericPage({
                             secondaryAxes,
                         }}
                     />
-                )}
+                )}</div>
+
+                <div>{POSMGeneric.responses.length > 0 && (
+                    <Chart
+                        className="tick-color"
+                        options={{
+                            data: dataRaw,
+                            primaryAxis: primaryAxisRaw,
+                            secondaryAxes: secondaryAxesRaw,
+
+                        }}
+
+                    />
+                )}</div>
             </div>
         </ContentWrapper>
     );

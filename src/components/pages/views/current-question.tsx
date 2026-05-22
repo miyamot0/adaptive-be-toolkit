@@ -67,13 +67,6 @@ export function CurrentQuestion({ ShowPastQuestions = true }: { ShowPastQuestion
                         const getPastExpend = POSMGeneric.responses.slice(lookBack);
                         const currentPeakExpend = POSMGeneric.max_expend;
 
-                        if (getPastExpend.length > 0) {
-                            const peakExpendAve = getPastExpend.reduce((acc, curr) => acc + curr.Revenue, 0) / getPastExpend.length;
-
-                            const pctChange = ((currentPeakExpend - peakExpendAve) / peakExpendAve) * 100;
-
-                            console.log(`Current Peak: $${currentPeakExpend.toFixed(2)}, Ave Peak: $${peakExpendAve.toFixed(2)}, Pct Change: ${pctChange.toFixed(2)}%`);
-                        }
 
 
                         const evaluate_state_terminate = evaluate_threshold(POSMGeneric);

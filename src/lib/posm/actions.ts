@@ -3,6 +3,11 @@ import { appendResponse, normalizeBeliefs } from "../helpers/arrays";
 import { is_undefined } from "../helpers/type-check";
 import { POSM } from "./posm";
 
+export type IncludeIndex = true;
+export type ExcludeIndex = false;
+
+export type IncludeIndexType = IncludeIndex | ExcludeIndex;
+
 /** agent_decision
  *
  * Assist agent in acting next
@@ -55,6 +60,7 @@ export function agent_observed_improvement(expend: number, algo: POSM) {
 }
 
 export function agent_observed_identical(expend: number, algo: POSM) {
+  console.log(`Expend: ${expend}, Max Expend: ${algo.max_expend}`);
   return expend === algo.max_expend;
 }
 
@@ -78,7 +84,7 @@ export function agent_update_improvement(expend: number, algo: POSM) {
  * @param {BeliefUpdating} observation observed belief updating
  * @param {POSM} algo observed reinforcer value quantity
  */
-export function agent_update_beliefs(observation: BeliefUpdating, algo: POSM, includeIndex: boolean = false) {
+export function agent_update_beliefs(observation: BeliefUpdating, algo: POSM, includeIndex: IncludeIndexType = false) {
 
   switch (observation) {
     case BeliefUpdating.BelowIndex:
@@ -86,16 +92,32 @@ export function agent_update_beliefs(observation: BeliefUpdating, algo: POSM, in
       return algo.beliefs.slice().map((value: number, i: number) => {
         if (!algo.index_max) throw new Error("index_max is undefined!");
 
-        return includeIndex ? (i >= algo.index_max ? value : value * algo.beta) : (i > algo.index_max ? value : value * algo.beta);
+        if (includeIndex) {
+          return i >= algo.index_max ? value : value * algo.beta;
+        }
+
+        return (i > algo.index_max ? value : value * algo.beta);
       });
     case BeliefUpdating.AboveIndex:
       // Note: Beliefs updated at/above index, low prices more interesting
       return algo.beliefs.slice().map((value: number, i: number) => {
         if (!algo.index_max) throw new Error("index_max is undefined!");
 
-        return includeIndex ? (i <= algo.index_max ? value : value * algo.beta) : (i < algo.index_max ? value : value * algo.beta);
+        if (includeIndex) {
+          return i <= algo.index_max ? value : value * algo.beta;
+        }
+
+        return (i < algo.index_max ? value : value * algo.beta);
       });
     case BeliefUpdating.AtIndex:
+      if (includeIndex === false) {
+        return algo.beliefs.slice().map((value: number, i: number) => {
+          if (!algo.index_max) throw new Error("index_max is undefined!");
+
+          return i === algo.index_max ? value : value * algo.beta;
+        });
+      }
+
       // Note: Beliefs not updated because PMAX revisited and no change
       return algo.beliefs;
   }
@@ -191,6 +213,8 @@ export function exploit(expend: number, algo: POSM) {
     (response: { Revenue: number }) => response.Revenue > 0
   );
 
+  console.log(`Price Direction: ${price_direction}, Improved Estimate: ${improved_estimate}, Identical Estimate: ${identical_estimate}`);
+
   if (price_direction === EvaluateChange.PriceIncreased) {
     // Update beliefs in the context of price increase
     if (improved_estimate) {
@@ -207,7 +231,7 @@ export function exploit(expend: number, algo: POSM) {
       n_nonzero.length < algo.min_nonzero_consumption_points
     ) {
       // Note: if improved estimate or not enough non-zero consumption points
-      new_beliefs = agent_update_beliefs(BeliefUpdating.AboveIndex, algo, true);
+      new_beliefs = agent_update_beliefs(BeliefUpdating.AboveIndex, algo, false);
       algo.notes = "Elastic Revenue Function (A)";
     } else {
       new_beliefs = agent_update_beliefs(BeliefUpdating.BelowIndex, algo, true);
@@ -215,15 +239,15 @@ export function exploit(expend: number, algo: POSM) {
     }
   } else if (price_direction === EvaluateChange.PriceIdentical) {
     if (identical_estimate) {
-      new_beliefs = agent_update_beliefs(BeliefUpdating.BelowIndex, algo);
-      new_beliefs = agent_update_beliefs(BeliefUpdating.AboveIndex, algo);
+      new_beliefs = agent_update_beliefs(BeliefUpdating.AtIndex, algo, false);
+
       algo.notes = "Retread PMAX: but expend was underestimate";
     } else if (improved_estimate) {
       // Update beliefs in the context of price identical
-      new_beliefs = agent_update_beliefs(BeliefUpdating.AboveIndex, algo);
+      new_beliefs = agent_update_beliefs(BeliefUpdating.AboveIndex, algo, false);
       algo.notes = "Retread PMAX: but expend was underestimate";
     } else {
-      new_beliefs = agent_update_beliefs(BeliefUpdating.BelowIndex, algo);
+      new_beliefs = agent_update_beliefs(BeliefUpdating.BelowIndex, algo, true);
       algo.notes = "Repeat PMAX: different expend";
     }
   }

@@ -122,9 +122,9 @@ export class POSM extends Algorithm {
    *
    * @param {number[]} levels levels assigned
    */
-  public init(levels: number[]): void {
+  public init(levels: number[], dynamicBeta?: number): void {
     this.levels = levels;
-    this.beta = BETA;
+    this.beta = dynamicBeta ?? BETA;
     this.n_levels = this.levels.length;
     this.beliefs = Array(this.n_levels).fill(1);
     this.beliefsCumulative = Array(this.n_levels).fill(1);
@@ -141,6 +141,8 @@ export class POSM extends Algorithm {
    */
   public iterate(value: number) {
     const action: AlgorithmAction = agent_decision(value, this);
+
+    console.log(action)
 
     switch (action) {
       case AlgorithmAction.NonconsumptionFound:

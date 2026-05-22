@@ -27,8 +27,6 @@ type StateContextType = {
     setPOSMGeneric: (value: POSM) => void;
     Q0Generic: number;
     setQ0Generic: (value: number) => void;
-    POSMClinical: POSM;
-    setPOSMClinical: (value: POSM) => void;
     Q0Clinical: number;
     setQ0Clinical: (value: number) => void;
     action: number;
@@ -49,7 +47,6 @@ type StateContextType = {
 };
 
 const _posmGeneric = new POSM();
-const _posmClinical = new POSM();
 
 const defaultState: StateContextType = {
     Page: "home",
@@ -59,8 +56,6 @@ const defaultState: StateContextType = {
     setPOSMGeneric: () => { },
     Q0Generic: 0,
     setQ0Generic: () => { },
-    POSMClinical: _posmClinical,
-    setPOSMClinical: () => { },
     Q0Clinical: 0,
     setQ0Clinical: () => { },
     action: 0,
@@ -106,13 +101,11 @@ function createDynamicRoute() {
 
 export const StateContextProvider = ({ children }: { children: ReactNode }) => {
     const [POSM_Generic, setPOSMGeneric] = useState(defaultState.POSMGeneric);
-    const [POSM_Clinical, setPOSMClinical] = useState(defaultState.POSMClinical);
     const [Page, setPage] = useState(defaultState.Page);
     const [action, setAction] = useState(defaultState.action);
     const [route, setRoute] = useState(defaultState.route);
     const [fixedHPTs, setFixedHPTs] = useState(defaultState.FixedHPTs);
     const [Q0Generic, setQ0Generic] = useState(defaultState.Q0Generic);
-    const [Q0Clinical, setQ0Clinical] = useState(defaultState.Q0Clinical);
 
     const startState: StateContextType = {
         ...defaultState,
@@ -126,15 +119,6 @@ export const StateContextProvider = ({ children }: { children: ReactNode }) => {
         Q0Generic: Q0Generic,
         setQ0Generic: (q0: number) => {
             setQ0Generic(q0);
-        },
-        POSMClinical: POSM_Clinical,
-        setPOSMClinical: (posm: POSM) => {
-            setPOSMClinical(posm);
-            setAction(action + 1);
-        },
-        Q0Clinical: Q0Clinical,
-        setQ0Clinical: (q0: number) => {
-            setQ0Clinical(q0);
         },
         action: action,
         route,
