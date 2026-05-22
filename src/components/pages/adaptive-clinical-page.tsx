@@ -32,13 +32,12 @@ export default function AdaptiveTaskGenericPage({
 }: {
     Reinforcer: string;
 }) {
-    const { POSMGeneric, setPOSMGeneric } =
-        use(StateContext);
+    const { POSMGeneric, setPOSMGeneric, ResponseCount, SetSurveyUpdate } = use(StateContext);
 
     useEffect(() => {
         const prices_under_1 = [0.1, 0.5];
-        const prices_under_10 = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-        const prices_above_10 = Array.from({ length: 10 }, (_, i) => i + 10);
+        const prices_under_10 = Array.from({ length: 18 }, (_, i) => i * 0.5 + 1); // Generates [1, 1.5, 2, ..., 9.5]
+        const prices_above_10 = Array.from({ length: 10 }, (_, i) => i + 10); // Generates [10, 11, 12, ..., 19]
 
         const DEFAULT_PRICES = [
             ...prices_under_1,
@@ -47,10 +46,13 @@ export default function AdaptiveTaskGenericPage({
         ];
 
         POSMGeneric.init(DEFAULT_PRICES, 0.5);
+
         const POSM_1 = POSMGeneric;
 
-
         setPOSMGeneric(POSM_1);
+        SetSurveyUpdate(new Date());
+
+
     }, [Reinforcer]);
 
     const data: Series[] = [
@@ -115,7 +117,6 @@ export default function AdaptiveTaskGenericPage({
                 },
             },
             min: 0,
-            max: max,
         }),
         []
     )
@@ -138,13 +139,58 @@ export default function AdaptiveTaskGenericPage({
         []
     )
 
+
+    const dataSR: SeriesRaw[] = [
+        {
+            label: 'React Charts',
+            data: POSMGeneric.responses.map((response, index) => ({
+                x: response.Price,
+                y: response.Quantity,
+            })),
+        }
+    ]
+
+    const primaryAxisSR = useMemo(
+        (): AxisOptions<RawDataMapping> => ({
+            getValue: datum => datum.x,
+            styles: {
+                tick: {
+                    fontSize: '12px',
+                    fill: '#333',
+                    fontWeight: 'bold',
+                },
+            },
+            min: 0,
+        }),
+        []
+    )
+
+    const secondaryAxesSR = useMemo(
+        (): AxisOptions<RawDataMapping>[] => [
+            {
+                getValue: datum => datum.y,
+                styles: {
+                    tick: {
+                        fontSize: '12px',
+                        fill: '#333',
+                        fontWeight: 'bold',
+                    },
+                },
+                elementType: 'bubble',
+                min: 0,
+            },
+        ],
+        []
+    )
+
+
     return (
-        <ContentWrapper Title={`Hypothetical Purchase Task for ${Reinforcer}`}>
+        <ContentWrapper Title={`Hypothetical Purchase Task for ${Reinforcer} (${ResponseCount})`}>
             {false && JSON.stringify(POSMGeneric, null, 2)}
 
             <CurrentQuestion ShowPastQuestions={true} />
 
-            <div className="grid grid-cols-2 w-full gap-4 min-h-100 bg-white">
+            <div className="grid grid-cols-3 w-full gap-4 min-h-100 bg-white">
                 <div>{POSMGeneric.responses.length > 0 && (
                     <Chart
                         className="tick-color"
@@ -163,6 +209,19 @@ export default function AdaptiveTaskGenericPage({
                             data: dataRaw,
                             primaryAxis: primaryAxisRaw,
                             secondaryAxes: secondaryAxesRaw,
+
+                        }}
+
+                    />
+                )}</div>
+
+                <div>{POSMGeneric.responses.length > 0 && (
+                    <Chart
+                        className="tick-color"
+                        options={{
+                            data: dataSR,
+                            primaryAxis: primaryAxisSR,
+                            secondaryAxes: secondaryAxesSR,
 
                         }}
 

@@ -6,7 +6,7 @@ import { Button } from "#/components/ui/button.tsx";
 import { evaluate_threshold } from "#/lib/helpers/thresholds.ts";
 
 export function CurrentQuestion({ ShowPastQuestions = true }: { ShowPastQuestions?: boolean }) {
-    const { POSMGeneric, setPOSMGeneric, route, routes, setRoute } =
+    const { POSMGeneric, setPOSMGeneric, setResponseCount } =
         use(StateContext);
     const [entryValue, setEntryValue] = useState("");
 
@@ -37,6 +37,7 @@ export function CurrentQuestion({ ShowPastQuestions = true }: { ShowPastQuestion
                     Query={`How many would you purchase at a price of ${x.Price}?`}
                 />
             ))}
+
             <div className="flex flex-row justify-between gap-4 items-center">
                 <p className="grow underline font-semibold">
                     How many would you purchase at a price of ${POSMGeneric.prediction}?
@@ -71,11 +72,15 @@ export function CurrentQuestion({ ShowPastQuestions = true }: { ShowPastQuestion
 
                         const evaluate_state_terminate = evaluate_threshold(POSMGeneric);
 
-                        if (evaluate_state_terminate) {
-                            const index_in_routes = routes.indexOf(route);
-                            const next_route = routes[index_in_routes + 1];
+                        setResponseCount(POSMGeneric.responses.length);
 
-                            setRoute(next_route);
+
+                        if (evaluate_state_terminate) {
+                            alert('done')
+                            //const index_in_routes = routes.indexOf(route);
+                            // / const next_route = routes[index_in_routes + 1];
+
+                            //setRoute(next_route);
                         }
                     }}
                 >
