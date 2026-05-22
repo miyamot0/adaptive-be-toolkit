@@ -144,15 +144,12 @@ export class POSM extends Algorithm {
 
     switch (action) {
       case AlgorithmAction.NonconsumptionFound:
-        console.log("Nonconsumption found");
         explore_zero(value, this);
         break;
       case AlgorithmAction.ConsumptionFoundInitial:
-        console.log("Consumption found (initial)");
         explore_non_zero(value, this);
         break;
       case AlgorithmAction.ConsumptionFoundNonInitial:
-        console.log("Consumption found (non-initial)");
         exploit(value, this);
         break;
     }

@@ -78,21 +78,22 @@ export function agent_update_improvement(expend: number, algo: POSM) {
  * @param {BeliefUpdating} observation observed belief updating
  * @param {POSM} algo observed reinforcer value quantity
  */
-export function agent_update_beliefs(observation: BeliefUpdating, algo: POSM) {
+export function agent_update_beliefs(observation: BeliefUpdating, algo: POSM, includeIndex: boolean = false) {
+
   switch (observation) {
     case BeliefUpdating.BelowIndex:
       // Note: Beliefs updated at/below index, higher prices more interesting
       return algo.beliefs.slice().map((value: number, i: number) => {
         if (!algo.index_max) throw new Error("index_max is undefined!");
 
-        return i <= algo.index_max ? value * algo.beta : value;
+        return includeIndex ? (i >= algo.index_max ? value : value * algo.beta) : (i > algo.index_max ? value : value * algo.beta);
       });
     case BeliefUpdating.AboveIndex:
       // Note: Beliefs updated at/above index, low prices more interesting
       return algo.beliefs.slice().map((value: number, i: number) => {
         if (!algo.index_max) throw new Error("index_max is undefined!");
 
-        return i <= algo.index_max ? value : value * algo.beta;
+        return includeIndex ? (i <= algo.index_max ? value : value * algo.beta) : (i < algo.index_max ? value : value * algo.beta);
       });
     case BeliefUpdating.AtIndex:
       // Note: Beliefs not updated because PMAX revisited and no change
@@ -112,7 +113,7 @@ export function explore_zero(expend: number, algo: POSM) {
     throw new Error("index_max is undefined, algorithm needs initialization!");
 
   // Note: by logic, if at zero, later prices are very silly
-  const new_beliefs = agent_update_beliefs(BeliefUpdating.AboveIndex, algo);
+  const new_beliefs = agent_update_beliefs(BeliefUpdating.AboveIndex, algo, true);
   const improved_estimate = agent_observed_improvement(expend, algo);
 
   if (improved_estimate) agent_update_improvement(expend, algo);
@@ -142,7 +143,7 @@ export function explore_non_zero(expend: number, algo: POSM) {
   if (!algo.index_max)
     throw new Error("index_max is undefined, algorithm needs initialization!");
 
-  const new_beliefs = agent_update_beliefs(BeliefUpdating.AboveIndex, algo);
+  const new_beliefs = agent_update_beliefs(BeliefUpdating.AboveIndex, algo, true);
 
   const improved_estimate = agent_observed_improvement(expend, algo);
 
@@ -193,10 +194,10 @@ export function exploit(expend: number, algo: POSM) {
   if (price_direction === EvaluateChange.PriceIncreased) {
     // Update beliefs in the context of price increase
     if (improved_estimate) {
-      new_beliefs = agent_update_beliefs(BeliefUpdating.BelowIndex, algo);
+      new_beliefs = agent_update_beliefs(BeliefUpdating.BelowIndex, algo, true);
       algo.notes = "Inelastic Revenue Function";
     } else {
-      new_beliefs = agent_update_beliefs(BeliefUpdating.AboveIndex, algo);
+      new_beliefs = agent_update_beliefs(BeliefUpdating.AboveIndex, algo, true);
       algo.notes = "Elastic Revenue Function";
     }
   } else if (price_direction === EvaluateChange.PriceDecreased) {
@@ -206,10 +207,10 @@ export function exploit(expend: number, algo: POSM) {
       n_nonzero.length < algo.min_nonzero_consumption_points
     ) {
       // Note: if improved estimate or not enough non-zero consumption points
-      new_beliefs = agent_update_beliefs(BeliefUpdating.AboveIndex, algo);
+      new_beliefs = agent_update_beliefs(BeliefUpdating.AboveIndex, algo, true);
       algo.notes = "Elastic Revenue Function (A)";
     } else {
-      new_beliefs = agent_update_beliefs(BeliefUpdating.BelowIndex, algo);
+      new_beliefs = agent_update_beliefs(BeliefUpdating.BelowIndex, algo, true);
       algo.notes = "Inelastic Revenue Function (B)";
     }
   } else if (price_direction === EvaluateChange.PriceIdentical) {

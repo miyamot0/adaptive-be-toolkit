@@ -6,102 +6,8 @@ import { PastQuestion } from "./past-question";
 import { ContentWrapper } from "../layout/content-wrapper";
 import { StateContext } from "../context/state-context";
 import { Chart, type AxisOptions } from "react-charts";
+import { CurrentQuestion } from "./views/current-question";
 
-function CurrentQuestion({ ShowPastQuestions = true }: { ShowPastQuestions?: boolean }) {
-    const { POSMGeneric, setPOSMGeneric, route, routes, setRoute } =
-        use(StateContext);
-    const [entryValue, setEntryValue] = useState("");
-
-    if (POSMGeneric.prediction === -1) return null;
-
-    const ordering = Array.from(POSMGeneric.responses)
-        .sort((a, b) => a.Price - b.Price)
-        .map((x, index) => {
-            return {
-                ...x,
-                index,
-            };
-        });
-
-    const cheaper_questions = ordering.filter(
-        (x) => x.Price <= POSMGeneric.prediction
-    );
-    const more_expensive_questions = ordering.filter(
-        (x) => x.Price > POSMGeneric.prediction
-    );
-
-    return (
-        <div className="flex flex-col w-full gap-1">
-            {ShowPastQuestions === true && cheaper_questions.map((x, index) => (
-                <PastQuestion
-                    Record={x}
-                    key={`pre_q_${index}`}
-                    Query={`How many would you purchase at a price of ${x.Price}?`}
-                />
-            ))}
-            <div className="flex flex-row justify-between gap-4 items-center">
-                <p className="grow underline font-semibold">
-                    How many would you purchase at a price of ${POSMGeneric.prediction}?
-                </p>
-                <Input
-                    type="number"
-                    min={0}
-                    value={entryValue}
-                    onChange={(e) => {
-                        setEntryValue(e.currentTarget.value);
-                    }}
-                    className="max-w-16"
-                ></Input>
-                <Button
-                    className="max-w-16"
-                    onClick={() => {
-                        if (entryValue === "") return;
-                        const quantity_endorsed = parseInt(entryValue);
-                        const expended = POSMGeneric.prediction * quantity_endorsed;
-
-                        POSMGeneric.iterate(expended);
-
-                        setPOSMGeneric(POSMGeneric);
-                        setEntryValue("");
-
-                        const lookBack = -3;
-
-                        const getPastExpend = POSMGeneric.responses.slice(lookBack);
-                        const currentPeakExpend = POSMGeneric.max_expend;
-
-                        if (getPastExpend.length > 0) {
-                            const peakExpendAve = getPastExpend.reduce((acc, curr) => acc + curr.Revenue, 0) / getPastExpend.length;
-
-                            const pctChange = ((currentPeakExpend - peakExpendAve) / peakExpendAve) * 100;
-
-                            console.log(`Current Peak: $${currentPeakExpend.toFixed(2)}, Ave Peak: $${peakExpendAve.toFixed(2)}, Pct Change: ${pctChange.toFixed(2)}%`);
-                        }
-
-
-                        const evaluate_state_terminate = evaluate_threshold(POSMGeneric);
-
-                        if (evaluate_state_terminate) {
-                            const index_in_routes = routes.indexOf(route);
-                            const next_route = routes[index_in_routes + 1];
-
-                            setRoute(next_route);
-                        }
-                    }}
-                >
-                    Save
-                </Button>
-            </div>
-
-            {ShowPastQuestions === true && more_expensive_questions.map((x, index) => (
-                <PastQuestion
-                    Record={x}
-                    key={`post_q_${index}`}
-                    Query={`How many would you purchase at a price of ${x.Price}?`}
-                />
-            ))}
-        </div>
-    );
-}
 
 type BeliefMapping = {
     level: number,
@@ -132,19 +38,12 @@ export default function AdaptiveTaskGenericPage({
             ...prices_above_10,
         ];
 
-        console.log(DEFAULT_PRICES);
-
         POSMGeneric.init(DEFAULT_PRICES);
         const POSM_1 = POSMGeneric;
-
-        console.log(POSMGeneric);
 
 
         setPOSMGeneric(POSM_1);
     }, [Reinforcer]);
-
-    //console.log(POSMGeneric);
-    const currentSum = POSMGeneric.beliefs.reduce((acc, curr) => acc + curr, 0);
 
     const data: Series[] = [
         {
@@ -192,7 +91,7 @@ export default function AdaptiveTaskGenericPage({
 
             <CurrentQuestion ShowPastQuestions={true} />
 
-            <div className="flex flex-col w-full gap-4 min-h-[400px] bg-white">
+            <div className="flex flex-col w-full gap-4 min-h-100 bg-white">
                 {POSMGeneric.responses.length > 0 && (
                     <Chart
                         className="tick-color"
