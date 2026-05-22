@@ -30,15 +30,11 @@ export default function AdaptiveTaskGenericPage({
 
         setPOSMGeneric(POSM_1);
         SetSurveyUpdate(new Date());
-
-
     }, [Reinforcer]);
 
     return (
         <ContentWrapper Title={`Hypothetical Purchase Task for ${Reinforcer} (${ResponseCount})`}>
-
-
-            <CurrentQuestion ShowPastQuestions={true} />
+            <CurrentQuestion />
 
             <div className="grid grid-cols-3 w-full gap-4 min-h-100 bg-white">
                 <ChartBeliefs POSM={POSMGeneric} />

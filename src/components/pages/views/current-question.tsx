@@ -5,7 +5,7 @@ import { Input } from "#/components/ui/input.tsx";
 import { Button } from "#/components/ui/button.tsx";
 import { evaluate_threshold } from "#/lib/helpers/thresholds.ts";
 
-export function CurrentQuestion({ ShowPastQuestions = true }: { ShowPastQuestions?: boolean }) {
+export function CurrentQuestion() {
     const { POSMGeneric, setPOSMGeneric, setResponseCount } =
         use(StateContext);
     const [entryValue, setEntryValue] = useState("");
@@ -21,12 +21,8 @@ export function CurrentQuestion({ ShowPastQuestions = true }: { ShowPastQuestion
             };
         });
 
-    const cheaper_questions = ordering.filter(
-        (x) => x.Price <= POSMGeneric.prediction
-    );
-    const more_expensive_questions = ordering.filter(
-        (x) => x.Price > POSMGeneric.prediction
-    );
+    const priceValues = ordering.map((x) => x.Price);
+    const distinctPriceValues = Array.from(new Set([...priceValues, POSMGeneric.prediction])).sort((a, b) => a - b);
 
     function submitResponse() {
         if (entryValue === "") return;
@@ -59,51 +55,58 @@ export function CurrentQuestion({ ShowPastQuestions = true }: { ShowPastQuestion
         }
     }
 
+    const dynamicQuestion = <div className="flex flex-row justify-between gap-4 w-full">
+        <p className="grow underline font-semibold">
+            How many would you purchase at a price of ${POSMGeneric.prediction}?
+        </p>
+        <Button
+            className="max-w-16"
+            onClick={submitResponse}
+        >
+            Save
+        </Button>
+        <Input
+            type="number"
+            min={0}
+            value={entryValue}
+            autoFocus
+            onChange={(e) => {
+                setEntryValue(e.currentTarget.value);
+            }}
+            onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                    submitResponse();
+                }
+            }}
+            className="max-w-16"
+        ></Input>
+
+    </div>;
+
     return (
-        <div className="flex flex-col w-full gap-1">
-            {ShowPastQuestions === true && cheaper_questions.map((x, index) => (
-                <PastQuestion
-                    Record={x}
-                    key={`pre_q_${index}`}
-                    Query={`How many would you purchase at a price of ${x.Price}?`}
-                />
-            ))}
-
-            <div className="flex flex-row justify-between gap-4 items-center">
-                <p className="grow underline font-semibold">
-                    How many would you purchase at a price of ${POSMGeneric.prediction}?
-                </p>
-                <Button
-                    className="max-w-16"
-                    onClick={submitResponse}
-                >
-                    Save
-                </Button>
-                <Input
-                    type="number"
-                    min={0}
-                    value={entryValue}
-                    autoFocus
-                    onChange={(e) => {
-                        setEntryValue(e.currentTarget.value);
-                    }}
-                    onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                            submitResponse();
+        <div className="flex flex-col w-full gap-1 py-1">
+            {
+                distinctPriceValues.map((x, index) => (
+                    <div key={`price_${index}`} className="flex flex-col justify-between gap-0 items-center border rounded px-2 py-1">
+                        {
+                            ordering.filter(
+                                (q) => q.Price === x
+                            ).map((x, index) => (
+                                <PastQuestion
+                                    Record={x}
+                                    key={`pre_q_${index}`}
+                                    Query={`How many would you purchase at a price of ${x.Price}?`}
+                                />
+                            ))
                         }
-                    }}
-                    className="max-w-16"
-                ></Input>
 
-            </div>
+                        {
+                            x === POSMGeneric.prediction && dynamicQuestion
+                        }
+                    </div>
+                ))
+            }
 
-            {ShowPastQuestions === true && more_expensive_questions.map((x, index) => (
-                <PastQuestion
-                    Record={x}
-                    key={`post_q_${index}`}
-                    Query={`How many would you purchase at a price of ${x.Price}?`}
-                />
-            ))}
         </div>
     );
 }
