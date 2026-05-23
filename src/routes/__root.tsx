@@ -9,7 +9,6 @@ import Header from '../components/layout/Header'
 import appCss from '../styles.css?url'
 
 import type { QueryClient } from '@tanstack/react-query'
-import { StateContextProvider } from '#/components/context/state-context.tsx';
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -49,13 +48,11 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body className="font-sans antialiased wrap-anywhere w-full flex flex-col justify-center">
-        <StateContextProvider>
-          <div className="flex flex-col w-full max-w-5xl mx-auto gap-4">
-            <Header />
-            {children}
-            <Footer />
-          </div>
-        </StateContextProvider>
+        <div className="flex flex-col w-full max-w-5xl mx-auto gap-4">
+          <Header />
+          {children}
+          <Footer />
+        </div>
         <Scripts />
       </body>
     </html>

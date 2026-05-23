@@ -41,7 +41,7 @@ export function agent_pathway(algo: POSM) {
     return EvaluateChange.PriceIncreased;
 
   // Note: Predicted price is equal to previous empirical pmax
-  //if (algo.prediction == algo.max_expend_price)
+  //if (algo.prediction === algo.max_expend_price)
   //  return EvaluateChange.PriceIdentical;
 
   // Note: Default is to explore lower prices
@@ -205,9 +205,9 @@ export function exploit(expend: number, algo: POSM) {
 
   let new_beliefs = algo.beliefs.slice();
 
+  // Note: ...
   const price_direction = agent_pathway(algo);
   const improved_estimate = agent_observed_improvement(expend, algo);
-  const identical_estimate = agent_observed_identical(expend, algo);
 
   const n_nonzero = algo.responses.filter(
     (response: { Revenue: number }) => response.Revenue > 0
@@ -234,19 +234,6 @@ export function exploit(expend: number, algo: POSM) {
     } else {
       new_beliefs = agent_update_beliefs(BeliefUpdating.BelowIndex, algo, true);
       algo.notes = "Inelastic Revenue Function (B)";
-    }
-  } else if (price_direction === EvaluateChange.PriceIdentical) {
-    if (identical_estimate) {
-      new_beliefs = agent_update_beliefs(BeliefUpdating.AtIndex, algo, false);
-
-      algo.notes = "Retread PMAX: but expend was underestimate";
-    } else if (improved_estimate) {
-      // Update beliefs in the context of price identical
-      new_beliefs = agent_update_beliefs(BeliefUpdating.AboveIndex, algo, false);
-      algo.notes = "Retread PMAX: but expend was underestimate";
-    } else {
-      new_beliefs = agent_update_beliefs(BeliefUpdating.BelowIndex, algo, true);
-      algo.notes = "Repeat PMAX: different expend";
     }
   }
 

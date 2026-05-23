@@ -6,7 +6,7 @@ export enum AlgorithmAction {
 
 export enum EvaluateChange {
   PriceIncreased,
-  PriceIdentical,
+  //PriceIdentical,
   PriceDecreased,
 }
 
