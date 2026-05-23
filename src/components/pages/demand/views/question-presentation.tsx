@@ -2,7 +2,7 @@ import { use, useState } from "react";
 import { Input } from "#/components/ui/input.tsx";
 import { Button } from "#/components/ui/button.tsx";
 import { evaluate_threshold } from "#/lib/helpers/thresholds.ts";
-import { NotifyParentAdaptiveDemand } from "#/lib/notify/notify-parent.ts";
+import { NotifyParentAdaptiveDemand } from "#/lib/helpers/notify/demand-notify-parent.ts";
 import PriceGroupingView from "./price-grouping-view";
 import { AdaptiveDemandContext } from "#/components/context/adaptive-demand-context.tsx";
 

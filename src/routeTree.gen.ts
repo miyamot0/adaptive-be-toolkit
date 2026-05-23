@@ -10,43 +10,53 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as IdAdaptiveIndexRouteImport } from './routes/$id.adaptive.index'
+import { Route as IdDiscountingIndexRouteImport } from './routes/$id.discounting.index'
+import { Route as IdDemandIndexRouteImport } from './routes/$id.demand.index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IdAdaptiveIndexRoute = IdAdaptiveIndexRouteImport.update({
-  id: '/$id/adaptive/',
-  path: '/$id/adaptive/',
+const IdDiscountingIndexRoute = IdDiscountingIndexRouteImport.update({
+  id: '/$id/discounting/',
+  path: '/$id/discounting/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IdDemandIndexRoute = IdDemandIndexRouteImport.update({
+  id: '/$id/demand/',
+  path: '/$id/demand/',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/$id/adaptive/': typeof IdAdaptiveIndexRoute
+  '/$id/demand/': typeof IdDemandIndexRoute
+  '/$id/discounting/': typeof IdDiscountingIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/$id/adaptive': typeof IdAdaptiveIndexRoute
+  '/$id/demand': typeof IdDemandIndexRoute
+  '/$id/discounting': typeof IdDiscountingIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/$id/adaptive/': typeof IdAdaptiveIndexRoute
+  '/$id/demand/': typeof IdDemandIndexRoute
+  '/$id/discounting/': typeof IdDiscountingIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/$id/adaptive/'
+  fullPaths: '/' | '/$id/demand/' | '/$id/discounting/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$id/adaptive'
-  id: '__root__' | '/' | '/$id/adaptive/'
+  to: '/' | '/$id/demand' | '/$id/discounting'
+  id: '__root__' | '/' | '/$id/demand/' | '/$id/discounting/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  IdAdaptiveIndexRoute: typeof IdAdaptiveIndexRoute
+  IdDemandIndexRoute: typeof IdDemandIndexRoute
+  IdDiscountingIndexRoute: typeof IdDiscountingIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -58,11 +68,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/$id/adaptive/': {
-      id: '/$id/adaptive/'
-      path: '/$id/adaptive'
-      fullPath: '/$id/adaptive/'
-      preLoaderRoute: typeof IdAdaptiveIndexRouteImport
+    '/$id/discounting/': {
+      id: '/$id/discounting/'
+      path: '/$id/discounting'
+      fullPath: '/$id/discounting/'
+      preLoaderRoute: typeof IdDiscountingIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$id/demand/': {
+      id: '/$id/demand/'
+      path: '/$id/demand'
+      fullPath: '/$id/demand/'
+      preLoaderRoute: typeof IdDemandIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -70,7 +87,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  IdAdaptiveIndexRoute: IdAdaptiveIndexRoute,
+  IdDemandIndexRoute: IdDemandIndexRoute,
+  IdDiscountingIndexRoute: IdDiscountingIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

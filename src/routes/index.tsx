@@ -24,12 +24,21 @@ function App() {
             </div>
           )
         }
+
         <Button>
-          <Link to="/$id/adaptive" params={{ id: 'sample-id', }} >Adaptive BE Toolkit</Link>
+          <Link to="/$id/discounting" params={{ id: 'sample-id', }} >Adaptive Discounting (Base)</Link>
         </Button>
 
         <Button>
-          <Link to="/$id/adaptive" params={{ id: 'sample-id' }} search={{ debug: 'true', figures: 'true', reinforcer: '12 oz Alcoholic Beverages' }}>Adaptive BE Toolkit (Debug)</Link>
+          <Link to="/$id/discounting" params={{ id: 'sample-id' }} search={{ debug: 'true', figures: 'true', reinforcer: 'Dollars' }}>Adaptive Discounting (Debug)</Link>
+        </Button>
+
+        <Button>
+          <Link to="/$id/demand" params={{ id: 'sample-id', }} >Adaptive Demand (Base)</Link>
+        </Button>
+
+        <Button>
+          <Link to="/$id/demand" params={{ id: 'sample-id' }} search={{ debug: 'true', figures: 'true', reinforcer: '12 oz Alcoholic Beverages' }}>Adaptive Demand (Debug)</Link>
         </Button>
       </section>
     </main>

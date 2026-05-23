@@ -15,7 +15,7 @@ const flagsParseSchema = z.object({
 
 type FlagsSearch = z.infer<typeof flagsParseSchema>;
 
-export const Route = createFileRoute('/$id/adaptive/')({
+export const Route = createFileRoute('/$id/demand/')({
     validateSearch: (search: unknown & FlagsSearch) => flagsParseSchema.parse(search),
     beforeLoad: async ({ params }) => {
         try {

@@ -1,4 +1,6 @@
+import type { DiscountingResponseProvided } from "#/types/discounting.ts";
 import { DemandAgent } from "../posm/demand/demand-agent";
+import type { DiscountingAgent } from "../posm/discounting/discounting-agent";
 
 /** sum_array
  *
@@ -135,4 +137,21 @@ export function appendResponse(algo: DemandAgent, expend: number) {
     Quantity: expend / algo.prediction,
     Revenue: expend,
   });
+}
+
+/** appendResponse
+ *
+ * Append response to algorithm
+ *
+ * @param {DemandAgent} algo algorithm
+ * @param {number} expend observed reinforcer value quantity
+ *
+ */
+export function appendDiscountingResponse(algo: DiscountingAgent, waited: boolean) {
+  algo.responses.push({
+    Delay: algo.prediction,
+    SSR: algo.ssr,
+    LLR: algo.llr,
+    Waited: waited,
+  } satisfies DiscountingResponseProvided);
 }
