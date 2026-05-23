@@ -1,12 +1,36 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { Button } from '#/components/ui/button.tsx';
+import { createFileRoute, Link } from '@tanstack/react-router'
+import { z } from 'zod'
 
-export const Route = createFileRoute('/')({ component: App })
+const errorSearchSchema = z.object({
+  error: z.string().optional(),
+})
+
+export const Route = createFileRoute('/')({
+  validateSearch: (search) => errorSearchSchema.parse(search),
+  component: App
+})
 
 function App() {
-  return (
-    <main className="page-wrap px-4 pb-8 pt-14">
-      <section className="island-shell rise-in relative overflow-hidden rounded-[2rem] px-6 py-10 sm:px-10 sm:py-14">
+  const { error } = Route.useSearch()
 
+  return (
+    <main className="pb-8 pt-14">
+      <section className="relative overflow-hidden rounded-[2rem] py-10 sm:py-14 flex flex-col gap-4">
+        {
+          error && (
+            <div className="mb-4 rounded-lg bg-red-100 p-4 text-sm text-red-700" role="alert">
+              <span className="font-medium">Error: </span>{error}
+            </div>
+          )
+        }
+        <Button>
+          <Link to="/$id/adaptive" params={{ id: 'sample-id' }}>Adaptive BE Toolkit</Link>
+        </Button>
+
+        <Button>
+          <Link to="/$id/adaptive" params={{ id: 'sample-id' }} search={{ debug: 'true', figures: 'true' }}>Adaptive BE Toolkit (Debug)</Link>
+        </Button>
       </section>
     </main>
   )

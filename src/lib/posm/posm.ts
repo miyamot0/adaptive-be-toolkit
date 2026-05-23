@@ -12,6 +12,8 @@ import { AlgorithmAction } from "../enums";
 const BETA = 0.25;
 
 export class POSM extends Algorithm {
+  id: string | undefined = undefined;
+
   // Last spend
   last_spend: number | undefined = undefined;
   // Last quantity
@@ -37,7 +39,7 @@ export class POSM extends Algorithm {
   threshhold = AlgorithmThreshold.MaximumIteration;
 
   // Iteration count ceiling
-  max_turns = 10;
+  max_turns = 20;
 
   // Question holder
   question_block_reference: string | undefined = undefined;
@@ -122,7 +124,8 @@ export class POSM extends Algorithm {
    *
    * @param {number[]} levels levels assigned
    */
-  public init(levels: number[], dynamicBeta?: number): void {
+  public init(levels: number[], id?: string, dynamicBeta?: number): void {
+    this.id = id;
     this.levels = levels;
     this.beta = dynamicBeta ?? BETA;
     this.n_levels = this.levels.length;

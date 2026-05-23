@@ -43,13 +43,6 @@ export function QuestionPresentation() {
         setPOSMGeneric(POSMGeneric);
         setEntryValue("");
 
-        //const lookBack = -3;
-
-        //const getPastExpend = POSMGeneric.responses.slice(lookBack);
-        //const currentPeakExpend = POSMGeneric.max_expend;
-
-
-
         const evaluate_state_terminate = evaluate_threshold(POSMGeneric);
 
         setResponseCount(POSMGeneric.responses.length);
@@ -82,15 +75,20 @@ export function QuestionPresentation() {
                     <Input
                         type="number"
                         min={0}
+                        step={1}
                         value={entryValue}
+                        inputMode="numeric"
+                        pattern="\d*"
                         autoFocus
                         onChange={(e) => {
-                            setEntryValue(e.currentTarget.value);
+                            setEntryValue(e.currentTarget.value.split(".")[0]);
                         }}
                         onKeyDown={(e) => {
                             if (e.key === "Enter") {
                                 submitResponse();
                             }
+
+                            if (e.key === ".") return e.preventDefault();
                         }}
                         className="max-w-16"
                     />

@@ -1777,23 +1777,6 @@
     "@tailwindcss/oxide" "4.3.0"
     tailwindcss "4.3.0"
 
-"@tanstack/db-ivm@0.1.18":
-  version "0.1.18"
-  resolved "https://registry.yarnpkg.com/@tanstack/db-ivm/-/db-ivm-0.1.18.tgz#c6feaa56e6d15f6de121c28c5560e4af62501df9"
-  integrity sha512-+pZJiRKdoKRM5Epq9T7otD9ZJl82pRFauo7LKuJGrarjVKQ7r+QQlPe3kGdN9LEKSnuNGIWjX9OOY4M8kH4eLw==
-  dependencies:
-    fractional-indexing "^3.2.0"
-    sorted-btree "^1.8.1"
-
-"@tanstack/db@0.6.6":
-  version "0.6.6"
-  resolved "https://registry.yarnpkg.com/@tanstack/db/-/db-0.6.6.tgz#d21a816aaf07986fa7037eb6ca418b82c145b5ef"
-  integrity sha512-v1Mphjtwy/6m3ixhNFackRp8XYgdJYGFUUBQ80d0lsipk0MYKHIoePpHGSum95nerLDcP/8+fu5qj0Vrvmskqw==
-  dependencies:
-    "@standard-schema/spec" "^1.1.0"
-    "@tanstack/db-ivm" "0.1.18"
-    "@tanstack/pacer-lite" "^0.2.1"
-
 "@tanstack/devtools-client@0.0.6":
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/@tanstack/devtools-client/-/devtools-client-0.0.6.tgz#cc6522b24fbd9372e0e5efe3061f4c37e8afdc66"
@@ -1869,36 +1852,15 @@
   resolved "https://registry.yarnpkg.com/@tanstack/history/-/history-1.162.0.tgz#5e12a52edd82a5d6d3b081255ec899ccca335443"
   integrity sha512-79pf/RkhteYZTRgcR4F9kbk84P2N8rugQJswxfIqovlbRiT3yI7eBE+5QorIrZaOKktsgzRlXh1l/du/xpl4iA==
 
-"@tanstack/pacer-lite@^0.2.1":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@tanstack/pacer-lite/-/pacer-lite-0.2.2.tgz#a9d51cb91ecb277ec8b4756d00894c1d1c74809a"
-  integrity sha512-eQ1MyLKCHyXiH7NbdmB80W77OhiMgGBUb+qDx/8WMGbwg5Lf/NlfD0TfNYAqY77i8V3AxoDoYdICrQE5ADw4Yw==
-
 "@tanstack/query-core@5.100.11":
   version "5.100.11"
   resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.100.11.tgz#fdf273bec49277600311a4c552e2c2d95f4df73b"
   integrity sha512-lmE0994apShXPj8CUxgx4ch5yUJhE9k/+tVwihBvPOyerACWdBocfFg24t8+0RhtlTd7tEgchDkhlCxNssvDxw==
 
-"@tanstack/query-db-collection@latest":
-  version "1.0.37"
-  resolved "https://registry.yarnpkg.com/@tanstack/query-db-collection/-/query-db-collection-1.0.37.tgz#a9aadfcecbd05dbc84f42667768ad67099f33d66"
-  integrity sha512-JqTbvWsimoQlRY5K9MTQ85YW91YGSgdwQ5rSxk1nmMctsPsjT+7SygrF9XYzkAUVzDv8IKcveIbqmpCXfylz1Q==
-  dependencies:
-    "@standard-schema/spec" "^1.1.0"
-    "@tanstack/db" "0.6.6"
-
 "@tanstack/query-devtools@5.100.11":
   version "5.100.11"
   resolved "https://registry.yarnpkg.com/@tanstack/query-devtools/-/query-devtools-5.100.11.tgz#7dc9e02d29c785ab1670df20ec0c2fcb6f425732"
   integrity sha512-47rVBDuGMW/A4ekt3YQdz+q0JSIwktwGnWCYyQUvSs2/g/Oa+6Fi2/IQk4/Y4vf6u1uwI7hOogHslgMC8f3X/Q==
-
-"@tanstack/react-db@latest":
-  version "0.1.84"
-  resolved "https://registry.yarnpkg.com/@tanstack/react-db/-/react-db-0.1.84.tgz#899d5cee9937076307582555bfd641c2e3f8e005"
-  integrity sha512-2BrOdAX2hZTS2Z6nZZ0HySf+oSL+IIq6y2Yfh5np1d/J7omPkb8Q77OCO4o4efDMYAnK6LTXYHtWP8X2a7bBeQ==
-  dependencies:
-    "@tanstack/db" "0.6.6"
-    use-sync-external-store "^1.6.0"
 
 "@tanstack/react-devtools@latest":
   version "0.10.5"
@@ -3899,11 +3861,6 @@ forwarded@0.2.0:
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.2.0.tgz#2269936428aad4c15c7ebe9779a84bf0b2a81811"
   integrity sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==
 
-fractional-indexing@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/fractional-indexing/-/fractional-indexing-3.2.0.tgz#1193e63d54ff4e0cbe0c79a9ed6cfbab25d91628"
-  integrity sha512-PcOxmqwYCW7O2ovKRU8OoQQj2yqTfEB/yeTYk4gPid6dN5ODRfU1hXd9tTVZzax/0NkO7AxpHykvZnT1aYp/BQ==
-
 fresh@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/fresh/-/fresh-2.0.0.tgz#8dd7df6a1b3a1b3a5cf186c05a5dd267622635a4"
@@ -5603,11 +5560,6 @@ solid-js@^1.9.9:
     csstype "^3.1.0"
     seroval "~1.5.0"
     seroval-plugins "~1.5.0"
-
-sorted-btree@^1.8.1:
-  version "1.8.1"
-  resolved "https://registry.yarnpkg.com/sorted-btree/-/sorted-btree-1.8.1.tgz#6e6275f7955e5892bb8737149cbe495be10f426f"
-  integrity sha512-395+XIP+wqNn3USkFSrNz7G3Ss/MXlZEqesxvzCRFwL14h6e8LukDHdLBePn5pwbm5OQ9vGu8mDyz2lLDIqamQ==
 
 source-map-js@^1.2.1:
   version "1.2.1"

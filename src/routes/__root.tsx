@@ -48,7 +48,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <HeadContent />
       </head>
-      <body className="font-sans antialiased wrap-anywhere selection:bg-[rgba(79,184,178,0.24)] w-full flex flex-col justify-center">
+      <body className="font-sans antialiased wrap-anywhere w-full flex flex-col justify-center">
         <StateContextProvider>
           <div className="flex flex-col w-full max-w-5xl mx-auto gap-4">
             <Header />
