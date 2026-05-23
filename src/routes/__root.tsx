@@ -28,7 +28,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'TanStack Start Starter',
+        title: 'Adaptive BE Toolkit',
       },
     ],
     links: [
@@ -50,7 +50,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body className="font-sans antialiased wrap-anywhere selection:bg-[rgba(79,184,178,0.24)] w-full flex flex-col justify-center">
         <StateContextProvider>
-          <div className="flex flex-col w-full max-w-5xl mx-auto">
+          <div className="flex flex-col w-full max-w-5xl mx-auto gap-4">
             <Header />
             {children}
             <Footer />

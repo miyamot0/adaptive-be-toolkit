@@ -5,6 +5,7 @@ import { QuestionPresentation } from "./question-presentation";
 import ChartRawConsumption from "../visuals/chart-raw-consumption";
 import ChartRawExpenditure from "../visuals/chart-raw-expenditure";
 import ChartBeliefs from "../visuals/chart-beliefs";
+import { Progress } from "#/components/ui/progress.tsx";
 
 const RENDER_FIGS: boolean = true;
 
@@ -37,10 +38,11 @@ export default function AdaptiveDemandPage({
         </div>;
 
     return (
-        <ContentWrapper Title={`Hypothetical Purchase Task for ${Reinforcer} (${ResponseCount})`}>
-            <QuestionPresentation />
-
+        <ContentWrapper Title={`Hypothetical Purchase Task for ${Reinforcer}`}>
+            <Progress value={50} />
             {renderFigures}
+
+            <QuestionPresentation />
         </ContentWrapper>
     );
 }
