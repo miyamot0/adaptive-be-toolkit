@@ -25,6 +25,8 @@ export function DiscountingQuestionPresentation({ Reinforcer }: { Reinforcer: st
         setResponseCount(POSM.responses.length);
 
         if (evaluate_state_terminate) {
+            alert('done')
+
             NotifyParentAdaptiveDiscounting(POSM, true);
         }
     }

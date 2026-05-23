@@ -45,8 +45,6 @@ export function QuestionPresentation() {
 
         const evaluate_state_terminate = evaluate_threshold(POSM);
 
-        console.log("evaluate_state_terminate", evaluate_state_terminate);
-
         setResponseCount(POSM.responses.length);
 
         setParsedExpend(-1);

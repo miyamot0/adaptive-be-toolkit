@@ -3,12 +3,11 @@ import {
   Scripts,
   createRootRouteWithContext,
 } from '@tanstack/react-router'
-import Footer from '../components/layout/Footer'
-import Header from '../components/layout/Header'
 
 import appCss from '../styles.css?url'
-
 import type { QueryClient } from '@tanstack/react-query'
+import Header from '#/components/layout/header.tsx';
+import Footer from '#/components/layout/footer.tsx';
 
 interface MyRouterContext {
   queryClient: QueryClient
