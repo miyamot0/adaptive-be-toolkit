@@ -1,7 +1,7 @@
 import { use, useEffect, useMemo } from "react";
 import { ContentWrapper } from "../../layout/content-wrapper";
 import { StateContext } from "../../context/state-context";
-import { QuestionPresentation } from "../common/question-presentation";
+import { QuestionPresentation } from "./question-presentation";
 import ChartRawConsumption from "../visuals/chart-raw-consumption";
 import ChartRawExpenditure from "../visuals/chart-raw-expenditure";
 import ChartBeliefs from "../visuals/chart-beliefs";
