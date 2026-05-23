@@ -1,5 +1,5 @@
 import type { AdaptiveDemandResultBaseMessage, AdaptiveDemandResultMessage } from "#/types/iframe-message.ts";
-import type { DemandAgent } from "../../posm/demand/demand-agent";
+import type { DemandAgent } from "../../../../lib/posm/demand/demand-agent";
 
 export function NotifyParentAdaptiveDemand(POSMObject: DemandAgent, Verbose: boolean = false) {
     if (POSMObject.id === undefined) {

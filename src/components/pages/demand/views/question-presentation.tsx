@@ -2,16 +2,12 @@ import { use, useState } from "react";
 import { Input } from "#/components/ui/input.tsx";
 import { Button } from "#/components/ui/button.tsx";
 import { evaluate_threshold } from "#/lib/helpers/thresholds.ts";
-import { NotifyParentAdaptiveDemand } from "#/lib/helpers/notify/demand-notify-parent.ts";
+import { NotifyParentAdaptiveDemand } from "#/components/pages/demand/helpers/demand-notify-parent.ts";
 import PriceGroupingView from "./price-grouping-view";
 import { AdaptiveDemandContext } from "#/components/context/adaptive-demand-context.tsx";
+import type { PastDemandQuestionType } from "#/types/demand.ts";
 
-export type ResponseOutput = {
-    Price: number;
-    Quantity: number;
-    Revenue: number;
-    index: number;
-}
+
 
 export function QuestionPresentation() {
     const { POSM, setPOSM, setResponseCount } = use(AdaptiveDemandContext);
@@ -21,7 +17,7 @@ export function QuestionPresentation() {
 
     if (POSM.prediction === -1) return null;
 
-    const ordering: ResponseOutput[] = Array.from(POSM.responses)
+    const ordering: PastDemandQuestionType[] = Array.from(POSM.responses)
         .sort((a, b) => a.Price - b.Price)
         .map((x, index) => {
             return {

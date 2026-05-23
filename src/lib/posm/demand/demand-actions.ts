@@ -1,4 +1,4 @@
-import { BeliefUpdating, } from "../../enums";
+import { BeliefUpdating, } from "../types/enums";
 import { DemandAgent } from "./demand-agent";
 
 export type IncludeIndex = true;

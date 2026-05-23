@@ -1,11 +1,11 @@
-import type { PastQuestionType } from "#/types/survey.ts";
+import type { PastDemandQuestionType } from "#/types/demand.ts";
 import { Input } from "@/components/ui/input";
 
-export const PastQuestion = ({
+export const DemandPastQuestion = ({
     Record,
     Query,
 }: {
-    Record: PastQuestionType;
+    Record: PastDemandQuestionType;
     Query: string;
 }) => {
     return (

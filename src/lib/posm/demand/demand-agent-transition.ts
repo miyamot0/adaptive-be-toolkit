@@ -1,4 +1,4 @@
-import { EvaluateChange } from "../../enums";
+import { EvaluateChange } from "../types/enums";
 import type { DemandAgent } from "./demand-agent";
 
 /** agent_pathway

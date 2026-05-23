@@ -1,4 +1,4 @@
-import { BeliefUpdating, } from "../../enums";
+import { BeliefUpdating, } from "../types/enums";
 import type { DiscountingAgent } from "./discounting-agent";
 
 export type IncludeIndex = true;

@@ -2,7 +2,7 @@ import { use } from "react";
 import { AdaptiveDiscountingContext } from "#/components/context/adaptive-discounting-context.tsx";
 import { Button } from "#/components/ui/button.tsx";
 import { evaluate_discounting_threshold, } from "#/lib/helpers/thresholds.ts";
-import { NotifyParentAdaptiveDiscounting } from "#/lib/helpers/notify/discounting-notify-parent.ts";
+import { NotifyParentAdaptiveDiscounting } from "#/components/pages/discounting/helpers/discounting-notify-parent.ts";
 
 export type ResponseOutput = {
     Price: number;
@@ -37,9 +37,9 @@ export function DiscountingQuestionPresentation({ Reinforcer }: { Reinforcer: st
 
             <div key={POSM.turn}
                 className="flex flex-row justify-between gap-4 w-full items-center opacity-100 transition-opacity duration-500 starting:opacity-0">
-                <Button className="w-48 h-48" onClick={() => submitResponse(false)}>{POSM.ssr} {Reinforcer} available <br /> right now?</Button>
+                <Button variant={'outline'} className="w-48 h-48" onClick={() => submitResponse(false)}>I would prefer to have<br />{POSM.ssr} {Reinforcer} right now</Button>
                 <span className="text-sm text-gray-500">OR</span>
-                <Button className="w-48 h-48" onClick={() => submitResponse(true)}>{POSM.llr} {Reinforcer} available <br />in {POSM.prediction} days?</Button>
+                <Button variant={'outline'} className="w-48 h-48" onClick={() => submitResponse(true)}>I would wait {POSM.prediction} days<br />for {POSM.llr} {Reinforcer}</Button>
             </div>
         </div>
     );

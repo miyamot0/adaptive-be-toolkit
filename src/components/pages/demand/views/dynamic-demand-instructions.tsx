@@ -1,4 +1,4 @@
-export const DynamicInstructions = ({
+export const DynamicDemandInstructions = ({
   Reinforcer,
   Duration,
   children

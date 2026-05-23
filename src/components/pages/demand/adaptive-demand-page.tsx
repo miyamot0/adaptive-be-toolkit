@@ -5,7 +5,7 @@ import ChartRawConsumption from "./views/chart-raw-consumption";
 import ChartRawExpenditure from "./views/chart-raw-expenditure";
 import ChartBeliefs from "./views/chart-beliefs";
 import { Button } from "#/components/ui/button.tsx";
-import { DynamicInstructions } from "#/components/older/dynamic-instructions.tsx";
+import { DynamicDemandInstructions } from "#/components/pages/demand/views/dynamic-demand-instructions.tsx";
 import { AdaptiveDemandContext } from "#/components/context/adaptive-demand-context.tsx";
 import { AlgorithmThreshold } from "#/types/survey.ts";
 
@@ -40,9 +40,9 @@ export default function AdaptiveDemandPage({
 
     if (!hasConfirmed) {
         return <ContentWrapper Title={`Hypothetical Purchase Task for ${Reinforcer}`}>
-            <DynamicInstructions Reinforcer={Reinforcer} Duration="over the past three months" >
+            <DynamicDemandInstructions Reinforcer={Reinforcer} Duration="over the past three months" >
                 <Button onClick={() => setHasConfirmed(true)}  >Confirm Understanding</Button>
-            </DynamicInstructions>
+            </DynamicDemandInstructions>
         </ContentWrapper>;
     }
 

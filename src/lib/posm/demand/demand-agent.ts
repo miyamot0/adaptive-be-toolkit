@@ -1,10 +1,11 @@
-import { AlgorithmThreshold, type ResponseProvided } from "@/types/survey";
+import { AlgorithmThreshold } from "@/types/survey";
 import { argmax, argmin } from "../../helpers/arrays";
-import { AlgorithmAction } from "../../enums";
+import { AlgorithmAction } from "../types/enums";
 import { agent_decision } from "./demand-agent-decision";
 import { explore_non_zero, explore_zero } from "./demand-agent-explore";
 import { exploit } from "./demand-agent-exploit";
 import { Algorithm } from "../common/algorithm";
+import type { DemandResponseProvided } from "#/types/demand.ts";
 
 export class DemandAgent extends Algorithm {
   id: string | undefined = undefined;
@@ -24,7 +25,7 @@ export class DemandAgent extends Algorithm {
   max_q: number = 0;
 
   // Responses across task
-  responses: ResponseProvided[] = [];
+  responses: DemandResponseProvided[] = [];
 
   // Callback after threshold hit
   // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
@@ -32,7 +33,6 @@ export class DemandAgent extends Algorithm {
 
   // Decision-making for termination
   threshhold = AlgorithmThreshold.MaximumIteration;
-
 
   // Question holder
   question_block_reference: string | undefined = undefined;

@@ -1,4 +1,4 @@
-import { AlgorithmAction } from "../../enums";
+import { AlgorithmAction } from "../types/enums";
 import { is_undefined } from "../../helpers/type-check";
 import type { DemandAgent } from "./demand-agent";
 

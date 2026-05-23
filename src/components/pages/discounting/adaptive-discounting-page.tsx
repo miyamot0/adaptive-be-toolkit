@@ -6,7 +6,7 @@ import { use, useEffect, useState } from "react";
 import { DiscountingQuestionPresentation } from "./views/discounting-question-presentation";
 import ChartDiscountingBeliefs from "./views/chart-discounting-beliefs";
 import ChartRawChoice from "./views/chart-raw-choice";
-import { DynamicDiscountingInstructions } from "#/components/older/dynamic-discounting-instructions.tsx";
+import { DynamicDiscountingInstructions } from "#/components/pages/discounting/views/dynamic-discounting-instructions.tsx";
 
 type AdaptiveDiscountingPageProps = {
     ID: string;

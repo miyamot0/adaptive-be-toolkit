@@ -1,4 +1,4 @@
-import { BeliefUpdating } from "../../enums";
+import { BeliefUpdating } from "../types/enums";
 import { appendResponse, normalizeBeliefs } from "../../helpers/arrays";
 import { agent_update_beliefs, agent_update_improvement } from "./demand-actions";
 import { agent_observed_improvement } from "./demand-agent-appraise-performance";
