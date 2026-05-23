@@ -9,7 +9,7 @@ export const PastQuestion = ({
     Query: string;
 }) => {
     return (
-        <div className="flex flex-col w-full gap-4">
+        <div className="hidden nth-last-[-n+2]:flex flex-col w-full gap-4">
             <div className="py-0.5 flex flex-row justify-between gap-4 items-center">
                 <p className="grow text-gray-400">{Query}</p>
                 {

@@ -60,7 +60,6 @@ export function agent_observed_improvement(expend: number, algo: POSM) {
 }
 
 export function agent_observed_identical(expend: number, algo: POSM) {
-  console.log(`Expend: ${expend}, Max Expend: ${algo.max_expend}`);
   return expend === algo.max_expend;
 }
 
@@ -212,8 +211,6 @@ export function exploit(expend: number, algo: POSM) {
   const n_nonzero = algo.responses.filter(
     (response: { Revenue: number }) => response.Revenue > 0
   );
-
-  console.log(`Price Direction: ${price_direction}, Improved Estimate: ${improved_estimate}, Identical Estimate: ${identical_estimate}`);
 
   if (price_direction === EvaluateChange.PriceIncreased) {
     // Update beliefs in the context of price increase

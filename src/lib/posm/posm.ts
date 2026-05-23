@@ -142,8 +142,6 @@ export class POSM extends Algorithm {
   public iterate(value: number) {
     const action: AlgorithmAction = agent_decision(value, this);
 
-    console.log(action)
-
     switch (action) {
       case AlgorithmAction.NonconsumptionFound:
         explore_zero(value, this);

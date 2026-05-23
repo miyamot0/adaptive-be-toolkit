@@ -5,6 +5,7 @@ import { Input } from "#/components/ui/input.tsx";
 import { Button } from "#/components/ui/button.tsx";
 import { evaluate_threshold } from "#/lib/helpers/thresholds.ts";
 import PriceGroupingView from "./views/price-grouping-view";
+import { NotifyParentAdaptiveDemand } from "#/lib/notify/notify-parent.ts";
 
 export type ResponseOutput = {
     Price: number;
@@ -56,6 +57,8 @@ export function QuestionPresentation() {
 
         if (evaluate_state_terminate) {
             alert('done')
+
+            NotifyParentAdaptiveDemand(POSMGeneric, true);
             //const index_in_routes = routes.indexOf(route);
             // / const next_route = routes[index_in_routes + 1];
 
@@ -90,7 +93,7 @@ export function QuestionPresentation() {
                             }
                         }}
                         className="max-w-16"
-                    ></Input>
+                    />
 
                 </div>
             </PriceGroupingView>

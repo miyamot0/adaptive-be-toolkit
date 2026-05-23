@@ -1,4 +1,4 @@
-import { use, useEffect, useMemo } from "react";
+import { use, useEffect } from "react";
 import { ContentWrapper } from "../../layout/content-wrapper";
 import { StateContext } from "../../context/state-context";
 import { QuestionPresentation } from "./question-presentation";
@@ -29,15 +29,12 @@ export default function AdaptiveDemandPage({
         SetSurveyUpdate(new Date());
     }, [Reinforcer]);
 
-    const renderFigures = useMemo(() => {
-        if (RENDER_FIGS === false) return null;
-
-        return <div className="grid grid-cols-3 w-full gap-4 min-h-100">
+    const renderFigures = (RENDER_FIGS === false) ? null :
+        <div className="grid grid-cols-3 w-full gap-4 min-h-50">
             <ChartBeliefs POSM={POSMGeneric} />
             <ChartRawExpenditure POSM={POSMGeneric} />
             <ChartRawConsumption POSM={POSMGeneric} />
-        </div>
-    }, [POSMGeneric]);
+        </div>;
 
     return (
         <ContentWrapper Title={`Hypothetical Purchase Task for ${Reinforcer} (${ResponseCount})`}>
