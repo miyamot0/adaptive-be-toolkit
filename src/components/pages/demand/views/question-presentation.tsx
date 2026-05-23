@@ -5,6 +5,7 @@ import { Button } from "#/components/ui/button.tsx";
 import { evaluate_threshold } from "#/lib/helpers/thresholds.ts";
 import { NotifyParentAdaptiveDemand } from "#/lib/notify/notify-parent.ts";
 import PriceGroupingView from "./price-grouping-view";
+import { AdaptiveDemandContext } from "#/components/context/adaptive-demand-context.tsx";
 
 export type ResponseOutput = {
     Price: number;
@@ -14,14 +15,15 @@ export type ResponseOutput = {
 }
 
 export function QuestionPresentation() {
-    const { POSMGeneric, setPOSMGeneric, setResponseCount } =
-        use(StateContext);
+
+    const { POSM, setPOSM, setResponseCount } = use(AdaptiveDemandContext);
+
     const [entryValue, setEntryValue] = useState("");
     const [parsedExpend, setParsedExpend] = useState<number>(-1);
 
-    if (POSMGeneric.prediction === -1) return null;
+    if (POSM.prediction === -1) return null;
 
-    const ordering: ResponseOutput[] = Array.from(POSMGeneric.responses)
+    const ordering: ResponseOutput[] = Array.from(POSM.responses)
         .sort((a, b) => a.Price - b.Price)
         .map((x, index) => {
             return {
@@ -31,37 +33,39 @@ export function QuestionPresentation() {
         });
 
     const priceValues = ordering.map((x) => x.Price);
-    const distinctPriceValues = Array.from(new Set([...priceValues, POSMGeneric.prediction])).sort((a, b) => a - b);
+    const distinctPriceValues = Array.from(new Set([...priceValues, POSM.prediction])).sort((a, b) => a - b);
 
     function submitResponse() {
         if (entryValue === "") return;
         const quantity_endorsed = parseInt(entryValue);
-        const expended = POSMGeneric.prediction * quantity_endorsed;
+        const expended = POSM.prediction * quantity_endorsed;
 
-        POSMGeneric.iterate(expended);
+        POSM.iterate(expended);
 
-        setPOSMGeneric(POSMGeneric);
+        setPOSM(POSM);
         setEntryValue("");
 
-        const evaluate_state_terminate = evaluate_threshold(POSMGeneric);
+        const evaluate_state_terminate = evaluate_threshold(POSM);
 
-        setResponseCount(POSMGeneric.responses.length);
+        console.log("evaluate_state_terminate", evaluate_state_terminate);
+
+        setResponseCount(POSM.responses.length);
 
         setParsedExpend(-1);
 
         if (evaluate_state_terminate) {
             alert('done')
 
-            NotifyParentAdaptiveDemand(POSMGeneric, true);
+            NotifyParentAdaptiveDemand(POSM, true);
         }
     }
 
     return (
         <div className="flex flex-col w-full gap-1 py-1">
-            <PriceGroupingView PriceValues={distinctPriceValues} ordering={ordering} POSMGeneric={POSMGeneric}>
+            <PriceGroupingView PriceValues={distinctPriceValues} ordering={ordering} POSMGeneric={POSM}>
                 <div className="flex flex-row justify-between gap-4 w-full items-center">
                     <p className="grow underline font-semibold">
-                        How many would you purchase at a price of ${POSMGeneric.prediction}?
+                        How many would you purchase at a price of ${POSM.prediction}?
                     </p>
 
                     {
@@ -87,11 +91,10 @@ export function QuestionPresentation() {
                         onChange={(e) => {
                             const parsedString = e.currentTarget.value.split(".")[0];
 
-
                             setEntryValue(parsedString);
 
                             const parsedNumber = parseInt(parsedString);
-                            const costNumber = POSMGeneric.prediction * parsedNumber;
+                            const costNumber = POSM.prediction * parsedNumber;
 
                             setParsedExpend(costNumber ? costNumber : -1);
                         }}

@@ -1,3 +1,4 @@
+import { AdaptiveDemandContextProvider } from '#/components/context/adaptive-demand-context.tsx';
 import AdaptiveDemandPage from '#/components/pages/demand/adaptive-demand-page.tsx';
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { z } from 'zod';
@@ -35,5 +36,7 @@ function RouteComponent() {
 
     const srClean = reinforcer ?? 'Example Reinforcers';
 
-    return <AdaptiveDemandPage ID={id} Reinforcer={srClean} RenderFigures={figures !== undefined} DebugOutput={debug !== undefined} />;
+    return <AdaptiveDemandContextProvider>
+        <AdaptiveDemandPage ID={id} Reinforcer={srClean} RenderFigures={figures === 'true'} DebugOutput={debug === 'true'} />
+    </AdaptiveDemandContextProvider>;
 }

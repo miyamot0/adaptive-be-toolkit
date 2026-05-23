@@ -1,5 +1,6 @@
+import { AdaptiveDemandContext } from "#/components/context/adaptive-demand-context.tsx";
 import type { POSM } from "@/lib/posm/posm";
-import { useMemo } from "react";
+import { use, useMemo } from "react";
 import { Chart, type AxisOptions } from "react-charts";
 
 type BeliefMapping = {
@@ -12,7 +13,9 @@ type Series = {
     data: BeliefMapping[]
 }
 
-export default function ChartBeliefs({ POSM }: { POSM: POSM }) {
+export default function ChartBeliefs() {
+    const { POSM } = use(AdaptiveDemandContext);
+
     const data: Series[] = [
         {
             label: 'React Charts',

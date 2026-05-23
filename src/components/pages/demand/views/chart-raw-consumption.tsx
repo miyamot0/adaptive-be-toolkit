@@ -1,5 +1,5 @@
-import type { POSM } from "@/lib/posm/posm";
-import { useMemo } from "react";
+import { AdaptiveDemandContext } from "#/components/context/adaptive-demand-context.tsx";
+import { use, useMemo } from "react";
 import { Chart, type AxisOptions } from "react-charts";
 
 type RawDataMapping = {
@@ -12,7 +12,9 @@ type SeriesRaw = {
     data: RawDataMapping[]
 }
 
-export default function ChartRawConsumption({ POSM }: { POSM: POSM }) {
+export default function ChartRawConsumption() {
+    const { POSM } = use(AdaptiveDemandContext);
+
     const data: SeriesRaw[] = [
         {
             label: 'React Charts',

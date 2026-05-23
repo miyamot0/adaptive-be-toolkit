@@ -7,6 +7,8 @@ import ChartRawExpenditure from "./views/chart-raw-expenditure";
 import ChartBeliefs from "./views/chart-beliefs";
 import { Button } from "#/components/ui/button.tsx";
 import { DynamicInstructions } from "#/components/older/dynamic-instructions.tsx";
+import type { POSM } from "#/lib/posm/posm.ts";
+import { AdaptiveDemandContext } from "#/components/context/adaptive-demand-context.tsx";
 
 type AdaptiveDemandPageProps = {
     ID: string;
@@ -21,7 +23,7 @@ export default function AdaptiveDemandPage({
     RenderFigures = false,
     DebugOutput = false,
 }: AdaptiveDemandPageProps) {
-    const { POSMGeneric, setPOSMGeneric, SetSurveyUpdate } = use(StateContext);
+    const { POSM, setPOSM } = use(AdaptiveDemandContext);
     const [hasConfirmed, setHasConfirmed] = useState(false);
 
     useEffect(() => {
@@ -30,12 +32,11 @@ export default function AdaptiveDemandPage({
             ...Array.from({ length: 49 }, (_, i) => i * 1 + 1) // Generates [1, 2, 3, ..., 49]
         ];
 
-        POSMGeneric.init(DEFAULT_PRICES, ID, 0.25);
+        POSM.init(DEFAULT_PRICES, ID, 0.25);
 
-        const POSM_1 = POSMGeneric;
+        const POSM_1 = POSM;
 
-        setPOSMGeneric(POSM_1);
-        SetSurveyUpdate(new Date());
+        setPOSM(POSM_1);
     }, [Reinforcer]);
 
     if (!hasConfirmed) {
@@ -48,12 +49,12 @@ export default function AdaptiveDemandPage({
 
     const renderFigures = (RenderFigures === false) ? null :
         <div className="grid grid-cols-3 w-full gap-4 min-h-30">
-            <ChartBeliefs POSM={POSMGeneric} />
-            <ChartRawExpenditure POSM={POSMGeneric} />
-            <ChartRawConsumption POSM={POSMGeneric} />
+            <ChartBeliefs />
+            <ChartRawExpenditure />
+            <ChartRawConsumption />
         </div>;
 
-    const sortedBeliefsCumulative = [...POSMGeneric.beliefsCumulative].sort((a, b) => b - a);
+    const sortedBeliefsCumulative = [...POSM.beliefsCumulative].sort((a, b) => b - a);
     const highestBelief = Math.max(...sortedBeliefsCumulative);
     const nAtHighestBelief = sortedBeliefsCumulative.filter(b => b === highestBelief).length;
 
