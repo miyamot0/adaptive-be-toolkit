@@ -1,5 +1,4 @@
 import { AdaptiveDemandContext } from "#/components/context/adaptive-demand-context.tsx";
-import type { POSM } from "@/lib/posm/posm";
 import { use, useMemo } from "react";
 import { Chart, type AxisOptions } from "react-charts";
 

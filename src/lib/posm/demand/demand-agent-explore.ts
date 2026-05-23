@@ -1,17 +1,17 @@
-import { BeliefUpdating } from "../enums";
-import { appendResponse, normalizeBeliefs } from "../helpers/arrays";
-import { agent_update_beliefs, agent_update_improvement } from "./actions";
-import { agent_observed_improvement } from "./appraise-performance";
-import type { POSM } from "./posm";
+import { BeliefUpdating } from "../../enums";
+import { appendResponse, normalizeBeliefs } from "../../helpers/arrays";
+import { agent_update_beliefs, agent_update_improvement } from "./demand-actions";
+import { agent_observed_improvement } from "./demand-agent-appraise-performance";
+import type { DemandAgent } from "./demand-agent";
 
 /** explore_zero
  *
  * In the face of non-consumption, explore space in direction of consumption
  *
  * @param {number} expend observed reinforcer value quantity
- * @param {POSM} algo observed reinforcer value quantity
+ * @param {DemandAgent} algo observed reinforcer value quantity
  */
-export function explore_zero(expend: number, algo: POSM) {
+export function explore_zero(expend: number, algo: DemandAgent) {
     if (!algo.index_max)
         throw new Error("index_max is undefined, algorithm needs initialization!");
 
@@ -40,9 +40,9 @@ export function explore_zero(expend: number, algo: POSM) {
  * Non-zero consumption levels observed initially, explore space to evaluate relative change afterward
  *
  * @param {number} expend observed reinforcer value quantity
- * @param {POSM} algo observed reinforcer value quantity
+ * @param {DemandAgent} algo observed reinforcer value quantity
  */
-export function explore_non_zero(expend: number, algo: POSM) {
+export function explore_non_zero(expend: number, algo: DemandAgent) {
     if (!algo.index_max)
         throw new Error("index_max is undefined, algorithm needs initialization!");
 

@@ -22,9 +22,16 @@ export abstract class Algorithm {
   // Notes
   notes: string = "";
 
+  // Iteration count ceiling
+  max_turns = 20;
+
   public abstract init(levels: number[]): void;
 
   public abstract iterate(value: number): void;
 
   public abstract get_prediction(): void;
+
+  public set_max_turns(turns: number) {
+    this.max_turns = turns;
+  }
 }

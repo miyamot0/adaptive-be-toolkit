@@ -1,5 +1,5 @@
-import { BeliefUpdating, } from "../enums";
-import { POSM } from "./posm";
+import { BeliefUpdating, } from "../../enums";
+import { DemandAgent } from "./demand-agent";
 
 export type IncludeIndex = true;
 export type ExcludeIndex = false;
@@ -11,9 +11,9 @@ export type IncludeIndexType = IncludeIndex | ExcludeIndex;
  * Update agent improvement
  *
  * @param {number} expend observed reinforcer value quantity
- * @param {POSM} algo observed reinforcer value quantity
+ * @param {DemandAgent} algo observed reinforcer value quantity
  */
-export function agent_update_improvement(expend: number, algo: POSM) {
+export function agent_update_improvement(expend: number, algo: DemandAgent) {
   algo.max_expend_price = algo.prediction;
   algo.max_expend = expend;
   algo.max_q = expend / algo.prediction;
@@ -24,9 +24,9 @@ export function agent_update_improvement(expend: number, algo: POSM) {
  * Update agent beliefs
  *
  * @param {BeliefUpdating} observation observed belief updating
- * @param {POSM} algo observed reinforcer value quantity
+ * @param {DemandAgent} algo observed reinforcer value quantity
  */
-export function agent_update_beliefs(observation: BeliefUpdating, algo: POSM, includeIndex: IncludeIndexType = false) {
+export function agent_update_beliefs(observation: BeliefUpdating, algo: DemandAgent, includeIndex: IncludeIndexType = false) {
 
   switch (observation) {
     case BeliefUpdating.BelowIndex:

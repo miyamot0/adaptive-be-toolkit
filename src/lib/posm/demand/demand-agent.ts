@@ -1,12 +1,12 @@
 import { AlgorithmThreshold, type ResponseProvided } from "@/types/survey";
-import { Algorithm } from "./algorithm";
-import { argmax, argmin } from "../helpers/arrays";
-import { AlgorithmAction } from "../enums";
+import { Algorithm } from "../algorithm";
+import { argmax, argmin } from "../../helpers/arrays";
+import { AlgorithmAction } from "../../enums";
 import { agent_decision } from "./demand-agent-decision";
 import { explore_non_zero, explore_zero } from "./demand-agent-explore";
 import { exploit } from "./demand-agent-exploit";
 
-export class POSM extends Algorithm {
+export class DemandAgent extends Algorithm {
   id: string | undefined = undefined;
 
   // Last spend
@@ -33,8 +33,6 @@ export class POSM extends Algorithm {
   // Decision-making for termination
   threshhold = AlgorithmThreshold.MaximumIteration;
 
-  // Iteration count ceiling
-  max_turns = 20;
 
   // Question holder
   question_block_reference: string | undefined = undefined;
@@ -78,9 +76,7 @@ export class POSM extends Algorithm {
    *
    * @param {number} turns
    */
-  public set_max_turns(turns: number) {
-    this.max_turns = turns;
-  }
+
 
   /** set min_nonzero_consumption_points
    *
@@ -149,5 +145,17 @@ export class POSM extends Algorithm {
    */
   public increment_turn() {
     this.turn += 1;
+  }
+
+  /**
+   * set_algorithm
+   *
+   * Set the algorithm threshold for termination
+   *
+   * @param {AlgorithmThreshold} threshhold
+   * @returns {void}
+   */
+  public set_algorithm(threshhold: AlgorithmThreshold) {
+    this.threshhold = threshhold;
   }
 }

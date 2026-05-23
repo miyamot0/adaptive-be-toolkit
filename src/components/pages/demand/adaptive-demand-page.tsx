@@ -7,6 +7,7 @@ import ChartBeliefs from "./views/chart-beliefs";
 import { Button } from "#/components/ui/button.tsx";
 import { DynamicInstructions } from "#/components/older/dynamic-instructions.tsx";
 import { AdaptiveDemandContext } from "#/components/context/adaptive-demand-context.tsx";
+import { AlgorithmThreshold } from "#/types/survey.ts";
 
 type AdaptiveDemandPageProps = {
     ID: string;
@@ -32,6 +33,7 @@ export default function AdaptiveDemandPage({
         ];
 
         POSM.init(DEFAULT_PRICES, ID, 0.5);
+        POSM.set_algorithm(AlgorithmThreshold.BeliefConcentration);
 
         setPOSM(POSM);
     }, [Reinforcer]);
@@ -55,15 +57,21 @@ export default function AdaptiveDemandPage({
     const highestBelief = Math.max(...sortedBeliefsCumulative);
     const nAtHighestBelief = sortedBeliefsCumulative.filter(b => b === highestBelief).length;
 
+    const twoHighestBeliefs = sortedBeliefsCumulative.slice(0, 2);
+    const totalAtTwoHighest = twoHighestBeliefs.reduce((acc, val) => acc + val, 0);
+    const nMatchingTwoHighest = sortedBeliefsCumulative.filter(b => twoHighestBeliefs.includes(b)).length;
+
     const threeHighestBeliefs = sortedBeliefsCumulative.slice(0, 3);
     const totalAtThreeHighest = threeHighestBeliefs.reduce((acc, val) => acc + val, 0);
     const nMatchingThreeHighest = sortedBeliefsCumulative.filter(b => threeHighestBeliefs.includes(b)).length;
 
     return (
         <ContentWrapper Title={`Hypothetical Purchase Task for ${Reinforcer}`}>
-            {DebugOutput && <div>
+            {DebugOutput && <div className="flex flex-row gap-2">
+                <span className="text-sm text-gray-500">Questions Asked: {POSM.turn - 1}</span>
                 <span className="text-sm text-gray-500">Highest Belief: {highestBelief.toFixed(2)} (n = {nAtHighestBelief})</span>
-                <span className="text-sm text-gray-500 ml-4">Total at Three Highest Beliefs: {totalAtThreeHighest.toFixed(2)} (n = {nMatchingThreeHighest})</span>
+                <span className="text-sm text-gray-500">Total at Two Highest Beliefs: {totalAtTwoHighest.toFixed(2)} (n = {nMatchingTwoHighest})</span>
+                <span className="text-sm text-gray-500">Total at Three Highest Beliefs: {totalAtThreeHighest.toFixed(2)} (n = {nMatchingThreeHighest})</span>
             </div>}
 
             {renderFigures}

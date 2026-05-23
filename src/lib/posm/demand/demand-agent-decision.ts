@@ -1,16 +1,16 @@
-import { AlgorithmAction } from "../enums";
-import { is_undefined } from "../helpers/type-check";
-import type { POSM } from "./posm";
+import { AlgorithmAction } from "../../enums";
+import { is_undefined } from "../../helpers/type-check";
+import type { DemandAgent } from "./demand-agent";
 
 /** agent_decision
  *
  * Assist agent in acting next
  *
  * @param {number} expend expenditure observed
- * @param {POSM} algo agent internal state
+ * @param {DemandAgent} algo agent internal state
  * @returns
  */
-export function agent_decision(expend: number, algo: POSM) {
+export function agent_decision(expend: number, algo: DemandAgent) {
     // Note: Action in zero -- pretty much always consistent (include index as zero)
     if (expend <= 0) return AlgorithmAction.NonconsumptionFound;
 

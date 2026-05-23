@@ -1,14 +1,14 @@
-import type { POSM } from "./posm";
+import type { DemandAgent } from "./demand-agent";
 
 /** agent_observed_improvement
  *
  * Determine if agent observed improvement
  *
  * @param {number} expend observed reinforcer value quantity
- * @param {POSM} algo observed reinforcer value quantity
+ * @param {DemandAgent} algo observed reinforcer value quantity
  * @returns {boolean}
  */
-export function agent_observed_improvement(expend: number, algo: POSM) {
+export function agent_observed_improvement(expend: number, algo: DemandAgent) {
     return expend > algo.max_expend;
 }
 
@@ -17,9 +17,9 @@ export function agent_observed_improvement(expend: number, algo: POSM) {
  * Determine if agent observed identical
  * 
  * @param {number} expend observed reinforcer value quantity
- * @param {POSM} algo observed reinforcer value quantity
+ * @param {DemandAgent} algo observed reinforcer value quantity
  * @returns {boolean}
  */
-export function agent_observed_identical(expend: number, algo: POSM) {
+export function agent_observed_identical(expend: number, algo: DemandAgent) {
     return expend === algo.max_expend;
 }

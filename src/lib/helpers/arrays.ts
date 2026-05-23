@@ -1,4 +1,4 @@
-import { POSM } from "../posm/posm";
+import { DemandAgent } from "../posm/demand/demand-agent";
 
 /** sum_array
  *
@@ -125,11 +125,11 @@ export function normalizeBeliefs(arr: number[]) {
  *
  * Append response to algorithm
  *
- * @param {POSM} algo algorithm
+ * @param {DemandAgent} algo algorithm
  * @param {number} expend observed reinforcer value quantity
  *
  */
-export function appendResponse(algo: POSM, expend: number) {
+export function appendResponse(algo: DemandAgent, expend: number) {
   algo.responses.push({
     Price: algo.prediction,
     Quantity: expend / algo.prediction,

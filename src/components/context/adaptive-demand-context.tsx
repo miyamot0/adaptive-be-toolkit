@@ -1,17 +1,17 @@
 "use client";
 
-import { POSM } from "@/lib/posm/posm";
+import { DemandAgent } from "#/lib/posm/demand/demand-agent.ts";
 import { createContext, useState, type ReactNode } from "react";
 
 type AdaptiveDemandContextType = {
-    POSM: POSM;
-    setPOSM: (value: POSM) => void;
+    POSM: DemandAgent;
+    setPOSM: (value: DemandAgent) => void;
     SurveyStart: Date;
     ResponseCount: number;
     setResponseCount: (value: number) => void;
 };
 
-const _posmGeneric = new POSM();
+const _posmGeneric = new DemandAgent();
 
 const defaultState: AdaptiveDemandContextType = {
     POSM: _posmGeneric,
@@ -24,13 +24,13 @@ const defaultState: AdaptiveDemandContextType = {
 export const AdaptiveDemandContext = createContext<AdaptiveDemandContextType>(defaultState);
 
 export const AdaptiveDemandContextProvider = ({ children }: { children: ReactNode }) => {
-    const [POSM, setPOSM] = useState(defaultState.POSM);
+    const [demandAgent, setPOSM] = useState(defaultState.POSM);
     const [ResponseCount, setResponseCount] = useState(0);
 
     const startState: AdaptiveDemandContextType = {
         ...defaultState,
-        POSM: POSM,
-        setPOSM: (posm: POSM) => {
+        POSM: demandAgent,
+        setPOSM: (posm: DemandAgent) => {
             setPOSM(posm);
         },
         ResponseCount: ResponseCount,

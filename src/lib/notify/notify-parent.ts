@@ -1,10 +1,14 @@
 import type { AdaptiveDemandResultBaseMessage, AdaptiveDemandResultMessage } from "#/types/iframe-message.ts";
-import type { POSM } from "../posm/posm";
+import type { DemandAgent } from "../posm/demand/demand-agent";
 
-export function NotifyParentAdaptiveDemand(POSMObject: POSM, Verbose: boolean = false) {
+export function NotifyParentAdaptiveDemand(POSMObject: DemandAgent, Verbose: boolean = false) {
+    if (POSMObject.id === undefined) {
+        throw new Error("POSMObject.id is undefined. Ensure that the DemandAgent has a valid ID before calling NotifyParentAdaptiveDemand.");
+    }
+
     if (Verbose) {
         const message = {
-            ID: "TODO",
+            ID: POSMObject.id,
             MaxExpenditure: POSMObject.max_expend,
             MaxExpenditurePrice: POSMObject.max_expend_price,
             MaxExpenditureQuantity: POSMObject.max_q,
@@ -24,7 +28,7 @@ export function NotifyParentAdaptiveDemand(POSMObject: POSM, Verbose: boolean = 
     }
 
     const message = {
-        ID: "TODO",
+        ID: POSMObject.id,
         MaxExpenditure: POSMObject.max_expend,
         MaxExpenditurePrice: POSMObject.max_expend_price,
         MaxExpenditureQuantity: POSMObject.max_q,

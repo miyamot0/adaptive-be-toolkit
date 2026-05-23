@@ -1,11 +1,11 @@
-import type { POSM } from "#/lib/posm/posm.ts";
+import type { DemandAgent } from "#/lib/posm/demand/demand-agent.ts";
 import { PastQuestion } from "../../common/past-question";
 import type { ResponseOutput } from "./question-presentation";
 
 type Props = {
     PriceValues: number[];
     ordering: ResponseOutput[];
-    POSMGeneric: POSM;
+    POSMGeneric: DemandAgent;
     children: React.ReactNode;
 }
 
