@@ -1,10 +1,12 @@
-import { use, useEffect } from "react";
+import { use, useEffect, useMemo } from "react";
 import { ContentWrapper } from "../layout/content-wrapper";
 import { StateContext } from "../context/state-context";
 import { CurrentQuestion } from "./views/current-question";
 import ChartRawConsumption from "./views/chart-raw-consumption";
 import ChartRawExpenditure from "./views/chart-raw-expenditure";
 import ChartBeliefs from "./views/chart-beliefs";
+
+const RENDER_FIGS: boolean = true;
 
 export default function AdaptiveTaskGenericPage({
     Reinforcer,
@@ -14,14 +16,9 @@ export default function AdaptiveTaskGenericPage({
     const { POSMGeneric, setPOSMGeneric, ResponseCount, SetSurveyUpdate } = use(StateContext);
 
     useEffect(() => {
-        const prices_under_1 = [0.1, 0.5];
-        const prices_under_10 = Array.from({ length: 9 }, (_, i) => i * 1 + 1); // Generates [1, 2, 3, ..., 9]
-        const prices_above_10 = Array.from({ length: 10 }, (_, i) => i + 10); // Generates [10, 11, 12, ..., 19]
-
         const DEFAULT_PRICES = [
-            ...prices_under_1,
-            ...prices_under_10,
-            ...prices_above_10,
+            ...[0.1, 0.5],
+            ...Array.from({ length: 29 }, (_, i) => i * 1 + 1) // Generates [1, 2, 3, ..., 29]
         ];
 
         POSMGeneric.init(DEFAULT_PRICES, 0.5);
@@ -32,18 +29,21 @@ export default function AdaptiveTaskGenericPage({
         SetSurveyUpdate(new Date());
     }, [Reinforcer]);
 
+    const renderFigures = useMemo(() => {
+        if (RENDER_FIGS === false) return null;
+
+        return <div className="grid grid-cols-3 w-full gap-4 min-h-100">
+            <ChartBeliefs POSM={POSMGeneric} />
+            <ChartRawExpenditure POSM={POSMGeneric} />
+            <ChartRawConsumption POSM={POSMGeneric} />
+        </div>
+    }, [POSMGeneric]);
+
     return (
         <ContentWrapper Title={`Hypothetical Purchase Task for ${Reinforcer} (${ResponseCount})`}>
             <CurrentQuestion />
 
-            <div className="grid grid-cols-3 w-full gap-4 min-h-100 bg-white">
-                <ChartBeliefs POSM={POSMGeneric} />
-
-                <ChartRawExpenditure POSM={POSMGeneric} />
-
-                <ChartRawConsumption POSM={POSMGeneric} />
-
-            </div>
+            {renderFigures}
         </ContentWrapper>
     );
 }

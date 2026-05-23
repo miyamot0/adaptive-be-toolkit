@@ -58,7 +58,7 @@ export default function ChartRawExpenditure({ POSM }: { POSM: POSM }) {
         []
     )
 
-    return <div>{POSM.responses.length > 0 && (
+    return <div className="bg-white">{POSM.responses.length > 0 && (
         <Chart
             className="tick-color"
             options={{

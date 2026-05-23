@@ -55,7 +55,7 @@ export function CurrentQuestion() {
         }
     }
 
-    const dynamicQuestion = <div className="flex flex-row justify-between gap-4 w-full">
+    const dynamicQuestion = <div className="flex flex-row justify-between gap-4 w-full items-center">
         <p className="grow underline font-semibold">
             How many would you purchase at a price of ${POSMGeneric.prediction}?
         </p>
