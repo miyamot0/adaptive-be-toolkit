@@ -1,10 +1,12 @@
-import { use, useEffect } from "react";
+import { use, useEffect, useState } from "react";
 import { ContentWrapper } from "../../layout/content-wrapper";
 import { StateContext } from "../../context/state-context";
-import { QuestionPresentation } from "./question-presentation";
-import ChartRawConsumption from "../visuals/chart-raw-consumption";
-import ChartRawExpenditure from "../visuals/chart-raw-expenditure";
-import ChartBeliefs from "../visuals/chart-beliefs";
+import { QuestionPresentation } from "./views/question-presentation";
+import ChartRawConsumption from "./views/chart-raw-consumption";
+import ChartRawExpenditure from "./views/chart-raw-expenditure";
+import ChartBeliefs from "./views/chart-beliefs";
+import { Button } from "#/components/ui/button.tsx";
+import { DynamicInstructions } from "#/components/older/dynamic-instructions.tsx";
 
 type AdaptiveDemandPageProps = {
     ID: string;
@@ -20,6 +22,7 @@ export default function AdaptiveDemandPage({
     DebugOutput = false,
 }: AdaptiveDemandPageProps) {
     const { POSMGeneric, setPOSMGeneric, SetSurveyUpdate } = use(StateContext);
+    const [hasConfirmed, setHasConfirmed] = useState(false);
 
     useEffect(() => {
         const DEFAULT_PRICES = [
@@ -34,6 +37,14 @@ export default function AdaptiveDemandPage({
         setPOSMGeneric(POSM_1);
         SetSurveyUpdate(new Date());
     }, [Reinforcer]);
+
+    if (!hasConfirmed) {
+        return <ContentWrapper Title={`Hypothetical Purchase Task for ${Reinforcer}`}>
+            <DynamicInstructions Reinforcer={Reinforcer} Duration="over the past three months" >
+                <Button onClick={() => setHasConfirmed(true)}  >Confirm Understanding</Button>
+            </DynamicInstructions>
+        </ContentWrapper>;
+    }
 
     const renderFigures = (RenderFigures === false) ? null :
         <div className="grid grid-cols-3 w-full gap-4 min-h-30">

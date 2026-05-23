@@ -9,10 +9,13 @@ const idParseSchema = z.object({
 const flagsParseSchema = z.object({
     figures: z.string().optional(),
     debug: z.string().optional(),
+    reinforcer: z.string().optional(),
 })
 
+type FlagsSearch = z.infer<typeof flagsParseSchema>;
+
 export const Route = createFileRoute('/$id/adaptive/')({
-    validateSearch: (search) => flagsParseSchema.parse(search),
+    validateSearch: (search: unknown & FlagsSearch) => flagsParseSchema.parse(search),
     beforeLoad: async ({ params }) => {
         try {
             const validated = idParseSchema.parse(params);
@@ -23,17 +26,14 @@ export const Route = createFileRoute('/$id/adaptive/')({
             throw redirect({ to: '/', search: { error: 'Invalid id parameter for Adaptive Demand Assessment' } });
         }
     },
-    loader: async ({ params }) => {
-        return {
-            ...params
-        };
-    },
     component: RouteComponent,
 })
 
 function RouteComponent() {
     const { id } = Route.useParams();
-    const { figures, debug } = Route.useSearch();
+    const { figures, debug, reinforcer } = Route.useSearch();
 
-    return <AdaptiveDemandPage ID={id} Reinforcer="Sample Reinforcer" RenderFigures={figures !== undefined} DebugOutput={debug !== undefined} />;
+    const srClean = reinforcer ?? 'Example Reinforcers';
+
+    return <AdaptiveDemandPage ID={id} Reinforcer={srClean} RenderFigures={figures !== undefined} DebugOutput={debug !== undefined} />;
 }

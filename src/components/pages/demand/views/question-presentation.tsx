@@ -1,11 +1,10 @@
 import { StateContext } from "#/components/context/state-context.tsx";
 import { use, useState } from "react";
-import { PastQuestion } from "../common/past-question";
 import { Input } from "#/components/ui/input.tsx";
 import { Button } from "#/components/ui/button.tsx";
 import { evaluate_threshold } from "#/lib/helpers/thresholds.ts";
-import PriceGroupingView from "./views/price-grouping-view";
 import { NotifyParentAdaptiveDemand } from "#/lib/notify/notify-parent.ts";
+import PriceGroupingView from "./price-grouping-view";
 
 export type ResponseOutput = {
     Price: number;

@@ -13,12 +13,10 @@ type SeriesRaw = {
 }
 
 export default function ChartRawExpenditure({ POSM }: { POSM: POSM }) {
-
-
     const data: SeriesRaw[] = [
         {
             label: 'React Charts',
-            data: POSM.responses.map((response, index) => ({
+            data: POSM.responses.map((response) => ({
                 x: response.Price,
                 y: response.Revenue,
             })),

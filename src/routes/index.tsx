@@ -25,11 +25,11 @@ function App() {
           )
         }
         <Button>
-          <Link to="/$id/adaptive" params={{ id: 'sample-id' }}>Adaptive BE Toolkit</Link>
+          <Link to="/$id/adaptive" params={{ id: 'sample-id', }} >Adaptive BE Toolkit</Link>
         </Button>
 
         <Button>
-          <Link to="/$id/adaptive" params={{ id: 'sample-id' }} search={{ debug: 'true', figures: 'true' }}>Adaptive BE Toolkit (Debug)</Link>
+          <Link to="/$id/adaptive" params={{ id: 'sample-id' }} search={{ debug: 'true', figures: 'true', reinforcer: '12 oz Alcoholic Beverages' }}>Adaptive BE Toolkit (Debug)</Link>
         </Button>
       </section>
     </main>

@@ -13,11 +13,10 @@ type Series = {
 }
 
 export default function ChartBeliefs({ POSM }: { POSM: POSM }) {
-
     const data: Series[] = [
         {
             label: 'React Charts',
-            data: POSM.levels.map((level, index) => ({
+            data: POSM.levels.map((_, index) => ({
                 level: POSM.levels[index],
                 beliefs: POSM.beliefsCumulative[index],
             })),
@@ -65,6 +64,4 @@ export default function ChartBeliefs({ POSM }: { POSM: POSM }) {
             }}
         />
     )}</div>
-
-
 }

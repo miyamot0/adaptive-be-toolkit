@@ -1,6 +1,6 @@
 import type { POSM } from "#/lib/posm/posm.ts";
 import { PastQuestion } from "../../common/past-question";
-import type { ResponseOutput } from "../question-presentation";
+import type { ResponseOutput } from "./question-presentation";
 
 type Props = {
     PriceValues: number[];
