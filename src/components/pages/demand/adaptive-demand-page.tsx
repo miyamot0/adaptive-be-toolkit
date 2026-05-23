@@ -27,14 +27,13 @@ export default function AdaptiveDemandPage({
     useEffect(() => {
         const DEFAULT_PRICES = [
             ...[0.1, 0.25, 0.5, 0.75],
-            ...Array.from({ length: 49 }, (_, i) => i * 1 + 1) // Generates [1, 2, 3, ..., 49]
+            ...Array.from({ length: 19 }, (_, i) => i * 0.5 + 1), // Generates [1, 1.5, 2, ..., 10]
+            ...Array.from({ length: 40 }, (_, i) => i * 1 + 11) // Generates [11, 12, 13, ..., 50]
         ];
 
         POSM.init(DEFAULT_PRICES, ID, 0.25);
 
-        const POSM_1 = POSM;
-
-        setPOSM(POSM_1);
+        setPOSM(POSM);
     }, [Reinforcer]);
 
     if (!hasConfirmed) {

@@ -109,17 +109,9 @@ export function agent_update_beliefs(observation: BeliefUpdating, algo: POSM, in
 
         return (i < algo.index_max ? value : value * algo.beta);
       });
-    case BeliefUpdating.AtIndex:
-      if (includeIndex === false) {
-        return algo.beliefs.slice().map((value: number, i: number) => {
-          if (!algo.index_max) throw new Error("index_max is undefined!");
 
-          return i === algo.index_max ? value : value * algo.beta;
-        });
-      }
-
-      // Note: Beliefs not updated because PMAX revisited and no change
-      return algo.beliefs;
+    default:
+      throw new Error("Invalid BeliefUpdating value provided to agent_update_beliefs");
   }
 }
 
@@ -205,7 +197,6 @@ export function exploit(expend: number, algo: POSM) {
 
   let new_beliefs = algo.beliefs.slice();
 
-  // Note: ...
   const price_direction = agent_pathway(algo);
   const improved_estimate = agent_observed_improvement(expend, algo);
 
@@ -213,22 +204,18 @@ export function exploit(expend: number, algo: POSM) {
     (response: { Revenue: number }) => response.Revenue > 0
   );
 
+  const nonzeroMinCheck = n_nonzero.length < algo.min_nonzero_consumption_points;
+
   if (price_direction === EvaluateChange.PriceIncreased) {
-    // Update beliefs in the context of price increase
     if (improved_estimate) {
-      new_beliefs = agent_update_beliefs(BeliefUpdating.BelowIndex, algo, true);
+      new_beliefs = agent_update_beliefs(BeliefUpdating.BelowIndex, algo, false);
       algo.notes = "Inelastic Revenue Function";
     } else {
       new_beliefs = agent_update_beliefs(BeliefUpdating.AboveIndex, algo, true);
       algo.notes = "Elastic Revenue Function";
     }
   } else if (price_direction === EvaluateChange.PriceDecreased) {
-    // Update beliefs in the context of price decrease
-    if (
-      improved_estimate ||
-      n_nonzero.length < algo.min_nonzero_consumption_points
-    ) {
-      // Note: if improved estimate or not enough non-zero consumption points
+    if (improved_estimate || nonzeroMinCheck) {
       new_beliefs = agent_update_beliefs(BeliefUpdating.AboveIndex, algo, false);
       algo.notes = "Elastic Revenue Function (A)";
     } else {

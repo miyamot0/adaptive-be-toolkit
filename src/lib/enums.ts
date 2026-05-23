@@ -6,12 +6,10 @@ export enum AlgorithmAction {
 
 export enum EvaluateChange {
   PriceIncreased,
-  //PriceIdentical,
   PriceDecreased,
 }
 
 export enum BeliefUpdating {
   BelowIndex,
   AboveIndex,
-  AtIndex,
 }
