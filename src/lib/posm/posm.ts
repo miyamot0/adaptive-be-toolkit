@@ -1,15 +1,10 @@
 import { AlgorithmThreshold, type ResponseProvided } from "@/types/survey";
-import {
-  agent_decision,
-  exploit,
-  explore_non_zero,
-  explore_zero,
-} from "./actions";
 import { Algorithm } from "./algorithm";
 import { argmax, argmin } from "../helpers/arrays";
 import { AlgorithmAction } from "../enums";
-
-const BETA = 0.25;
+import { agent_decision } from "./demand-agent-decision";
+import { explore_non_zero, explore_zero } from "./demand-agent-explore";
+import { exploit } from "./demand-agent-exploit";
 
 export class POSM extends Algorithm {
   id: string | undefined = undefined;
@@ -53,7 +48,7 @@ export class POSM extends Algorithm {
    *
    */
   public reset() {
-    this.beta = BETA;
+    this.beta = 0.5;
     this.turn = 1;
 
     this.n_levels = 0;
@@ -75,27 +70,6 @@ export class POSM extends Algorithm {
     this.max_q = 0;
 
     this.responses = [];
-  }
-
-  /** set_question_block_reference
-   *
-   * Set the question block reference
-   *
-   * @param {String} ref id for question block
-   */
-  public set_question_block_reference(ref: string) {
-    this.question_block_reference = ref;
-  }
-
-  /** set_callback
-   *
-   * Assign how to report back after algorithm terminates
-   *
-   * @param {Function} cb
-   */
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-  public set_callback(cb: Function) {
-    this.callback = cb;
   }
 
   /** set_max_turns
@@ -127,7 +101,7 @@ export class POSM extends Algorithm {
   public init(levels: number[], id?: string, dynamicBeta?: number): void {
     this.id = id;
     this.levels = levels;
-    this.beta = dynamicBeta ?? BETA;
+    this.beta = dynamicBeta ?? this.beta;
     this.n_levels = this.levels.length;
     this.beliefs = Array(this.n_levels).fill(1);
     this.beliefsCumulative = Array(this.n_levels).fill(1);

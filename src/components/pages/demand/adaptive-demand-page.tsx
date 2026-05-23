@@ -31,7 +31,7 @@ export default function AdaptiveDemandPage({
             ...Array.from({ length: 40 }, (_, i) => i * 1 + 11) // Generates [11, 12, 13, ..., 50]
         ];
 
-        POSM.init(DEFAULT_PRICES, ID, 0.25);
+        POSM.init(DEFAULT_PRICES, ID, 0.5);
 
         setPOSM(POSM);
     }, [Reinforcer]);
