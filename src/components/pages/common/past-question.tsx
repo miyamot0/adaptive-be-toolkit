@@ -1,5 +1,4 @@
 import type { PastQuestionType } from "#/types/survey.ts";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export const PastQuestion = ({

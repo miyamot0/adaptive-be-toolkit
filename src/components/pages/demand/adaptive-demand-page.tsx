@@ -1,14 +1,14 @@
 import { use, useEffect, useMemo } from "react";
-import { ContentWrapper } from "../layout/content-wrapper";
-import { StateContext } from "../context/state-context";
-import { CurrentQuestion } from "./views/current-question";
-import ChartRawConsumption from "./views/chart-raw-consumption";
-import ChartRawExpenditure from "./views/chart-raw-expenditure";
-import ChartBeliefs from "./views/chart-beliefs";
+import { ContentWrapper } from "../../layout/content-wrapper";
+import { StateContext } from "../../context/state-context";
+import { QuestionPresentation } from "../common/question-presentation";
+import ChartRawConsumption from "../visuals/chart-raw-consumption";
+import ChartRawExpenditure from "../visuals/chart-raw-expenditure";
+import ChartBeliefs from "../visuals/chart-beliefs";
 
 const RENDER_FIGS: boolean = true;
 
-export default function AdaptiveTaskGenericPage({
+export default function AdaptiveDemandPage({
     Reinforcer,
 }: {
     Reinforcer: string;
@@ -41,7 +41,7 @@ export default function AdaptiveTaskGenericPage({
 
     return (
         <ContentWrapper Title={`Hypothetical Purchase Task for ${Reinforcer} (${ResponseCount})`}>
-            <CurrentQuestion />
+            <QuestionPresentation />
 
             {renderFigures}
         </ContentWrapper>

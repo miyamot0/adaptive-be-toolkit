@@ -1,11 +1,11 @@
 import { StateContext } from "#/components/context/state-context.tsx";
 import { use, useState } from "react";
-import { PastQuestion } from "../past-question";
+import { PastQuestion } from "./past-question";
 import { Input } from "#/components/ui/input.tsx";
 import { Button } from "#/components/ui/button.tsx";
 import { evaluate_threshold } from "#/lib/helpers/thresholds.ts";
 
-export function CurrentQuestion() {
+export function QuestionPresentation() {
     const { POSMGeneric, setPOSMGeneric, setResponseCount } =
         use(StateContext);
     const [entryValue, setEntryValue] = useState("");

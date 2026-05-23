@@ -1,4 +1,4 @@
-import AdaptiveTaskGenericPage from '#/components/pages/adaptive-clinical-page.tsx';
+import AdaptiveDemandPage from '#/components/pages/demand/adaptive-demand-page.tsx';
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/adaptive')({
@@ -9,5 +9,5 @@ export const Route = createFileRoute('/adaptive')({
 })
 
 function RouteComponent() {
-    return <AdaptiveTaskGenericPage Reinforcer="Sample Reinforcer" />;
+    return <AdaptiveDemandPage Reinforcer="Sample Reinforcer" />;
 }

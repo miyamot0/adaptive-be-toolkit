@@ -3,8 +3,8 @@ import {
   Scripts,
   createRootRouteWithContext,
 } from '@tanstack/react-router'
-import Footer from '../components/Footer'
-import Header from '../components/Header'
+import Footer from '../components/layout/Footer'
+import Header from '../components/layout/Header'
 
 import appCss from '../styles.css?url'
 
