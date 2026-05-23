@@ -1,13 +1,11 @@
 import { use, useEffect, useState } from "react";
 import { ContentWrapper } from "../../layout/content-wrapper";
-import { StateContext } from "../../context/state-context";
 import { QuestionPresentation } from "./views/question-presentation";
 import ChartRawConsumption from "./views/chart-raw-consumption";
 import ChartRawExpenditure from "./views/chart-raw-expenditure";
 import ChartBeliefs from "./views/chart-beliefs";
 import { Button } from "#/components/ui/button.tsx";
 import { DynamicInstructions } from "#/components/older/dynamic-instructions.tsx";
-import type { POSM } from "#/lib/posm/posm.ts";
 import { AdaptiveDemandContext } from "#/components/context/adaptive-demand-context.tsx";
 
 type AdaptiveDemandPageProps = {

@@ -17,13 +17,14 @@ export type IncludeIndexType = IncludeIndex | ExcludeIndex;
  * @returns
  */
 export function agent_decision(expend: number, algo: POSM) {
+  // Note: Action in zero -- pretty much always consistent (include index as zero)
   if (expend <= 0) return AlgorithmAction.NonconsumptionFound;
 
-  // Note: if last_q is undefined, then this is the first move in non-consumption range
+  // Note: Pretty much the standard after consumption recorded
   if (!is_undefined(algo.last_q))
     return AlgorithmAction.ConsumptionFoundNonInitial;
 
-  // Note: non-zero consumption level observed, the default
+  // Note: The default if a 'first' measure of consumption
   return AlgorithmAction.ConsumptionFoundInitial;
 }
 

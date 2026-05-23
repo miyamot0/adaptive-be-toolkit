@@ -1,4 +1,3 @@
-import { StateContext } from "#/components/context/state-context.tsx";
 import { use, useState } from "react";
 import { Input } from "#/components/ui/input.tsx";
 import { Button } from "#/components/ui/button.tsx";
@@ -15,7 +14,6 @@ export type ResponseOutput = {
 }
 
 export function QuestionPresentation() {
-
     const { POSM, setPOSM, setResponseCount } = use(AdaptiveDemandContext);
 
     const [entryValue, setEntryValue] = useState("");
