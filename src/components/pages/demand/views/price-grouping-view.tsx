@@ -10,12 +10,13 @@ type Props = {
 }
 
 export default function PriceGroupingView({ PriceValues, ordering, POSMGeneric, children }: Props) {
-    return PriceValues.map((x, index) => (
-        <div key={`price_${index}`} className="flex flex-col justify-between gap-0 items-center border rounded px-2 py-1">
+    return PriceValues.map((x, index) => {
+        const isAtCurrentPrediction = x === POSMGeneric.prediction;
+        const priorResponsesAtPrice = ordering.filter((q) => q.Price === x);
+
+        return <div key={`price_${index}`} className="flex flex-col justify-between gap-0 items-center border rounded px-2 py-1">
             {
-                ordering.filter(
-                    (q) => q.Price === x
-                ).map((x, index) => (
+                priorResponsesAtPrice.length > 0 && priorResponsesAtPrice.slice(-1).map((x, index) => (
                     <PastQuestion
                         Record={x}
                         key={`pre_q_${index}`}
@@ -25,9 +26,9 @@ export default function PriceGroupingView({ PriceValues, ordering, POSMGeneric, 
             }
 
             {
-                x === POSMGeneric.prediction && children
+                isAtCurrentPrediction && children
             }
         </div>
-    ))
+    })
 
 }

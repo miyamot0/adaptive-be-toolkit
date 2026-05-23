@@ -35,5 +35,5 @@ function RouteComponent() {
     const { id } = Route.useParams();
     const { figures, debug } = Route.useSearch();
 
-    return <AdaptiveDemandPage ID={id} Reinforcer="Sample Reinforcer" RenderFigures={figures !== undefined} />;
+    return <AdaptiveDemandPage ID={id} Reinforcer="Sample Reinforcer" RenderFigures={figures !== undefined} DebugOutput={debug !== undefined} />;
 }

@@ -18,6 +18,7 @@ export function QuestionPresentation() {
     const { POSMGeneric, setPOSMGeneric, setResponseCount } =
         use(StateContext);
     const [entryValue, setEntryValue] = useState("");
+    const [parsedExpend, setParsedExpend] = useState<number>(-1);
 
     if (POSMGeneric.prediction === -1) return null;
 
@@ -47,15 +48,12 @@ export function QuestionPresentation() {
 
         setResponseCount(POSMGeneric.responses.length);
 
+        setParsedExpend(-1);
 
         if (evaluate_state_terminate) {
             alert('done')
 
             NotifyParentAdaptiveDemand(POSMGeneric, true);
-            //const index_in_routes = routes.indexOf(route);
-            // / const next_route = routes[index_in_routes + 1];
-
-            //setRoute(next_route);
         }
     }
 
@@ -66,6 +64,13 @@ export function QuestionPresentation() {
                     <p className="grow underline font-semibold">
                         How many would you purchase at a price of ${POSMGeneric.prediction}?
                     </p>
+
+                    {
+                        parsedExpend > 0 && <p className="text-sm text-gray-500">
+                            Cost: ${parsedExpend.toFixed(2)}
+                        </p>
+                    }
+
                     <Button
                         className="max-w-16"
                         onClick={submitResponse}
@@ -81,7 +86,15 @@ export function QuestionPresentation() {
                         pattern="\d*"
                         autoFocus
                         onChange={(e) => {
-                            setEntryValue(e.currentTarget.value.split(".")[0]);
+                            const parsedString = e.currentTarget.value.split(".")[0];
+
+
+                            setEntryValue(parsedString);
+
+                            const parsedNumber = parseInt(parsedString);
+                            const costNumber = POSMGeneric.prediction * parsedNumber;
+
+                            setParsedExpend(costNumber ? costNumber : -1);
                         }}
                         onKeyDown={(e) => {
                             if (e.key === "Enter") {

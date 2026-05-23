@@ -33,7 +33,8 @@ export default function ChartRawConsumption({ POSM }: { POSM: POSM }) {
                     fontWeight: 'bold',
                 },
             },
-            min: 0,
+            min: 0.1,
+            scaleType: 'log',
         }),
         []
     )

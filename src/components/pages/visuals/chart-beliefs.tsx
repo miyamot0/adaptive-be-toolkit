@@ -34,6 +34,7 @@ export default function ChartBeliefs({ POSM }: { POSM: POSM }) {
                     fontWeight: 'bold',
                 },
             },
+            scaleType: 'log',
         }),
         []
     )

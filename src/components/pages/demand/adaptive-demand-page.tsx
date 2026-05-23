@@ -23,11 +23,11 @@ export default function AdaptiveDemandPage({
 
     useEffect(() => {
         const DEFAULT_PRICES = [
-            ...[0.1, 0.5],
-            ...Array.from({ length: 29 }, (_, i) => i * 1 + 1) // Generates [1, 2, 3, ..., 29]
+            ...[0.1, 0.25, 0.5, 0.75],
+            ...Array.from({ length: 49 }, (_, i) => i * 1 + 1) // Generates [1, 2, 3, ..., 49]
         ];
 
-        POSMGeneric.init(DEFAULT_PRICES, ID, 0.5);
+        POSMGeneric.init(DEFAULT_PRICES, ID, 0.25);
 
         const POSM_1 = POSMGeneric;
 

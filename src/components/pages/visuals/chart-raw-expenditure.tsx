@@ -35,7 +35,8 @@ export default function ChartRawExpenditure({ POSM }: { POSM: POSM }) {
                     fontWeight: 'bold',
                 },
             },
-            min: 0,
+            min: 0.1,
+            scaleType: 'log',
         }),
         []
     )
