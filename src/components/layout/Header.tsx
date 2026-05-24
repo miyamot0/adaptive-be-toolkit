@@ -1,3 +1,5 @@
+import { Link } from "@tanstack/react-router";
+import { buttonVariants } from "../ui/button";
 
 export default function Header() {
   return (
@@ -8,7 +10,9 @@ export default function Header() {
         </h2>
 
         <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
-
+          <Link to="/documentation" className={buttonVariants({ variant: "outline", size: "sm" })}>
+            Documentation
+          </Link>
         </div>
       </nav>
     </header>
