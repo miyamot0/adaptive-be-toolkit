@@ -1,4 +1,5 @@
 import { AdaptiveDiscountingContextProvider } from '#/components/context/adaptive-discounting-context.tsx';
+import PageWrapper from '#/components/layout/page-wrapper.tsx';
 import AdaptiveDiscountingPage from '#/components/pages/discounting/adaptive-discounting-page.tsx';
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { z } from 'zod';
@@ -17,7 +18,7 @@ const flagsParseSchema = z.object({
 
 type FlagsSearch = z.infer<typeof flagsParseSchema>;
 
-export const Route = createFileRoute('/$id/discounting/')({
+export const Route = createFileRoute('/discounting/$id/')({
     validateSearch: (search: unknown & FlagsSearch) => flagsParseSchema.parse(search),
     beforeLoad: async ({ params, search }) => {
         try {
@@ -45,6 +46,8 @@ function RouteComponent() {
     const srClean = reinforcer ?? 'Dollars';
 
     return <AdaptiveDiscountingContextProvider>
-        <AdaptiveDiscountingPage ID={id} Reinforcer={srClean} RenderFigures={figures === 'true'} DebugOutput={debug === 'true'} SSR={SSR} LLR={LLR} />
+        <PageWrapper>
+            <AdaptiveDiscountingPage ID={id} Reinforcer={srClean} RenderFigures={figures === 'true'} DebugOutput={debug === 'true'} SSR={SSR} LLR={LLR} />
+        </PageWrapper>
     </AdaptiveDiscountingContextProvider>;
 }

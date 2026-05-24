@@ -1,4 +1,5 @@
 import { AdaptiveDemandContextProvider } from '#/components/context/adaptive-demand-context.tsx';
+import PageWrapper from '#/components/layout/page-wrapper.tsx';
 import AdaptiveDemandPage from '#/components/pages/demand/adaptive-demand-page.tsx';
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { z } from 'zod';
@@ -15,7 +16,7 @@ const flagsParseSchema = z.object({
 
 type FlagsSearch = z.infer<typeof flagsParseSchema>;
 
-export const Route = createFileRoute('/$id/demand/')({
+export const Route = createFileRoute('/demand/$id/')({
     validateSearch: (search: unknown & FlagsSearch) => flagsParseSchema.parse(search),
     beforeLoad: async ({ params }) => {
         try {
@@ -37,6 +38,8 @@ function RouteComponent() {
     const srClean = reinforcer ?? 'Example Reinforcers';
 
     return <AdaptiveDemandContextProvider>
-        <AdaptiveDemandPage ID={id} Reinforcer={srClean} RenderFigures={figures === 'true'} DebugOutput={debug === 'true'} />
+        <PageWrapper>
+            <AdaptiveDemandPage ID={id} Reinforcer={srClean} RenderFigures={figures === 'true'} DebugOutput={debug === 'true'} />
+        </PageWrapper>
     </AdaptiveDemandContextProvider>;
 }
