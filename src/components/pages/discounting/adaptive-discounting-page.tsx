@@ -8,6 +8,7 @@ import ChartDiscountingBeliefs from "./views/chart-discounting-beliefs";
 import ChartRawChoice from "./views/chart-raw-choice";
 import { DynamicDiscountingInstructions } from "#/components/pages/discounting/views/dynamic-discounting-instructions.tsx";
 import TaskCompleted from "#/components/common/task-completed.tsx";
+import { CommonTaskContext } from "#/components/context/common-task-context.tsx";
 
 type AdaptiveDiscountingPageProps = {
     ID: string;
@@ -26,7 +27,8 @@ export default function AdaptiveDiscountingPage({
     SSR,
     LLR,
 }: AdaptiveDiscountingPageProps) {
-    const { POSM, setPOSM, HasFinished, HasConfirmed, setHasConfirmed } = use(AdaptiveDiscountingContext);
+    const { POSM, setPOSM, } = use(AdaptiveDiscountingContext);
+    const { HasFinished, HasConfirmed, setHasConfirmed } = use(CommonTaskContext);
 
     useEffect(() => {
         const DEFAULT_DELAYS = [

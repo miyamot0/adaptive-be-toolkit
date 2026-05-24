@@ -1,4 +1,5 @@
 import { AdaptiveDemandContextProvider } from '#/components/context/adaptive-demand-context.tsx';
+import { CommonTaskContextProvider } from '#/components/context/common-task-context.tsx';
 import PageWrapper from '#/components/layout/page-wrapper.tsx';
 import AdaptiveDemandPage from '#/components/pages/demand/adaptive-demand-page.tsx';
 import { createFileRoute, redirect } from '@tanstack/react-router'
@@ -37,9 +38,11 @@ function RouteComponent() {
 
     const srClean = reinforcer ?? 'Example Reinforcers';
 
-    return <AdaptiveDemandContextProvider>
-        <PageWrapper>
-            <AdaptiveDemandPage ID={id} Reinforcer={srClean} RenderFigures={figures === 'true'} DebugOutput={debug === 'true'} />
-        </PageWrapper>
-    </AdaptiveDemandContextProvider>;
+    return <CommonTaskContextProvider>
+        <AdaptiveDemandContextProvider>
+            <PageWrapper>
+                <AdaptiveDemandPage ID={id} Reinforcer={srClean} RenderFigures={figures === 'true'} DebugOutput={debug === 'true'} />
+            </PageWrapper>
+        </AdaptiveDemandContextProvider>
+    </CommonTaskContextProvider>;
 }

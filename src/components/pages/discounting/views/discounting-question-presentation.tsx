@@ -3,6 +3,7 @@ import { AdaptiveDiscountingContext } from "#/components/context/adaptive-discou
 import { Button } from "#/components/ui/button.tsx";
 import { evaluate_discounting_threshold, } from "#/lib/helpers/thresholds.ts";
 import { NotifyParentAdaptiveDiscounting } from "#/components/pages/discounting/helpers/discounting-notify-parent.ts";
+import { CommonTaskContext } from "#/components/context/common-task-context.tsx";
 
 export type ResponseOutput = {
     Price: number;
@@ -12,7 +13,8 @@ export type ResponseOutput = {
 }
 
 export function DiscountingQuestionPresentation({ Reinforcer }: { Reinforcer: string }) {
-    const { POSM, setPOSM, setResponseCount, setHasFinished } = use(AdaptiveDiscountingContext);
+    const { POSM, setPOSM, } = use(AdaptiveDiscountingContext);
+    const { setResponseCount, setHasFinished } = use(CommonTaskContext);
 
     if (POSM.prediction === -1) return null;
 

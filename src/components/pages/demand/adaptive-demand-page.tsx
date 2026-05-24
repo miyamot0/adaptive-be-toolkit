@@ -9,6 +9,7 @@ import { DynamicDemandInstructions } from "#/components/pages/demand/views/dynam
 import { AdaptiveDemandContext } from "#/components/context/adaptive-demand-context.tsx";
 import { AlgorithmThreshold } from "#/types/survey.ts";
 import TaskCompleted from "#/components/common/task-completed.tsx";
+import { CommonTaskContext } from "#/components/context/common-task-context.tsx";
 
 type AdaptiveDemandPageProps = {
     ID: string;
@@ -23,7 +24,8 @@ export default function AdaptiveDemandPage({
     RenderFigures = false,
     DebugOutput = false,
 }: AdaptiveDemandPageProps) {
-    const { POSM, setPOSM, HasFinished, HasConfirmed, setHasConfirmed } = use(AdaptiveDemandContext);
+    const { POSM, setPOSM, } = use(AdaptiveDemandContext);
+    const { HasFinished, HasConfirmed, setHasConfirmed } = use(CommonTaskContext);
 
     useEffect(() => {
         const DEFAULT_PRICES = [

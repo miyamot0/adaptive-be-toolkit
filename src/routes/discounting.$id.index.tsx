@@ -1,4 +1,5 @@
 import { AdaptiveDiscountingContextProvider } from '#/components/context/adaptive-discounting-context.tsx';
+import { CommonTaskContextProvider } from '#/components/context/common-task-context.tsx';
 import PageWrapper from '#/components/layout/page-wrapper.tsx';
 import AdaptiveDiscountingPage from '#/components/pages/discounting/adaptive-discounting-page.tsx';
 import { createFileRoute, redirect } from '@tanstack/react-router'
@@ -45,9 +46,11 @@ function RouteComponent() {
 
     const srClean = reinforcer ?? 'Dollars';
 
-    return <AdaptiveDiscountingContextProvider>
-        <PageWrapper>
-            <AdaptiveDiscountingPage ID={id} Reinforcer={srClean} RenderFigures={figures === 'true'} DebugOutput={debug === 'true'} SSR={SSR} LLR={LLR} />
-        </PageWrapper>
-    </AdaptiveDiscountingContextProvider>;
+    return <CommonTaskContextProvider>
+        <AdaptiveDiscountingContextProvider>
+            <PageWrapper>
+                <AdaptiveDiscountingPage ID={id} Reinforcer={srClean} RenderFigures={figures === 'true'} DebugOutput={debug === 'true'} SSR={SSR} LLR={LLR} />
+            </PageWrapper>
+        </AdaptiveDiscountingContextProvider>
+    </CommonTaskContextProvider>;
 }

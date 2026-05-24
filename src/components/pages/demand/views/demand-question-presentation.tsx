@@ -6,11 +6,13 @@ import { NotifyParentAdaptiveDemand } from "#/components/pages/demand/helpers/de
 import PriceGroupingView from "./price-grouping-view";
 import { AdaptiveDemandContext } from "#/components/context/adaptive-demand-context.tsx";
 import type { PastDemandQuestionType } from "#/types/demand.ts";
+import { CommonTaskContext } from "#/components/context/common-task-context.tsx";
 
 
 
 export function QuestionPresentation() {
-    const { POSM, setPOSM, setResponseCount, setHasFinished } = use(AdaptiveDemandContext);
+    const { POSM, setPOSM, } = use(AdaptiveDemandContext);
+    const { setResponseCount, setHasFinished } = use(CommonTaskContext);
 
     const [entryValue, setEntryValue] = useState("");
     const [parsedExpend, setParsedExpend] = useState<number>(-1);
