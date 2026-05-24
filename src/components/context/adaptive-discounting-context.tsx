@@ -9,6 +9,10 @@ type AdaptiveDiscountingContextType = {
     SurveyStart: Date;
     ResponseCount: number;
     setResponseCount: (value: number) => void;
+    HasFinished: boolean;
+    setHasFinished: (value: boolean) => void;
+    HasConfirmed: boolean;
+    setHasConfirmed: (value: boolean) => void;
 };
 
 const _posmGeneric = new DiscountingAgent();
@@ -19,6 +23,10 @@ const defaultState: AdaptiveDiscountingContextType = {
     SurveyStart: new Date(),
     ResponseCount: -1,
     setResponseCount: () => { },
+    HasFinished: false,
+    setHasFinished: () => { },
+    HasConfirmed: false,
+    setHasConfirmed: () => { },
 };
 
 export const AdaptiveDiscountingContext = createContext<AdaptiveDiscountingContextType>(defaultState);
@@ -26,6 +34,8 @@ export const AdaptiveDiscountingContext = createContext<AdaptiveDiscountingConte
 export const AdaptiveDiscountingContextProvider = ({ children }: { children: ReactNode }) => {
     const [discountingAgent, setPOSM] = useState(defaultState.POSM);
     const [ResponseCount, setResponseCount] = useState(0);
+    const [hasFinished, setHasFinished] = useState(false);
+    const [hasConfirmed, setHasConfirmed] = useState(false);
 
     const startState: AdaptiveDiscountingContextType = {
         ...defaultState,
@@ -38,6 +48,14 @@ export const AdaptiveDiscountingContextProvider = ({ children }: { children: Rea
             setResponseCount(count);
         },
         SurveyStart: new Date(),
+        HasFinished: hasFinished,
+        setHasFinished: (value: boolean) => {
+            setHasFinished(value);
+        },
+        HasConfirmed: hasConfirmed,
+        setHasConfirmed: (value: boolean) => {
+            setHasConfirmed(value);
+        },
     };
 
     return (

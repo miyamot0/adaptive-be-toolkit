@@ -1,6 +1,6 @@
-import { use, useEffect, useState } from "react";
+import { use, useEffect } from "react";
 import { ContentWrapper } from "../../layout/content-wrapper";
-import { QuestionPresentation } from "./views/question-presentation";
+import { QuestionPresentation } from "./views/demand-question-presentation";
 import ChartRawConsumption from "./views/chart-raw-consumption";
 import ChartRawExpenditure from "./views/chart-raw-expenditure";
 import ChartBeliefs from "./views/chart-beliefs";
@@ -8,6 +8,7 @@ import { Button } from "#/components/ui/button.tsx";
 import { DynamicDemandInstructions } from "#/components/pages/demand/views/dynamic-demand-instructions.tsx";
 import { AdaptiveDemandContext } from "#/components/context/adaptive-demand-context.tsx";
 import { AlgorithmThreshold } from "#/types/survey.ts";
+import TaskCompleted from "#/components/common/task-completed.tsx";
 
 type AdaptiveDemandPageProps = {
     ID: string;
@@ -22,8 +23,7 @@ export default function AdaptiveDemandPage({
     RenderFigures = false,
     DebugOutput = false,
 }: AdaptiveDemandPageProps) {
-    const { POSM, setPOSM } = use(AdaptiveDemandContext);
-    const [hasConfirmed, setHasConfirmed] = useState(false);
+    const { POSM, setPOSM, HasFinished, HasConfirmed, setHasConfirmed } = use(AdaptiveDemandContext);
 
     useEffect(() => {
         const DEFAULT_PRICES = [
@@ -38,12 +38,16 @@ export default function AdaptiveDemandPage({
         setPOSM(POSM);
     }, [Reinforcer]);
 
-    if (!hasConfirmed) {
+    if (!HasConfirmed) {
         return <ContentWrapper Title={`Hypothetical Purchase Task for ${Reinforcer}`}>
             <DynamicDemandInstructions Reinforcer={Reinforcer} Duration="over the past three months" >
                 <Button onClick={() => setHasConfirmed(true)}  >Confirm Understanding</Button>
             </DynamicDemandInstructions>
         </ContentWrapper>;
+    }
+
+    if (HasFinished) {
+        return <TaskCompleted />;
     }
 
     const renderFigures = (RenderFigures === false) ? null :

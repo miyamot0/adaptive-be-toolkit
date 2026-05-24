@@ -12,7 +12,7 @@ export type ResponseOutput = {
 }
 
 export function DiscountingQuestionPresentation({ Reinforcer }: { Reinforcer: string }) {
-    const { POSM, setPOSM, setResponseCount } = use(AdaptiveDiscountingContext);
+    const { POSM, setPOSM, setResponseCount, setHasFinished } = use(AdaptiveDiscountingContext);
 
     if (POSM.prediction === -1) return null;
 
@@ -25,9 +25,8 @@ export function DiscountingQuestionPresentation({ Reinforcer }: { Reinforcer: st
         setResponseCount(POSM.responses.length);
 
         if (evaluate_state_terminate) {
-            alert('done')
-
             NotifyParentAdaptiveDiscounting(POSM, true);
+            setHasFinished(true);
         }
     }
 

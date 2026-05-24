@@ -10,7 +10,7 @@ import type { PastDemandQuestionType } from "#/types/demand.ts";
 
 
 export function QuestionPresentation() {
-    const { POSM, setPOSM, setResponseCount } = use(AdaptiveDemandContext);
+    const { POSM, setPOSM, setResponseCount, setHasFinished } = use(AdaptiveDemandContext);
 
     const [entryValue, setEntryValue] = useState("");
     const [parsedExpend, setParsedExpend] = useState<number>(-1);
@@ -46,9 +46,8 @@ export function QuestionPresentation() {
         setParsedExpend(-1);
 
         if (evaluate_state_terminate) {
-            alert('done')
-
             NotifyParentAdaptiveDemand(POSM, true);
+            setHasFinished(true);
         }
     }
 

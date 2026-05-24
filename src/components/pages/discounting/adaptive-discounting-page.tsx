@@ -2,11 +2,12 @@ import { AdaptiveDiscountingContext } from "#/components/context/adaptive-discou
 import { ContentWrapper } from "#/components/layout/content-wrapper.tsx";
 import { Button } from "#/components/ui/button.tsx";
 import { AlgorithmThreshold } from "#/types/survey.ts";
-import { use, useEffect, useState } from "react";
+import { use, useEffect } from "react";
 import { DiscountingQuestionPresentation } from "./views/discounting-question-presentation";
 import ChartDiscountingBeliefs from "./views/chart-discounting-beliefs";
 import ChartRawChoice from "./views/chart-raw-choice";
 import { DynamicDiscountingInstructions } from "#/components/pages/discounting/views/dynamic-discounting-instructions.tsx";
+import TaskCompleted from "#/components/common/task-completed.tsx";
 
 type AdaptiveDiscountingPageProps = {
     ID: string;
@@ -25,8 +26,7 @@ export default function AdaptiveDiscountingPage({
     SSR,
     LLR,
 }: AdaptiveDiscountingPageProps) {
-    const { POSM, setPOSM } = use(AdaptiveDiscountingContext);
-    const [hasConfirmed, setHasConfirmed] = useState(false);
+    const { POSM, setPOSM, HasFinished, HasConfirmed, setHasConfirmed } = use(AdaptiveDiscountingContext);
 
     useEffect(() => {
         const DEFAULT_DELAYS = [
@@ -44,12 +44,16 @@ export default function AdaptiveDiscountingPage({
         setPOSM(POSM);
     }, [Reinforcer]);
 
-    if (!hasConfirmed) {
+    if (!HasConfirmed) {
         return <ContentWrapper Title={`Decision-making Task for ${Reinforcer}`}>
             <DynamicDiscountingInstructions Reinforcer={Reinforcer}>
                 <Button onClick={() => setHasConfirmed(true)} >Confirm Understanding</Button>
             </DynamicDiscountingInstructions>
         </ContentWrapper>;
+    }
+
+    if (HasFinished) {
+        return <TaskCompleted />;
     }
 
     const renderFigures = (RenderFigures === false) ? null :
