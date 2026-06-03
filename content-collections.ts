@@ -1,6 +1,7 @@
 import { defineCollection, defineConfig } from "@content-collections/core";
 import { z } from "zod";
 import { compileMDX } from "@content-collections/mdx";
+import remarkGfm from "remark-gfm";
 
 const documentation = defineCollection({
     name: "documentation",
@@ -17,7 +18,7 @@ const documentation = defineCollection({
         date: z.string().transform((str) => new Date(str)),
     }),
     transform: async (document, context) => {
-        const mdx = await compileMDX(context, document)
+        const mdx = await compileMDX(context, document, { remarkPlugins: [remarkGfm] })
 
         return {
             ...document,

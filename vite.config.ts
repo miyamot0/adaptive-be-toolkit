@@ -16,7 +16,12 @@ const config = defineConfig({
       router: {
         routesDirectory: path.resolve(process.cwd(), 'src/routes'),
         generatedRouteTree: 'src/routeTree.gen.ts',
-      }
+      },
+      prerender: {
+        enabled: true, // Enables Static Site Generation
+        crawlLinks: true, // Automatically follows links to prerender all pages
+        autoSubfolderIndex: true, // Outputs as clean /page/index.html 
+      },
     }),
     viteReact(),
   ],

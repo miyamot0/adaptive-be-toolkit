@@ -3,21 +3,21 @@ import type { MDXComponents } from 'mdx/types'
 export const MarkdownComponents: MDXComponents = {
   h1: (props: any) => (
     <h1
-      className="mt-10 mb-6 text-4xl font-bold tracking-tight"
+      className="mt-6 mb-6 text-4xl font-bold tracking-tight"
       {...props}
     />
   ),
 
   h2: (props: any) => (
     <h2
-      className="mt-8 mb-4 text-3xl font-semibold tracking-tight"
+      className="mt-6 mb-4 text-3xl font-semibold tracking-tight"
       {...props}
     />
   ),
 
   h3: (props: any) => (
     <h3
-      className="mt-6 mb-3 text-2xl font-semibold"
+      className="mt-4 mb-3 text-2xl font-semibold"
       {...props}
     />
   ),

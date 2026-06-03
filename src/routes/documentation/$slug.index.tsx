@@ -1,5 +1,5 @@
 import PageWrapper from '#/components/layout/page-wrapper.tsx';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { allDocumentations, type Documentation } from "content-collections";
 import { MarkdownComponents } from '#/components/markdown/markdown-components.tsx';
 import { MDXContent } from '@content-collections/mdx/react';
@@ -38,21 +38,26 @@ function RouteComponent() {
         <PageWrapper ShowHeader={true} ShowFooter={true}>
             <main className="flex flex-col gap-2">
                 <MDXContent
-                    // @ts-expect-error
                     code={currentDoc.mdx}
                     components={MarkdownComponents}
                 />
 
                 <div className="flex flex-row justify-between items-center pt-4 border-t">
-                    <Button disabled={!prevDoc} asChild variant="outline" size="sm">
-                        <ChevronLeft className="h-4 w-4" />
-                        Previous Entry
-                    </Button>
+                    {prevDoc ? <Button variant="outline" size="sm" asChild>
+                        <Link to={'/documentation/$slug'} params={{ slug: prevDoc.slug }} className="flex items-center gap-2">
+                            <ChevronLeft className="h-4 w-4" />
+                            {prevDoc.title}
+                        </Link>
+                    </Button> : <div></div>}
 
-                    <Button disabled={!nextDoc} asChild variant="outline" size="sm">
-                        Next Entry
-                        <ChevronRight className="h-4 w-4" />
-                    </Button>
+
+                    {nextDoc ? <Button variant="outline" size="sm" asChild>
+                        <Link to={'/documentation/$slug'}
+                            params={{ slug: nextDoc.slug }} className="flex items-center gap-2">
+                            {nextDoc.title}
+                            <ChevronRight className="h-4 w-4" />
+                        </Link>
+                    </Button> : <div></div>}
                 </div>
             </main>
         </PageWrapper>
