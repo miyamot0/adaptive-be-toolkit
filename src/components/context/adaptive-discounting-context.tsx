@@ -24,7 +24,10 @@ export const AdaptiveDiscountingContextProvider = ({ children }: { children: Rea
         ...defaultState,
         POSM: discountingAgent,
         setPOSM: (posm: DiscountingAgent) => {
-            setPOSM(posm);
+            // Shallow-clone to ensure a new reference so React's useState
+            // always schedules a re-render, even when the same agent instance
+            // is mutated in-place before being passed here.
+            setPOSM(Object.assign(Object.create(Object.getPrototypeOf(posm)), posm));
         },
     };
 

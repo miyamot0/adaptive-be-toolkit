@@ -45,6 +45,8 @@ export default function HomePage({ ShowHeader = true, ShowFooter = true, error }
                             reinforcer: 'Dollars',
                             ssr: '50',
                             llr: '100',
+                            algo: 'regret-min',
+                            beta: "0.125"
                         }}>
                         Adaptive Discounting Task
                     </Link>

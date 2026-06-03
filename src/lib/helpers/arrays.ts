@@ -139,19 +139,35 @@ export function appendResponse(algo: DemandAgent, expend: number) {
   });
 }
 
-/** appendResponse
+/** computeEntropy
+ *
+ * Compute Shannon entropy (nats) of a normalized belief distribution.
+ * Returns H = -∑ p·ln(p), treating p=0 as contributing 0 (per convention).
+ * Maximum entropy for N beliefs is ln(N); entropy decreases as beliefs
+ * concentrate around the ED50 estimate.
+ *
+ * @param {number[]} beliefs normalized probability distribution (must sum to 1)
+ * @returns {number} entropy in nats
+ */
+export function computeEntropy(beliefs: number[]): number {
+  return -beliefs.reduce((acc, p) => acc + (p > 0 ? p * Math.log(p) : 0), 0);
+}
+
+/** appendDiscountingResponse
  *
  * Append response to algorithm
  *
- * @param {DemandAgent} algo algorithm
- * @param {number} expend observed reinforcer value quantity
+ * @param {DiscountingAgent} algo algorithm instance
+ * @param {boolean} waited whether the participant chose to wait for the LLR
+ * @param {number} entropy belief entropy (nats) at the time of this response
  *
  */
-export function appendDiscountingResponse(algo: DiscountingAgent, waited: boolean) {
+export function appendDiscountingResponse(algo: DiscountingAgent, waited: boolean, entropy: number) {
   algo.responses.push({
     Delay: algo.prediction,
     SSR: algo.ssr,
     LLR: algo.llr,
     Waited: waited,
+    Entropy: entropy,
   } satisfies DiscountingResponseProvided);
 }

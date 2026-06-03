@@ -8,6 +8,9 @@ export const discountingSearchFlagSchema = z.object({
     reinforcer: z.string().optional(),
     ssr: z.string().optional(),
     llr: z.string().optional(),
+    algo: z.string().optional(),
+    beta: z.string().optional(),
+    delays: z.string().optional(),
 })
 
 export type DiscountingSearchFlags = z.infer<typeof discountingSearchFlagSchema>;

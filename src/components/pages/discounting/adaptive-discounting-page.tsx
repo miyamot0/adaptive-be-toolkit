@@ -6,6 +6,7 @@ import { use, useEffect } from "react";
 import { DiscountingQuestionPresentation } from "./views/discounting-question-presentation";
 import ChartDiscountingBeliefs from "./views/chart-discounting-beliefs";
 import ChartRawChoice from "./views/chart-raw-choice";
+import ChartEntropy from "./views/chart-entropy";
 import { DynamicDiscountingInstructions } from "#/components/pages/discounting/views/dynamic-discounting-instructions.tsx";
 import TaskCompleted from "#/components/common/task-completed.tsx";
 import { CommonTaskContext } from "#/components/context/common-task-context.tsx";
@@ -17,6 +18,9 @@ type AdaptiveDiscountingPageProps = {
     DebugOutput?: boolean;
     SSR: number;
     LLR: number;
+    Algorithm: AlgorithmThreshold;
+    Beta: number;
+    Delays: number[];
 };
 
 export default function AdaptiveDiscountingPage({
@@ -26,22 +30,17 @@ export default function AdaptiveDiscountingPage({
     DebugOutput = false,
     SSR,
     LLR,
+    Algorithm,
+    Beta,
+    Delays,
 }: AdaptiveDiscountingPageProps) {
     const { POSM, setPOSM, } = use(AdaptiveDiscountingContext);
     const { HasFinished, HasConfirmed, setHasConfirmed } = use(CommonTaskContext);
 
     useEffect(() => {
-        const DEFAULT_DELAYS = [
-            ...[1, 2, 3, 4, 5, 6, 7, // 
-                14, 21, 30, 60, 90, 120, 150, 180,
-                210, 240, 270, 300, 330, 360],
-            ...Array.from({ length: 11 * 2 }, (_, i) => i * 30 + 390), // Generates [390, 420, 450, ..., 720]
-            ...Array.from({ length: 8 * 2 }, (_, i) => i * 90 + 750), // Generates [750, 840, 930, ..., 1380]
-        ];
-
-        POSM.init(DEFAULT_DELAYS, ID, 0.25);
+        POSM.init(Delays, ID, Beta);
         POSM.setValues(SSR, LLR);
-        POSM.set_algorithm(AlgorithmThreshold.BeliefConcentration);
+        POSM.set_algorithm(Algorithm);
 
         setPOSM(POSM);
     }, [Reinforcer]);
@@ -54,15 +53,19 @@ export default function AdaptiveDiscountingPage({
         </ContentWrapper>;
     }
 
-    if (HasFinished) {
-        return <TaskCompleted />;
-    }
-
     const renderFigures = (RenderFigures === false) ? null :
-        <div className="grid grid-cols-2 w-full gap-4 min-h-30">
+        <div className="grid grid-cols-3 w-full gap-4 min-h-30">
             <ChartDiscountingBeliefs />
             <ChartRawChoice />
+            <ChartEntropy />
         </div>;
+
+    if (HasFinished) {
+        return <div className="flex flex-col gap-2">
+            {renderFigures}
+            <TaskCompleted />
+        </div>;
+    }
 
     const sortedBeliefsCumulative = [...POSM.beliefsCumulative].sort((a, b) => b - a);
     const highestBelief = Math.max(...sortedBeliefsCumulative);
