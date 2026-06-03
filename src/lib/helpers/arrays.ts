@@ -1,4 +1,4 @@
-import type { DiscountingResponseProvided } from "#/types/discounting.ts";
+import type { DiscountingResponseProvided } from "#/types/discounting/discounting-response-output.ts";
 import { DemandAgent } from "../posm/demand/demand-agent";
 import type { DiscountingAgent } from "../posm/discounting/discounting-agent";
 

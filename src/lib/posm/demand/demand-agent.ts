@@ -5,7 +5,7 @@ import { agent_decision } from "./demand-agent-decision";
 import { explore_non_zero, explore_zero } from "./demand-agent-explore";
 import { exploit } from "./demand-agent-exploit";
 import { Algorithm } from "../common/algorithm";
-import type { DemandResponseProvided } from "#/types/demand.ts";
+import type { DemandResponseProvided } from "#/types/demand/demand-response-output.ts";
 
 export class DemandAgent extends Algorithm {
   id: string | undefined = undefined;

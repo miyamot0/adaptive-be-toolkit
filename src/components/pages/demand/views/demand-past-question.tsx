@@ -1,4 +1,4 @@
-import type { PastDemandQuestionType } from "#/types/demand.ts";
+import type { PastDemandQuestionType } from "#/types/demand/demand-response-output.ts";
 import { Input } from "@/components/ui/input";
 
 export const DemandPastQuestion = ({

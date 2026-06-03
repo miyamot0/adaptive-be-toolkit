@@ -1,8 +1,8 @@
 import { AlgorithmThreshold } from "@/types/survey";
 import { argmax, argmin } from "../../helpers/arrays";
 import { Algorithm } from "../common/algorithm";
-import type { DiscountingResponseProvided } from "#/types/discounting.ts";
 import { exploit } from "./discounting-agent-exploit";
+import type { DiscountingResponseProvided } from "#/types/discounting/discounting-response-output.ts";
 
 export class DiscountingAgent extends Algorithm {
   id: string | undefined = undefined;

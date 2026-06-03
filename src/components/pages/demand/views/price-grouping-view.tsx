@@ -1,5 +1,5 @@
 import type { DemandAgent } from "#/lib/posm/demand/demand-agent.ts";
-import type { PastDemandQuestionType } from "#/types/demand.ts";
+import type { PastDemandQuestionType } from "#/types/demand/demand-response-output.ts";
 import { DemandPastQuestion } from "./demand-past-question";
 
 type Props = {

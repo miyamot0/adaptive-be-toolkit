@@ -1,5 +1,8 @@
-import type { DiscountingResponseProvided } from "./discounting";
-import type { AlgorithmThreshold, ResponseProvided } from "./survey";
+import type { DemandResponseProvided } from "./demand/demand-response-output";
+import type { DiscountingResponseProvided } from "./discounting/discounting-response-output";
+import type { AlgorithmThreshold } from "./survey";
+
+// TODO: Need to break out
 
 export type AdaptiveDemandResultBaseMessage = {
   ID: string;
@@ -10,7 +13,7 @@ export type AdaptiveDemandResultBaseMessage = {
 }
 
 export type AdaptiveDemandResultMessage = AdaptiveDemandResultBaseMessage & {
-  Responses: ResponseProvided[];
+  Responses: DemandResponseProvided[];
   Threshold: AlgorithmThreshold;
   Turns: number;
   Levels: number[];

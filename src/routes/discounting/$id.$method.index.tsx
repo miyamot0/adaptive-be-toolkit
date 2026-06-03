@@ -2,7 +2,8 @@ import { AdaptiveDiscountingContextProvider } from '#/components/context/adaptiv
 import { CommonTaskContextProvider } from '#/components/context/common-task-context.tsx';
 import PageWrapper from '#/components/layout/page-wrapper.tsx';
 import AdaptiveDiscountingPage from '#/components/pages/discounting/adaptive-discounting-page.tsx';
-import { discountingSearchFlagSchema, mergedDiscountingParamsSchema, type DiscountingSearchFlags } from '#/schema/discounting.ts';
+import { mergedDiscountingParamsSchema } from '#/schema/discounting/discounting-params.ts';
+import { discountingSearchFlagSchema, type DiscountingSearchFlags } from '#/schema/discounting/discounting-search.ts';
 import { AlgorithmThreshold } from '#/types/survey.ts';
 import { createFileRoute, redirect } from '@tanstack/react-router'
 

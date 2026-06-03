@@ -1,11 +1,7 @@
-// Methods
 
-export const DiscountingMethodologyTypes = ['adjusting-amount-ascending', 'adjusting-amount-descending'] as const;
-
-export type DiscountingMethodology = typeof DiscountingMethodologyTypes[number];
-
-// Responses 
-
+/**
+ * Responses logged on each iteration of the discounting task.
+ */
 export type DiscountingResponseProvided = {
     Delay: number;
     SSR: number;
@@ -20,4 +16,7 @@ export type DiscountingResponseProvided = {
     Entropy: number;
 };
 
+/**
+ * Type for past discounting question, which includes the original response plus an index for ordering  
+ */
 export type PastDiscountingQuestionType = DiscountingResponseProvided & { index: number };

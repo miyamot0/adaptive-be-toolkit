@@ -5,7 +5,7 @@ import { evaluate_threshold } from "#/lib/helpers/thresholds.ts";
 import { NotifyParentAdaptiveDemand } from "#/components/pages/demand/helpers/demand-notify-parent.ts";
 import PriceGroupingView from "./price-grouping-view";
 import { AdaptiveDemandContext } from "#/components/context/adaptive-demand-context.tsx";
-import type { PastDemandQuestionType } from "#/types/demand.ts";
+import type { PastDemandQuestionType } from "#/types/demand/demand-response-output.ts";
 import { CommonTaskContext } from "#/components/context/common-task-context.tsx";
 
 
