@@ -20,7 +20,7 @@ function RouteComponent() {
                     <Card key={doc._meta.fileName} className="flex shadow">
                         <CardHeader>
                             <CardTitle className="text-lg font-semibold">{doc.title}</CardTitle>
-                            <CardDescription>Last Updated: {doc.date.toLocaleDateString()}</CardDescription>
+                            <CardDescription>Last Updated: {new Date(doc.date).toLocaleDateString()}</CardDescription>
                         </CardHeader>
                         <CardContent className="flex flex-col grow">
                             <p className="text-sm text-muted-foreground">{doc.summary}</p>
@@ -29,8 +29,8 @@ function RouteComponent() {
                         <CardFooter className="flex justify-between">
                             <Badge ><span className="first-letter:uppercase">{doc.type}</span></Badge>
                             <Button asChild variant="outline" size="sm">
-                                <Link to={`/documentation/$title`}
-                                    params={{ title: doc._meta.fileName.replace(/\.mdx$/, '') }}
+                                <Link to={`/documentation/$slug`}
+                                    params={{ slug: doc.slug }}
                                     className="flex items-center gap-1 text-sm font-medium text-primary hover:underline">
                                     <BookIcon className="h-4 w-4" />
                                     Read More

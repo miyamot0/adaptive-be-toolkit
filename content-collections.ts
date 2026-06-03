@@ -15,14 +15,13 @@ const documentation = defineCollection({
         content: z.string(),
         index: z.number(),
         type: z.enum(["general", "discounting", "demand"]),
-        date: z.string().transform((str) => new Date(str)),
+        date: z.string(),
     }),
     transform: async (document, context) => {
         const mdx = await compileMDX(context, document, { remarkPlugins: [remarkGfm] })
 
         return {
             ...document,
-            date: new Date(document.date),
             mdx
         }
     },
