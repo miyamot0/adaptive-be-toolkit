@@ -1,0 +1,132 @@
+---
+title: "Delay Discounting: Number Threshold Algorithm"
+description: "Documentation for the number threshold stopping criterion for the Adaptive Discounting Task, including mechanics, output fields, and all configurable parameters."
+summary: "Documentation for the number threshold adaptive stopping criterion, which terminates the discounting task after a fixed number of participant responses."
+index: 3
+type: discounting
+slug: discounting-methods-nquestions
+date: 2026-06-03
+---
+
+# Adaptive Discounting: Number Threshold Algorithm
+
+The Number Threshold algorithm terminates the adaptive discounting task after a fixed number of participant responses. This is the simplest stopping rule available and is recommended when uniform trial counts across participants are required — for example, when controlling session length, ensuring consistent time allocation, or when a minimum data floor per participant is necessary for the study design.
+
+## Mechanics and Logic
+
+On each trial, the algorithm presents a binary choice between a smaller-sooner reward (SSR) and a larger-later reward (LLR) at an adaptively selected delay. After the participant responds, the belief distribution over delay levels is updated and the next trial's delay is selected from the peak of that distribution.
+
+Regardless of how concentrated or diffuse the beliefs are at any given point, the task continues until the participant has answered exactly `n` questions (default: 20). At that point, the task ends and the result is transmitted to the host page.
+
+**Belief updating after each response:**
+
+- **Chose to wait (LLR):** The current delay was not long enough to produce a preference for the immediate option. Beliefs at or below the presented delay are scaled down by the adaptation rate `beta`, concentrating probability mass on longer delays.
+- **Did not wait (SSR):** The current delay was too long — the participant preferred the immediate reward. Beliefs at or above the presented delay are scaled down, concentrating mass on shorter delays.
+
+After each update, the belief distribution is renormalized so that values remain comparable across trials. The next presented delay is always the one with the highest current belief mass — the algorithm's current best estimate of the ED50.
+
+This cycle of *present → respond → update → select* repeats until the question count is reached. Certainty in the prediction improves progressively: each response rules out regions of the delay space, and the distribution narrows around the most likely indifference point with each successive, increasingly informed query. Setting a fixed minimum number of queries provides a simple, consistent stopping point that can be easily communicated to participants and researchers alike, ensuring a baseline level of data quality and reliability across studies with more even time allocation.
+
+## Results
+
+At task completion, the final estimate is the delay at the peak of the belief distribution — the delay the algorithm has identified as most likely to be the participant's ED50: the indifference point at which choosing either the SSR or LLR is approximately equally likely.
+
+The output payload transmitted via `postMessage` to the host page includes:
+
+| Field | Description |
+|---|---|
+| `ID` | The participant identifier provided in the URL path |
+| `MaxDelay` | The longest delay at which the participant chose to wait |
+| `Beta` | The adaptation rate used during the task |
+
+The concentration of beliefs around the final estimate reflects the reliability of the ED50 approximation. A narrow, peaked distribution after the fixed trial count indicates a consistent, well-resolved indifference point. A broader distribution indicates the participant's responses were more variable, or that the true indifference point falls between two nearby delay levels — a limitation of any discrete grid-based procedure.
+
+## Settings and Parameters
+
+All settings are passed as URL query parameters. No source code changes are required to adjust task behavior.
+
+```
+/discounting/<participantId>/adjusting-amount-ascending?algo=MaximumIteration&reinforcer=Dollars&ssr=50&llr=100
+```
+
+### Required
+
+| Parameter | Location | Format | Description |
+|---|---|---|---|
+| `participantId` | URL path | string, min 6 characters | Participant identifier. Echoed verbatim in the output payload. |
+| `method` | URL path | `adjusting-amount-ascending` or `adjusting-amount-descending` | Presentation order of the delay sequence. |
+
+### Algorithm
+
+| Parameter | Default | Accepted values | Description |
+|---|---|---|---|
+| `algo` | `RegretMin` | `MaximumIteration`, `BeliefConcentration`, `RegretMin`, `None` | Stopping criterion. Use `MaximumIteration` for the number threshold algorithm. |
+
+### Rewards
+
+| Parameter | Default | Format | Description |
+|---|---|---|---|
+| `reinforcer` | `Dollars` | string | The commodity label displayed in the choice prompt (e.g., `Coffee`, `Cigarettes`). |
+| `ssr` | `50` | integer | The smaller-sooner reward amount. |
+| `llr` | `100` | integer | The larger-later reward amount. The LLR should be meaningfully larger than the SSR to motivate the trade-off. A 2:1 ratio (`ssr=50&llr=100`) is standard. |
+
+### Adaptation
+
+| Parameter | Default | Range | Description |
+|---|---|---|---|
+| `beta` | `0.25` | 0 – 1 (exclusive) | Adaptation rate. Controls how aggressively beliefs are updated after each response. Lower values produce more conservative, gradual updates; higher values produce faster but potentially more volatile convergence. Values between `0.1` and `0.5` are recommended. |
+
+### Question Count
+
+| Parameter | Default | Minimum | Description |
+|---|---|---|---|
+| `n` | `20` | 1 | Maximum number of questions. With `algo=MaximumIteration`, the task terminates after exactly this many responses. Increasing this value improves estimate precision for participants with noisy or variable responding, at the cost of a longer session. |
+
+### Delay Points
+
+| Parameter | Default | Minimum count | Description |
+|---|---|---|---|
+| `delays` | See below | 8 | Comma-separated list of delay values in days. Defines the full set of delays the algorithm may present. |
+
+The default delay set spans 1 day to 20 years with increasing spacing:
+
+- **Days 1–365:** Every individual day
+- **Weeks beyond year 1 through year 3:** Weekly increments (~156 points)
+- **Months in years 3–5:** Monthly increments (24 points)
+- **Years 6–20:** Annual increments (15 points)
+
+The delay range has a direct effect on resolution. A narrow range (e.g., 1–365 days) will produce a more precise estimate within that window but cannot detect indifference points that fall outside it — beliefs will pile up at the boundary and the estimate will be artificially truncated. For general-purpose research, the full default range is strongly recommended. Custom delay sets should cover the plausible range for the population and commodity being studied, with finer spacing in the region of expected indifference.
+
+**Example — narrow range for a study focused on short delays:**
+```
+delays=1,2,3,5,7,14,30,60,90,180,365
+```
+
+**Example — fine spacing in the 1–90 day window:**
+```
+delays=1,2,3,4,5,6,7,10,14,21,30,45,60,90,180,365,730
+```
+
+### Developer / Diagnostic Parameters
+
+| Parameter | Default | Description |
+|---|---|---|
+| `figures` | `false` | Set to `true` to render diagnostic charts (belief distribution over delays, raw choices, entropy trajectory) alongside the task. Intended for piloting only — do not enable in live data collection. |
+| `debug` | `false` | Set to `true` to display a real-time overlay showing trial count and belief concentration statistics. Intended for development only. |
+
+### Example URLs
+
+**Standard deployment, 20 questions:**
+```
+/discounting/PARTICIPANT001/adjusting-amount-ascending?algo=MaximumIteration&reinforcer=Dollars&ssr=50&llr=100
+```
+
+**Pilot session with diagnostic charts, custom commodity:**
+```
+/discounting/PILOT001/adjusting-amount-ascending?algo=MaximumIteration&reinforcer=Coffee&ssr=1&llr=5&figures=true&debug=true
+```
+
+**Custom delay range focused on short delays:**
+```
+/discounting/PARTICIPANT001/adjusting-amount-ascending?algo=MaximumIteration&delays=1,3,7,14,30,60,90,180,365
+```

@@ -7,12 +7,14 @@ import { AlgorithmThreshold } from '#/types/survey.ts';
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
 const DEFAULT_DELAYS = [
-    ...[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-        21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
-        60, 90, 120, 150, 180,
-        210, 240, 270, 300, 330, 360],
-    ...Array.from({ length: 11 * 2 }, (_, i) => i * 30 + 390), // Generates [390, 420, 450, ..., 720]
-    ...Array.from({ length: 8 * 2 }, (_, i) => i * 90 + 750), // Generates [750, 840, 930, ..., 1380]
+    // TODO: 1-365
+    ...Array.from({ length: 365 }, (_, i) => i + 1), // Generates [1, 2, ..., 365]
+    // TODO: Weekly from 356 to 3 years
+    ...Array.from({ length: 52 * 3 }, (_, i) => (i + 1) * 7 + 365), // Generates [372, 379, ..., 1460]
+    // TODO: Monthly from 3 years to 5 years
+    ...Array.from({ length: 24 }, (_, i) => (i + 1) * 30 + 365 * 3), // Generates [1555, 1585, ..., 2365]
+    // TODO: Yearly from 5 years to 20 years
+    ...Array.from({ length: 15 }, (_, i) => (i + 1) * 365 + 365 * 5), // Generates [2920, 3285, ..., 7300]
 ];
 
 export const Route = createFileRoute('/discounting/$id/$method/')({

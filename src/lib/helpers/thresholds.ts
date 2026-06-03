@@ -72,9 +72,12 @@ export function evaluate_discounting_threshold(posm: DiscountingAgent) {
       // over the last ENTROPY_WINDOW trials falls below ENTROPY_PLATEAU_THRESHOLD,
       // indicating beliefs have stopped concentrating and no new information is
       // being gained from additional trials.
-      if (posm.responses.length < 5) return false;
+      if (posm.responses.length < posm.min_responses) return false;
 
       const window = posm.responses.slice(-ENTROPY_WINDOW - 1);
+
+      console.log(window)
+
       if (window.length < 2) return false;
 
       let totalDrop = 0;
@@ -87,7 +90,7 @@ export function evaluate_discounting_threshold(posm: DiscountingAgent) {
     }
 
     case AlgorithmThreshold.BeliefConcentration:
-      if (posm.responses.length < 5) return false;
+      if (posm.responses.length < posm.min_responses) return false;
 
       const sortedBeliefsCumulative = [...posm.beliefsCumulative].sort((a, b) => b - a);
       const highestBelief = Math.max(...sortedBeliefsCumulative);

@@ -8,7 +8,45 @@ slug: discounting-methods
 date: 2026-05-24
 ---
  
-# Adaptive Discounting Task
- 
-This is my first post!
-... rest of the content
+# Adaptive Delay Discounting Tasks
+
+Delay discounting refers to the tendency to value rewards less as the delay to receiving them increases. A person who prefers $50 today over $100 in six months is discounting the future reward — a pattern that varies substantially across individuals and is associated with a wide range of behavioral outcomes.
+
+Traditional delay discounting procedures present participants with a fixed list of delay values (e.g., 1 day, 1 week, 1 month, 6 months, 1 year) and ask them to choose between a smaller-sooner reward (SSR) and a larger-later reward (LLR) at each delay. While straightforward to administer, fixed-delay procedures are inefficient: many of the trials are far from the participant's true indifference point and contribute little new information about where that point lies.
+
+The **Adaptive Discounting Task** replaces the fixed delay list with a belief-updating procedure that selects each trial's delay based on the participant's prior responses. Rather than covering the entire delay range uniformly, the algorithm concentrates queries in the region most likely to contain the indifference point — the delay at which the participant is equally likely to choose either option. This yields a precise estimate of the indifference point (**ED50**) with fewer trials, reducing participant burden without sacrificing measurement quality.
+
+## Mechanics and Logic
+
+The task presents a binary choice on each trial:
+
+> *"Would you prefer $50 now, or $100 in X days?"*
+
+The delay `X` is selected adaptively by the algorithm on each trial. After the participant responds, the algorithm updates its internal model of where the indifference point lies and selects the next delay accordingly. This continues until a stopping criterion is met.
+
+Under the hood, the algorithm maintains a **belief distribution** — a probability array over all possible delay levels. At initialization, this distribution is uniform: every delay is equally likely to be the true indifference point. After each response, the distribution is updated by scaling down the probability mass of delays that are inconsistent with the observed choice. The delay with the highest current probability mass is presented on the next trial.
+
+- If the participant **waits** (chooses the LLR), the chosen delay was not long enough to cause switching — the algorithm down-weights shorter delays.
+- If the participant **does not wait** (chooses the SSR), the chosen delay was too long — the algorithm down-weights longer delays.
+
+Over successive trials, the belief distribution narrows around the true ED50. The final estimate is the delay corresponding to the peak of the belief distribution at task completion.
+
+### Number Threshold Algorithm
+
+The simplest stopping criterion is a fixed number of questions. The task runs for exactly `n` trials and then terminates, regardless of the shape of the belief distribution at that point.
+
+This approach is easy to reason about and easy to communicate: every participant answers the same number of questions, which supports uniform time allocation across participants and simplifies power calculations in research designs. It also ensures a minimum data floor — no participant completes fewer trials than the researcher specifies.
+
+The tradeoff is efficiency. A participant whose indifference point is resolved quickly will continue answering questions that contribute diminishing information, while a participant with a more diffuse or inconsistent response pattern may terminate at the same count without having achieved comparable precision.
+
+See the [Number Threshold Algorithm](/documentation/discounting-methods-nquestions) page for full settings and parameter documentation.
+
+### Entropy Algorithm
+
+The entropy-based stopping criterion monitors how much new information each trial is contributing to the belief distribution, and terminates once that rate of gain falls below a threshold — i.e., once the distribution has effectively stopped changing.
+
+Shannon entropy $H = -\sum_i p_i \ln(p_i)$ measures the spread of the belief distribution. High entropy means beliefs are diffuse and the estimate is uncertain. Low entropy means beliefs have concentrated and the algorithm has identified the ED50 region with confidence. The algorithm computes the per-trial entropy drop $\Delta H = H_{t-1} - H_t$ after each response. When the rolling average of $\Delta H$ over recent trials falls below a small threshold, the distribution is no longer concentrating meaningfully and the task ends.
+
+This approach is more efficient for participants whose indifference point is readily resolved — the task terminates earlier for them — while continuing longer for participants with noisier or more complex response patterns. It yields better-calibrated estimates on a per-participant basis.
+
+See the [Entropy Algorithm](/documentation/discounting-methods-delta-entropy) page for full settings and parameter documentation.

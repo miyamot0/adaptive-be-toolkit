@@ -22,6 +22,9 @@ export class DiscountingAgent extends Algorithm {
   // Decision-making for termination
   threshhold = AlgorithmThreshold.MaximumIteration;
 
+  // Minimum number of responses required before threshold evaluation begins
+  min_responses: number = 5;
+
   ssr: number = 50;
   llr: number = 100;
 
@@ -49,6 +52,7 @@ export class DiscountingAgent extends Algorithm {
     this.last_regret = undefined;
 
     this.max_wait = 0;
+    this.min_responses = 5;
 
     this.responses = [];
   }
@@ -124,5 +128,19 @@ export class DiscountingAgent extends Algorithm {
    */
   public set_algorithm(threshhold: AlgorithmThreshold) {
     this.threshhold = threshhold;
+  }
+
+  /**
+   * set_min_responses
+   *
+   * Set the minimum number of responses required before any threshold
+   * evaluation begins. Acts as a warm-up period to ensure sufficient
+   * data is collected before convergence checking starts.
+   *
+   * @param {number} n minimum response count (must be >= 1)
+   * @returns {void}
+   */
+  public set_min_responses(n: number) {
+    this.min_responses = Math.max(1, n);
   }
 }

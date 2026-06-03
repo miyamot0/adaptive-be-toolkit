@@ -63,6 +63,7 @@ export default function AdaptiveDiscountingPage({
     if (HasFinished) {
         return <div className="flex flex-col gap-2">
             {renderFigures}
+            {DebugOutput && <pre>{JSON.stringify(POSM.prediction, null, 2)}</pre>}
             <TaskCompleted />
         </div>;
     }
