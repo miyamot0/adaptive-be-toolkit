@@ -10,8 +10,8 @@
 
 import { Route as rootRouteImport } from './../routes/__root'
 import { Route as IndexRouteImport } from './../routes/index'
-import { Route as DocumentationIndexRouteImport } from './../routes/documentation.index'
-import { Route as DocumentationTitleIndexRouteImport } from './../routes/documentation.$title.index'
+import { Route as DocumentationIndexRouteImport } from './../routes/documentation/index'
+import { Route as DocumentationSlugIndexRouteImport } from './../routes/documentation/$slug.index'
 import { Route as DiscountingIdIndexRouteImport } from './../routes/discounting.$id.index'
 import { Route as DemandIdIndexRouteImport } from './../routes/demand.$id.index'
 
@@ -25,9 +25,9 @@ const DocumentationIndexRoute = DocumentationIndexRouteImport.update({
   path: '/documentation/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DocumentationTitleIndexRoute = DocumentationTitleIndexRouteImport.update({
-  id: '/documentation/$title/',
-  path: '/documentation/$title/',
+const DocumentationSlugIndexRoute = DocumentationSlugIndexRouteImport.update({
+  id: '/documentation/$slug/',
+  path: '/documentation/$slug/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DiscountingIdIndexRoute = DiscountingIdIndexRouteImport.update({
@@ -46,14 +46,14 @@ export interface FileRoutesByFullPath {
   '/documentation/': typeof DocumentationIndexRoute
   '/demand/$id/': typeof DemandIdIndexRoute
   '/discounting/$id/': typeof DiscountingIdIndexRoute
-  '/documentation/$title/': typeof DocumentationTitleIndexRoute
+  '/documentation/$slug/': typeof DocumentationSlugIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/documentation': typeof DocumentationIndexRoute
   '/demand/$id': typeof DemandIdIndexRoute
   '/discounting/$id': typeof DiscountingIdIndexRoute
-  '/documentation/$title': typeof DocumentationTitleIndexRoute
+  '/documentation/$slug': typeof DocumentationSlugIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -61,7 +61,7 @@ export interface FileRoutesById {
   '/documentation/': typeof DocumentationIndexRoute
   '/demand/$id/': typeof DemandIdIndexRoute
   '/discounting/$id/': typeof DiscountingIdIndexRoute
-  '/documentation/$title/': typeof DocumentationTitleIndexRoute
+  '/documentation/$slug/': typeof DocumentationSlugIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -70,21 +70,21 @@ export interface FileRouteTypes {
     | '/documentation/'
     | '/demand/$id/'
     | '/discounting/$id/'
-    | '/documentation/$title/'
+    | '/documentation/$slug/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/documentation'
     | '/demand/$id'
     | '/discounting/$id'
-    | '/documentation/$title'
+    | '/documentation/$slug'
   id:
     | '__root__'
     | '/'
     | '/documentation/'
     | '/demand/$id/'
     | '/discounting/$id/'
-    | '/documentation/$title/'
+    | '/documentation/$slug/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -92,7 +92,7 @@ export interface RootRouteChildren {
   DocumentationIndexRoute: typeof DocumentationIndexRoute
   DemandIdIndexRoute: typeof DemandIdIndexRoute
   DiscountingIdIndexRoute: typeof DiscountingIdIndexRoute
-  DocumentationTitleIndexRoute: typeof DocumentationTitleIndexRoute
+  DocumentationSlugIndexRoute: typeof DocumentationSlugIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -111,11 +111,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DocumentationIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/documentation/$title/': {
-      id: '/documentation/$title/'
-      path: '/documentation/$title'
-      fullPath: '/documentation/$title/'
-      preLoaderRoute: typeof DocumentationTitleIndexRouteImport
+    '/documentation/$slug/': {
+      id: '/documentation/$slug/'
+      path: '/documentation/$slug'
+      fullPath: '/documentation/$slug/'
+      preLoaderRoute: typeof DocumentationSlugIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/discounting/$id/': {
@@ -140,7 +140,7 @@ const rootRouteChildren: RootRouteChildren = {
   DocumentationIndexRoute: DocumentationIndexRoute,
   DemandIdIndexRoute: DemandIdIndexRoute,
   DiscountingIdIndexRoute: DiscountingIdIndexRoute,
-  DocumentationTitleIndexRoute: DocumentationTitleIndexRoute,
+  DocumentationSlugIndexRoute: DocumentationSlugIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
