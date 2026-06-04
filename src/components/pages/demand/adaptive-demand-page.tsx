@@ -35,7 +35,7 @@ export default function AdaptiveDemandPage({
         ];
 
         POSM.init(DEFAULT_PRICES, ID, 0.5);
-        POSM.set_algorithm(AlgorithmThreshold.BeliefConcentration);
+        POSM.set_algorithm(AlgorithmThreshold.MaximumIteration);
 
         setPOSM(POSM);
     }, [Reinforcer]);
