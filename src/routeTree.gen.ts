@@ -12,7 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DocumentationIndexRouteImport } from './routes/documentation/index'
 import { Route as DocumentationSlugIndexRouteImport } from './routes/documentation/$slug.index'
-import { Route as DemandIdIndexRouteImport } from './routes/demand.$id.index'
+import { Route as DemandIdIndexRouteImport } from './routes/demand/$id.index'
 import { Route as DiscountingIdMethodIndexRouteImport } from './routes/discounting/$id.$method.index'
 
 const IndexRoute = IndexRouteImport.update({
