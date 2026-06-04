@@ -82,6 +82,7 @@ export default function HomePage({
                 llr: "100",
                 algo: "regret-min",
                 beta: "0.125",
+                compound: true,
               }}
             >
               Adaptive Discounting Task

@@ -13,7 +13,7 @@ export class DiscountingAgent extends Algorithm {
   last_delay: number | undefined = undefined;
 
   // Max expenditure
-  max_wait: number = 0;
+  max_wait = 0;
   // Max price assoc. w/ expenditure
 
   // Responses across task
@@ -23,10 +23,13 @@ export class DiscountingAgent extends Algorithm {
   threshhold = AlgorithmThreshold.MaximumIteration;
 
   // Minimum number of responses required before threshold evaluation begins
-  min_responses: number = 5;
+  min_responses = 5;
 
-  ssr: number = 50;
-  llr: number = 100;
+  // Whether to use compounding suppression: applies beta^turn instead of beta each trial
+  compoundSuppression = false;
+
+  ssr = 50;
+  llr = 100;
 
   /** reset
    *
@@ -53,6 +56,7 @@ export class DiscountingAgent extends Algorithm {
 
     this.max_wait = 0;
     this.min_responses = 5;
+    this.compoundSuppression = false;
 
     this.responses = [];
   }
@@ -77,7 +81,7 @@ export class DiscountingAgent extends Algorithm {
 
   /**
    * setValues
-   * 
+   *
    * @param {number} ssr smaller-sooner reinforcer value
    * @param {number} llr larger-later reinforcer value
    * @returns {void}
@@ -128,6 +132,16 @@ export class DiscountingAgent extends Algorithm {
    */
   public set_algorithm(threshhold: AlgorithmThreshold) {
     this.threshhold = threshhold;
+  }
+
+  /** set_compound_suppression
+   *
+   * Enable or disable compounding suppression (beta^turn instead of beta per trial)
+   *
+   * @param {boolean} enabled
+   */
+  public set_compound_suppression(enabled: boolean) {
+    this.compoundSuppression = enabled;
   }
 
   /**

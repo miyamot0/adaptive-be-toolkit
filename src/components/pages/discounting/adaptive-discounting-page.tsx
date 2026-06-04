@@ -19,6 +19,7 @@ type AdaptiveDiscountingPageProps = {
   SSR: number;
   LLR: number;
   Algorithm: AlgorithmThreshold;
+  CompoundSuppression: boolean;
   Beta: number;
   Delays: number[];
 };
@@ -31,6 +32,7 @@ export default function AdaptiveDiscountingPage({
   SSR,
   LLR,
   Algorithm,
+  CompoundSuppression,
   Beta,
   Delays,
 }: AdaptiveDiscountingPageProps) {
@@ -41,7 +43,7 @@ export default function AdaptiveDiscountingPage({
     POSM.init(Delays, ID, Beta);
     POSM.setValues(SSR, LLR);
     POSM.set_algorithm(Algorithm);
-
+        POSM.set_compound_suppression(CompoundSuppression);
     setPOSM(POSM);
   }, [Reinforcer]);
 

@@ -36,6 +36,8 @@ export const Route = createFileRoute("/discounting/$id/$method/")({
           ? (validatedSearch.algo as AlgorithmThreshold)
           : AlgorithmThreshold.RegretMin;
 
+      const compoundSuppression = validatedSearch.compound === true;
+
       const parsedDelays = validatedSearch.delays
         ? validatedSearch.delays
             .split(",")
@@ -62,6 +64,7 @@ export const Route = createFileRoute("/discounting/$id/$method/")({
             ? parseInt(validatedSearch.llr)
             : 100,
         Algorithm: algorithm,
+        CompoundSuppression: compoundSuppression,
         Beta:
           validatedSearch.beta && !isNaN(parseFloat(validatedSearch.beta))
             ? parseFloat(validatedSearch.beta)
@@ -87,6 +90,7 @@ export const Route = createFileRoute("/discounting/$id/$method/")({
       Algorithm,
       Beta,
       Delays,
+      CompoundSuppression,
     } = await deps;
 
     try {
@@ -103,6 +107,7 @@ export const Route = createFileRoute("/discounting/$id/$method/")({
         Beta,
         Delays,
         Algorithm,
+        CompoundSuppression,
       } satisfies DiscountingSettings;
     } catch (error) {
       throw redirect({
@@ -125,6 +130,7 @@ type DiscountingSearchParams = {
   Algorithm: AlgorithmThreshold;
   Beta: number;
   Delays: number[];
+  CompoundSuppression: boolean;
 };
 
 type DiscountingSettings = DiscountingSearchParams & {
@@ -144,9 +150,11 @@ function RouteComponent() {
     Algorithm,
     Beta,
     Delays,
+    CompoundSuppression,
   } = Route.useLoaderData();
 
   switch (Method) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     case "posm":
       return (
         <CommonTaskContextProvider>
@@ -162,6 +170,7 @@ function RouteComponent() {
                 Algorithm={Algorithm}
                 Beta={Beta}
                 Delays={Delays}
+                CompoundSuppression={CompoundSuppression}
               />
             </PageWrapper>
           </AdaptiveDiscountingContextProvider>
