@@ -70,6 +70,10 @@ export const Route = createFileRoute("/discounting/$id/$method/")({
             ? parseFloat(validatedSearch.beta)
             : 0.25,
         Delays: parsedDelays,
+        MaxTrials:
+          validatedSearch.maxTrials && !isNaN(parseInt(validatedSearch.maxTrials))
+            ? Math.max(4, parseInt(validatedSearch.maxTrials))
+            : 20,
       } satisfies DiscountingSearchParams;
     } catch (error) {
       throw redirect({
@@ -91,6 +95,7 @@ export const Route = createFileRoute("/discounting/$id/$method/")({
       Beta,
       Delays,
       CompoundSuppression,
+      MaxTrials,
     } = await deps;
 
     try {
@@ -108,6 +113,7 @@ export const Route = createFileRoute("/discounting/$id/$method/")({
         Delays,
         Algorithm,
         CompoundSuppression,
+        MaxTrials,
       } satisfies DiscountingSettings;
     } catch (error) {
       throw redirect({
@@ -131,6 +137,7 @@ type DiscountingSearchParams = {
   Beta: number;
   Delays: number[];
   CompoundSuppression: boolean;
+  MaxTrials: number;
 };
 
 type DiscountingSettings = DiscountingSearchParams & {
@@ -151,6 +158,7 @@ function RouteComponent() {
     Beta,
     Delays,
     CompoundSuppression,
+    MaxTrials,
   } = Route.useLoaderData();
 
   switch (Method) {
@@ -171,6 +179,7 @@ function RouteComponent() {
                 Beta={Beta}
                 Delays={Delays}
                 CompoundSuppression={CompoundSuppression}
+                MaxTrials={MaxTrials}
               />
             </PageWrapper>
           </AdaptiveDiscountingContextProvider>

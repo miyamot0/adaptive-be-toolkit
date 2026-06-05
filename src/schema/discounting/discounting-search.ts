@@ -29,6 +29,9 @@ export const discountingSearchFlagSchema = z.object({
 
   // String: Delays, expected as a comma-separated list of numbers (e.g., "1,7,30,90,...")
   delays: z.string().optional(),
+
+  // String: Maximum number of trials when using MaximumIteration stopping rule
+  maxTrials: z.string().optional(),
 });
 
 export type DiscountingSearchFlags = z.infer<

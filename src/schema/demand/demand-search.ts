@@ -23,6 +23,9 @@ export const demandSearchFlagSchema = z.object({
 
   // String: Prices, expected as a comma-separated list of numbers (e.g., "0.1,0.25,0.5,...")
   prices: z.string().optional(),
+
+  // String: Maximum number of trials when using MaximumIteration stopping rule
+  maxTrials: z.string().optional(),
 });
 
 export type DemandSearchFlags = z.infer<typeof demandSearchFlagSchema>;

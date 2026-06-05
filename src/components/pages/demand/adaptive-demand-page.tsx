@@ -12,86 +12,124 @@ import TaskCompleted from "#/components/common/task-completed.tsx";
 import { CommonTaskContext } from "#/components/context/common-task-context.tsx";
 
 type AdaptiveDemandPageProps = {
-    ID: string;
-    Reinforcer: string;
-    RenderFigures?: boolean;
-    DebugOutput?: boolean;
-    Algorithm?: AlgorithmThreshold;
-    Beta?: number;
-    Prices?: number[];
-    CompoundSuppression?: boolean;
+  ID: string;
+  Reinforcer: string;
+  RenderFigures?: boolean;
+  DebugOutput?: boolean;
+  Algorithm?: AlgorithmThreshold;
+  Beta?: number;
+  Prices?: number[];
+  CompoundSuppression?: boolean;
+  MaxTrials?: number;
 };
 
 export default function AdaptiveDemandPage({
-    ID,
-    Reinforcer,
-    RenderFigures = false,
-    DebugOutput = false,
-    Algorithm = AlgorithmThreshold.MaximumIteration,
-    Beta = 0.5,
-    Prices,
-    CompoundSuppression = false,
+  ID,
+  Reinforcer,
+  RenderFigures = false,
+  DebugOutput = false,
+  Algorithm = AlgorithmThreshold.MaximumIteration,
+  Beta = 0.5,
+  Prices,
+  CompoundSuppression = false,
+  MaxTrials = 20,
 }: AdaptiveDemandPageProps) {
-    const { POSM, setPOSM, } = use(AdaptiveDemandContext);
-    const { HasFinished, HasConfirmed, setHasConfirmed } = use(CommonTaskContext);
+  const { POSM, setPOSM } = use(AdaptiveDemandContext);
+  const { HasFinished, HasConfirmed, setHasConfirmed } = use(CommonTaskContext);
 
-    useEffect(() => {
-        const DEFAULT_PRICES = [
-            ...[0.1, 0.25, 0.5, 0.75],
-            ...Array.from({ length: 19 }, (_, i) => i * 0.5 + 1), // Generates [1, 1.5, 2, ..., 10]
-            ...Array.from({ length: 40 }, (_, i) => i * 1 + 11) // Generates [11, 12, 13, ..., 50]
-        ];
+  useEffect(() => {
+    const DEFAULT_PRICES = [
+      ...[0.1, 0.25, 0.5, 0.75],
+      ...Array.from({ length: 19 }, (_, i) => i * 0.5 + 1), // Generates [1, 1.5, 2, ..., 10]
+      ...Array.from({ length: 40 }, (_, i) => i * 1 + 11), // Generates [11, 12, 13, ..., 50]
+    ];
 
-        POSM.init(Prices ?? DEFAULT_PRICES, ID, Beta);
-        POSM.set_algorithm(Algorithm);
-        POSM.set_compound_suppression(CompoundSuppression);
+    POSM.init(Prices ?? DEFAULT_PRICES, ID, Beta);
+    POSM.set_algorithm(Algorithm);
+    POSM.set_compound_suppression(CompoundSuppression);
+    POSM.set_max_turns(MaxTrials);
 
-        setPOSM(POSM);
-    }, [Reinforcer]);
+    setPOSM(POSM);
+  }, [Reinforcer]);
 
-    if (!HasConfirmed) {
-        return <ContentWrapper Title={`Hypothetical Purchase Task for ${Reinforcer}`}>
-            <DynamicDemandInstructions Reinforcer={Reinforcer} Duration="over the past three months" >
-                <Button onClick={() => setHasConfirmed(true)}  >Confirm Understanding</Button>
-            </DynamicDemandInstructions>
-        </ContentWrapper>;
-    }
-
-    if (HasFinished) {
-        return <TaskCompleted />;
-    }
-
-    const renderFigures = (RenderFigures === false) ? null :
-        <div className="grid grid-cols-3 w-full gap-4 min-h-30">
-            <ChartBeliefs />
-            <ChartRawExpenditure />
-            <ChartRawConsumption />
-        </div>;
-
-    const sortedBeliefsCumulative = [...POSM.beliefsCumulative].sort((a, b) => b - a);
-    const highestBelief = Math.max(...sortedBeliefsCumulative);
-    const nAtHighestBelief = sortedBeliefsCumulative.filter(b => b === highestBelief).length;
-
-    const twoHighestBeliefs = sortedBeliefsCumulative.slice(0, 2);
-    const totalAtTwoHighest = twoHighestBeliefs.reduce((acc, val) => acc + val, 0);
-    const nMatchingTwoHighest = sortedBeliefsCumulative.filter(b => twoHighestBeliefs.includes(b)).length;
-
-    const threeHighestBeliefs = sortedBeliefsCumulative.slice(0, 3);
-    const totalAtThreeHighest = threeHighestBeliefs.reduce((acc, val) => acc + val, 0);
-    const nMatchingThreeHighest = sortedBeliefsCumulative.filter(b => threeHighestBeliefs.includes(b)).length;
-
+  if (!HasConfirmed) {
     return (
-        <ContentWrapper Title={`Hypothetical Purchase Task for ${Reinforcer}`}>
-            {DebugOutput && <div className="flex flex-row gap-2">
-                <span className="text-sm text-gray-500">Questions Asked: {POSM.turn - 1}</span>
-                <span className="text-sm text-gray-500">Highest Belief: {highestBelief.toFixed(2)} (n = {nAtHighestBelief})</span>
-                <span className="text-sm text-gray-500">Total at Two Highest Beliefs: {totalAtTwoHighest.toFixed(2)} (n = {nMatchingTwoHighest})</span>
-                <span className="text-sm text-gray-500">Total at Three Highest Beliefs: {totalAtThreeHighest.toFixed(2)} (n = {nMatchingThreeHighest})</span>
-            </div>}
-
-            {renderFigures}
-
-            <QuestionPresentation />
-        </ContentWrapper>
+      <ContentWrapper Title={`Hypothetical Purchase Task for ${Reinforcer}`}>
+        <DynamicDemandInstructions
+          Reinforcer={Reinforcer}
+          Duration="over the past three months"
+        >
+          <Button onClick={() => setHasConfirmed(true)}>
+            Confirm Understanding
+          </Button>
+        </DynamicDemandInstructions>
+      </ContentWrapper>
     );
+  }
+
+  if (HasFinished) {
+    return <TaskCompleted />;
+  }
+
+  const renderFigures =
+    RenderFigures === false ? null : (
+      <div className="grid grid-cols-3 w-full gap-4 min-h-30">
+        <ChartBeliefs />
+        <ChartRawExpenditure />
+        <ChartRawConsumption />
+      </div>
+    );
+
+  const sortedBeliefsCumulative = [...POSM.beliefsCumulative].sort(
+    (a, b) => b - a,
+  );
+  const highestBelief = Math.max(...sortedBeliefsCumulative);
+  const nAtHighestBelief = sortedBeliefsCumulative.filter(
+    (b) => b === highestBelief,
+  ).length;
+
+  const twoHighestBeliefs = sortedBeliefsCumulative.slice(0, 2);
+  const totalAtTwoHighest = twoHighestBeliefs.reduce(
+    (acc, val) => acc + val,
+    0,
+  );
+  const nMatchingTwoHighest = sortedBeliefsCumulative.filter((b) =>
+    twoHighestBeliefs.includes(b),
+  ).length;
+
+  const threeHighestBeliefs = sortedBeliefsCumulative.slice(0, 3);
+  const totalAtThreeHighest = threeHighestBeliefs.reduce(
+    (acc, val) => acc + val,
+    0,
+  );
+  const nMatchingThreeHighest = sortedBeliefsCumulative.filter((b) =>
+    threeHighestBeliefs.includes(b),
+  ).length;
+
+  return (
+    <ContentWrapper Title={`Hypothetical Purchase Task for ${Reinforcer}`}>
+      {DebugOutput && (
+        <div className="flex flex-row gap-2">
+          <span className="text-sm text-gray-500">
+            Questions Asked: {POSM.turn - 1}
+          </span>
+          <span className="text-sm text-gray-500">
+            Highest Belief: {highestBelief.toFixed(2)} (n = {nAtHighestBelief})
+          </span>
+          <span className="text-sm text-gray-500">
+            Total at Two Highest Beliefs: {totalAtTwoHighest.toFixed(2)} (n ={" "}
+            {nMatchingTwoHighest})
+          </span>
+          <span className="text-sm text-gray-500">
+            Total at Three Highest Beliefs: {totalAtThreeHighest.toFixed(2)} (n
+            = {nMatchingThreeHighest})
+          </span>
+        </div>
+      )}
+
+      {renderFigures}
+
+      <QuestionPresentation />
+    </ContentWrapper>
+  );
 }

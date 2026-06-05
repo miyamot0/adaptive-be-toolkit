@@ -22,6 +22,7 @@ type AdaptiveDiscountingPageProps = {
   CompoundSuppression: boolean;
   Beta: number;
   Delays: number[];
+  MaxTrials?: number;
 };
 
 export default function AdaptiveDiscountingPage({
@@ -35,6 +36,7 @@ export default function AdaptiveDiscountingPage({
   CompoundSuppression,
   Beta,
   Delays,
+  MaxTrials = 20,
 }: AdaptiveDiscountingPageProps) {
   const { POSM, setPOSM } = use(AdaptiveDiscountingContext);
   const { HasFinished, HasConfirmed, setHasConfirmed } = use(CommonTaskContext);
@@ -43,7 +45,8 @@ export default function AdaptiveDiscountingPage({
     POSM.init(Delays, ID, Beta);
     POSM.setValues(SSR, LLR);
     POSM.set_algorithm(Algorithm);
-        POSM.set_compound_suppression(CompoundSuppression);
+    POSM.set_compound_suppression(CompoundSuppression);
+    POSM.set_max_turns(MaxTrials);
     setPOSM(POSM);
   }, [Reinforcer]);
 
