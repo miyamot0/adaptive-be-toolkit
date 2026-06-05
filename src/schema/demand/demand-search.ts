@@ -15,17 +15,17 @@ export const demandSearchFlagSchema = z.object({
   // String: Algorithm type ('MaximumIteration' or 'RegretMin')
   algo: z.string().optional(),
 
-  // Flag: whether to use compound suppression or not (boolean)
-  compound: z.boolean().optional(),
+  // Flag: whether to use compound suppression or not (coerced from string 'true'/'false')
+  compound: z.coerce.boolean().optional(),
 
   // String: Beta value for the algorithm (e.g., '0.5' by default)
-  beta: z.string().optional(),
+  beta: z.coerce.string().optional(),
 
   // String: Prices, expected as a comma-separated list of numbers (e.g., "0.1,0.25,0.5,...")
   prices: z.string().optional(),
 
   // String: Maximum number of trials when using MaximumIteration stopping rule
-  maxTrials: z.string().optional(),
+  maxTrials: z.coerce.string().optional(),
 });
 
 export type DemandSearchFlags = z.infer<typeof demandSearchFlagSchema>;

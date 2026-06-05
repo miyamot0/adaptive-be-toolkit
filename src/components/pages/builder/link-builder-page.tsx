@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "sonner";
 import { AlgorithmThreshold } from "#/types/survey.ts";
 import PageWrapper from "#/components/layout/page-wrapper.tsx";
 import { Button } from "#/components/ui/button.tsx";
@@ -11,13 +12,17 @@ import {
   TabsTrigger,
   TabsContent,
 } from "#/components/ui/tabs.tsx";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "#/components/ui/select.tsx";
 
 // ── Shared helpers ────────────────────────────────────────────────────────────
 
 const PLACEHOLDER_ID = "CHANGEME";
-
-const selectClass =
-  "h-9 w-full rounded-md border border-input bg-transparent px-2.5 py-1 text-sm shadow-xs outline-none focus-visible:border-ring focus:ring-3 focus:ring-ring/50 dark:bg-input/30";
 
 function buildDemandUrl(
   reinforcer: string,
@@ -126,35 +131,38 @@ function AlgorithmSection({
 
       <FieldRow>
         <Label htmlFor={`${idPrefix}-algo`}>Stopping Rule</Label>
-        <select
-          id={`${idPrefix}-algo`}
+        <Select
           value={algorithm}
-          onChange={(e) => setAlgorithm(e.target.value as AlgorithmThreshold)}
-          className={selectClass}
+          onValueChange={(v) => setAlgorithm(v as AlgorithmThreshold)}
         >
-          <option value={AlgorithmThreshold.MaximumIteration}>
-            Maximum Iterations (fixed trial count)
-          </option>
-          <option value={AlgorithmThreshold.RegretMin}>
-            Entropy Plateau (adaptive stopping)
-          </option>
-        </select>
+          <SelectTrigger id={`${idPrefix}-algo`} className="w-full">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={AlgorithmThreshold.MaximumIteration}>
+              Maximum Iterations (fixed trial count)
+            </SelectItem>
+            <SelectItem value={AlgorithmThreshold.RegretMin}>
+              Entropy Plateau (adaptive stopping)
+            </SelectItem>
+          </SelectContent>
+        </Select>
       </FieldRow>
 
       {algorithm === AlgorithmThreshold.MaximumIteration && (
         <FieldRow>
-          <Label htmlFor={`${idPrefix}-maxtrials`}>Maximum Trials</Label>
+          <Label htmlFor={`${idPrefix}-maxtrials`}>Number of Questions</Label>
           <Input
             id={`${idPrefix}-maxtrials`}
             type="number"
-            min="4"
+            min="5"
             max="100"
             step="1"
             value={maxTrials}
             onChange={(e) => setMaxTrials(e.target.value)}
           />
           <p className="text-xs text-muted-foreground">
-            Default: 20. Minimum: 4.
+            Default: 20. Minimum: 5.
           </p>
         </FieldRow>
       )}
@@ -188,18 +196,19 @@ function AlgorithmSection({
           onCheckedChange={(v) => setCompound(v === true)}
         />
         <Label htmlFor={`${idPrefix}-compound`}>
-          Compound suppression (beta<sup>turn</sup>)
+          Exponential belief suppression (β<sup>k</sup>)
         </Label>
       </div>
       <p className="text-xs text-muted-foreground -mt-2">
-        When enabled, suppression accelerates each trial rather than remaining
-        fixed.
+        Off: beliefs × β per trial. On: beliefs × β<sup>k</sup>, where k is the trial
+        number — suppression intensifies with each question.
       </p>
     </>
   );
 }
 
-type DiagnosticSectionProps = {
+type LinkPreviewProps = {
+  url: string;
   showFigures: boolean;
   setShowFigures: (v: boolean) => void;
   showDebug: boolean;
@@ -207,59 +216,35 @@ type DiagnosticSectionProps = {
   idPrefix: string;
 };
 
-function DiagnosticSection({
+function LinkPreview({
+  url,
   showFigures,
   setShowFigures,
   showDebug,
   setShowDebug,
   idPrefix,
-}: DiagnosticSectionProps) {
-  return (
-    <>
-      <SectionHeading>Diagnostic Options</SectionHeading>
-      <p className="text-xs text-muted-foreground">
-        Enable for piloting only — disable before live data collection.
-      </p>
-      <div className="flex items-center gap-2">
-        <Checkbox
-          id={`${idPrefix}-figures`}
-          checked={showFigures}
-          onCheckedChange={(v) => setShowFigures(v === true)}
-        />
-        <Label htmlFor={`${idPrefix}-figures`}>Show diagnostic figures</Label>
-      </div>
-      <div className="flex items-center gap-2">
-        <Checkbox
-          id={`${idPrefix}-debug`}
-          checked={showDebug}
-          onCheckedChange={(v) => setShowDebug(v === true)}
-        />
-        <Label htmlFor={`${idPrefix}-debug`}>Show debug output</Label>
-      </div>
-    </>
-  );
-}
-
-type LinkPreviewProps = {
-  url: string;
-};
-
-function LinkPreview({ url }: LinkPreviewProps) {
-  const [copied, setCopied] = useState(false);
-
+}: LinkPreviewProps) {
   const handleCopy = async () => {
     await navigator.clipboard.writeText(url);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    toast.success("Link copied to clipboard");
+  };
+
+  const handleOpen = () => {
+    window.open(url, "_blank", "noopener,noreferrer");
   };
 
   return (
     <div className="flex flex-col gap-3 rounded-lg border bg-muted/30 p-4">
       <div className="flex items-center justify-between gap-4">
         <h2 className="text-base font-semibold">Generated Link</h2>
-        <Button size="sm" variant="outline" onClick={handleCopy}>
-          {copied ? "Copied!" : "Copy to Clipboard"}
-        </Button>
+        <div className="flex gap-2">
+          <Button size="sm" variant="outline" onClick={handleOpen}>
+            Open Link
+          </Button>
+          <Button size="sm" variant="outline" onClick={handleCopy}>
+            Copy to Clipboard
+          </Button>
+        </div>
       </div>
       <p className="text-xs text-muted-foreground">
         Replace <code className="font-mono">{PLACEHOLDER_ID}</code> with the
@@ -268,6 +253,28 @@ function LinkPreview({ url }: LinkPreviewProps) {
       <code className="select-all rounded border bg-background px-3 py-2 font-mono text-xs text-muted-foreground break-all">
         {url}
       </code>
+      <div className="flex flex-wrap gap-x-6 gap-y-2 pt-1">
+        <div className="flex items-center gap-2">
+          <Checkbox
+            id={`${idPrefix}-figures`}
+            checked={showFigures}
+            onCheckedChange={(v) => setShowFigures(v === true)}
+          />
+          <Label htmlFor={`${idPrefix}-figures`}>Show diagnostic figures</Label>
+        </div>
+        <div className="flex items-center gap-2">
+          <Checkbox
+            id={`${idPrefix}-debug`}
+            checked={showDebug}
+            onCheckedChange={(v) => setShowDebug(v === true)}
+          />
+          <Label htmlFor={`${idPrefix}-debug`}>Show debug output</Label>
+        </div>
+        <p className="w-full text-xs text-muted-foreground">
+          Diagnostic options are for piloting only — disable before live data
+          collection.
+        </p>
+      </div>
     </div>
   );
 }
@@ -280,10 +287,10 @@ export default function LinkBuilderPage() {
   const [dShowFigures, setDShowFigures] = useState(false);
   const [dShowDebug, setDShowDebug] = useState(false);
   const [dAlgorithm, setDAlgorithm] = useState<AlgorithmThreshold>(
-    AlgorithmThreshold.MaximumIteration,
+    AlgorithmThreshold.RegretMin,
   );
   const [dMaxTrials, setDMaxTrials] = useState("20");
-  const [dBeta, setDBeta] = useState("0.5");
+  const [dBeta, setDBeta] = useState("0.25");
   const [dCompound, setDCompound] = useState(false);
   const [dPrices, setDPrices] = useState("");
 
@@ -400,18 +407,17 @@ export default function LinkBuilderPage() {
                       <code className="font-mono">0.1,0.5,1,5,10,20,30,50</code>
                     </p>
                   </FieldRow>
-
-                  <DiagnosticSection
-                    showFigures={dShowFigures}
-                    setShowFigures={setDShowFigures}
-                    showDebug={dShowDebug}
-                    setShowDebug={setDShowDebug}
-                    idPrefix="d"
-                  />
                 </div>
               </div>
 
-              <LinkPreview url={demandUrl} />
+              <LinkPreview
+                url={demandUrl}
+                showFigures={dShowFigures}
+                setShowFigures={setDShowFigures}
+                showDebug={dShowDebug}
+                setShowDebug={setDShowDebug}
+                idPrefix="d"
+              />
             </div>
           </TabsContent>
 
@@ -493,18 +499,17 @@ export default function LinkBuilderPage() {
                       </code>
                     </p>
                   </FieldRow>
-
-                  <DiagnosticSection
-                    showFigures={cShowFigures}
-                    setShowFigures={setCShowFigures}
-                    showDebug={cShowDebug}
-                    setShowDebug={setCShowDebug}
-                    idPrefix="c"
-                  />
                 </div>
               </div>
 
-              <LinkPreview url={discountingUrl} />
+              <LinkPreview
+                url={discountingUrl}
+                showFigures={cShowFigures}
+                setShowFigures={setCShowFigures}
+                showDebug={cShowDebug}
+                setShowDebug={setCShowDebug}
+                idPrefix="c"
+              />
             </div>
           </TabsContent>
         </Tabs>

@@ -7,6 +7,7 @@ import {
 import appCss from '../styles.css?url'
 import Loading from '#/components/common/loading.tsx';
 import Error from '#/components/common/error.tsx';
+import { Toaster } from '#/components/ui/sonner.tsx';
 
 interface MyRouterContext { }
 
@@ -44,6 +45,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body className="font-sans antialiased wrap-anywhere w-full flex flex-col justify-center p-2">
         {children}
+        <Toaster />
         <Scripts />
       </body>
     </html>
