@@ -2,6 +2,7 @@ import { AdaptiveDemandContextProvider } from "#/components/context/adaptive-dem
 import { CommonTaskContextProvider } from "#/components/context/common-task-context.tsx";
 import PageWrapper from "#/components/layout/page-wrapper.tsx";
 import AdaptiveDemandPage from "#/components/pages/demand/adaptive-demand-page.tsx";
+import { createMetaTags } from "#/lib/seo.ts";
 import { mergedDemandParamsSchema } from "#/schema/demand/demand-params.ts";
 import { demandSearchFlagSchema } from "#/schema/demand/demand-search.ts";
 import type { DemandSearchFlags } from "#/schema/demand/demand-search.ts";
@@ -15,6 +16,12 @@ const DEFAULT_PRICES = [
 ];
 
 export const Route = createFileRoute("/demand/$id/")({
+  head: () => ({
+    ...createMetaTags({
+      pageName: `Adaptive Demand Assessment`,
+      content: "Adaptive Demand Assessment page",
+    }),
+  }),
   validateSearch: (search: unknown & DemandSearchFlags) => {
     return demandSearchFlagSchema.parse(search);
   },

@@ -2,6 +2,7 @@ import { AdaptiveDiscountingContextProvider } from "#/components/context/adaptiv
 import { CommonTaskContextProvider } from "#/components/context/common-task-context.tsx";
 import PageWrapper from "#/components/layout/page-wrapper.tsx";
 import AdaptiveDiscountingPage from "#/components/pages/discounting/adaptive-discounting-page.tsx";
+import { createMetaTags } from "#/lib/seo.ts";
 import { mergedDiscountingParamsSchema } from "#/schema/discounting/discounting-params.ts";
 import { discountingSearchFlagSchema } from "#/schema/discounting/discounting-search.ts";
 import type { DiscountingSearchFlags } from "#/schema/discounting/discounting-search.ts";
@@ -21,6 +22,12 @@ const DEFAULT_DELAYS = [
 ];
 
 export const Route = createFileRoute("/discounting/$id/$method/")({
+  head: () => ({
+    ...createMetaTags({
+      pageName: `Adaptive Discounting Assessment`,
+      content: "Adaptive Discounting Assessment page",
+    }),
+  }),
   validateSearch: (search: unknown & DiscountingSearchFlags) => {
     return discountingSearchFlagSchema.parse(search);
   },
@@ -71,7 +78,8 @@ export const Route = createFileRoute("/discounting/$id/$method/")({
             : 0.25,
         Delays: parsedDelays,
         MaxTrials:
-          validatedSearch.maxTrials && !isNaN(parseInt(validatedSearch.maxTrials))
+          validatedSearch.maxTrials &&
+          !isNaN(parseInt(validatedSearch.maxTrials))
             ? Math.max(4, parseInt(validatedSearch.maxTrials))
             : 20,
       } satisfies DiscountingSearchParams;
