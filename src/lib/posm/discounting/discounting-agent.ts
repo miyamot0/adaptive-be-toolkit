@@ -22,12 +22,6 @@ export class DiscountingAgent extends Algorithm {
   // Decision-making for termination
   threshhold = AlgorithmThreshold.MaximumIteration;
 
-  // Minimum number of responses required before threshold evaluation begins
-  min_responses = 5;
-
-  // Whether to use compounding suppression: applies beta^turn instead of beta each trial
-  compoundSuppression = false;
-
   ssr = 50;
   llr = 100;
 
@@ -134,27 +128,5 @@ export class DiscountingAgent extends Algorithm {
     this.threshhold = threshhold;
   }
 
-  /** set_compound_suppression
-   *
-   * Enable or disable compounding suppression (beta^turn instead of beta per trial)
-   *
-   * @param {boolean} enabled
-   */
-  public set_compound_suppression(enabled: boolean) {
-    this.compoundSuppression = enabled;
-  }
 
-  /**
-   * set_min_responses
-   *
-   * Set the minimum number of responses required before any threshold
-   * evaluation begins. Acts as a warm-up period to ensure sufficient
-   * data is collected before convergence checking starts.
-   *
-   * @param {number} n minimum response count (must be >= 1)
-   * @returns {void}
-   */
-  public set_min_responses(n: number) {
-    this.min_responses = Math.max(1, n);
-  }
 }

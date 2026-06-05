@@ -16,6 +16,10 @@ type AdaptiveDemandPageProps = {
     Reinforcer: string;
     RenderFigures?: boolean;
     DebugOutput?: boolean;
+    Algorithm?: AlgorithmThreshold;
+    Beta?: number;
+    Prices?: number[];
+    CompoundSuppression?: boolean;
 };
 
 export default function AdaptiveDemandPage({
@@ -23,6 +27,10 @@ export default function AdaptiveDemandPage({
     Reinforcer,
     RenderFigures = false,
     DebugOutput = false,
+    Algorithm = AlgorithmThreshold.MaximumIteration,
+    Beta = 0.5,
+    Prices,
+    CompoundSuppression = false,
 }: AdaptiveDemandPageProps) {
     const { POSM, setPOSM, } = use(AdaptiveDemandContext);
     const { HasFinished, HasConfirmed, setHasConfirmed } = use(CommonTaskContext);
@@ -34,8 +42,9 @@ export default function AdaptiveDemandPage({
             ...Array.from({ length: 40 }, (_, i) => i * 1 + 11) // Generates [11, 12, 13, ..., 50]
         ];
 
-        POSM.init(DEFAULT_PRICES, ID, 0.5);
-        POSM.set_algorithm(AlgorithmThreshold.MaximumIteration);
+        POSM.init(Prices ?? DEFAULT_PRICES, ID, Beta);
+        POSM.set_algorithm(Algorithm);
+        POSM.set_compound_suppression(CompoundSuppression);
 
         setPOSM(POSM);
     }, [Reinforcer]);

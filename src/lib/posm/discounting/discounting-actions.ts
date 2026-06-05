@@ -26,7 +26,7 @@ export function agent_update_improvement(delay: number, algo: DiscountingAgent) 
  */
 export function agent_update_beliefs(observation: BeliefUpdating, algo: DiscountingAgent, includeIndex: IncludeIndexType = false) {
 
-  const suppressionFactor = algo.compoundSuppression ? algo.beta ** algo.turn : algo.beta;
+  const suppressionFactor = algo.get_suppression_factor();
 
   switch (observation) {
     case BeliefUpdating.BelowIndex:

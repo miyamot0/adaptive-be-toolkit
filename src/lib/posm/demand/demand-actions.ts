@@ -28,6 +28,8 @@ export function agent_update_improvement(expend: number, algo: DemandAgent) {
  */
 export function agent_update_beliefs(observation: BeliefUpdating, algo: DemandAgent, includeIndex: IncludeIndexType = false) {
 
+  const suppressionFactor = algo.get_suppression_factor();
+
   switch (observation) {
     case BeliefUpdating.BelowIndex:
       // Note: Beliefs updated at/below index, higher prices more interesting
@@ -35,10 +37,10 @@ export function agent_update_beliefs(observation: BeliefUpdating, algo: DemandAg
         if (!algo.index_max) throw new Error("index_max is undefined!");
 
         if (includeIndex) {
-          return i >= algo.index_max ? value : value * algo.beta;
+          return i >= algo.index_max ? value : value * suppressionFactor;
         }
 
-        return (i > algo.index_max ? value : value * algo.beta);
+        return (i > algo.index_max ? value : value * suppressionFactor);
       });
     case BeliefUpdating.AboveIndex:
       // Note: Beliefs updated at/above index, low prices more interesting
@@ -46,10 +48,10 @@ export function agent_update_beliefs(observation: BeliefUpdating, algo: DemandAg
         if (!algo.index_max) throw new Error("index_max is undefined!");
 
         if (includeIndex) {
-          return i <= algo.index_max ? value : value * algo.beta;
+          return i <= algo.index_max ? value : value * suppressionFactor;
         }
 
-        return (i < algo.index_max ? value : value * algo.beta);
+        return (i < algo.index_max ? value : value * suppressionFactor);
       });
 
     default:

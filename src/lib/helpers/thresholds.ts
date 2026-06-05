@@ -12,8 +12,25 @@ export function evaluate_threshold(posm: DemandAgent) {
 
       return false;
 
-    case AlgorithmThreshold.RegretMin:
-      throw new Error("RegretMin is not supported for the demand task");
+    case AlgorithmThreshold.RegretMin: {
+      // Plateau detection: returns true when the average per-trial entropy drop
+      // over the last ENTROPY_WINDOW trials falls below ENTROPY_PLATEAU_THRESHOLD,
+      // indicating beliefs have stopped concentrating and no new information is
+      // being gained from additional trials.
+      if (posm.responses.length < posm.min_responses) return false;
+
+      const window = posm.responses.slice(-ENTROPY_WINDOW - 1);
+
+      if (window.length < 2) return false;
+
+      let totalDrop = 0;
+      for (let i = 1; i < window.length; i++) {
+        totalDrop += window[i - 1].Entropy - window[i].Entropy;
+      }
+      const avgDrop = totalDrop / (window.length - 1);
+
+      return avgDrop < ENTROPY_PLATEAU_THRESHOLD;
+    }
 
     default:
       throw new Error(`Unknown threshold type: ${posm.threshhold}`);

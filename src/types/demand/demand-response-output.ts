@@ -5,6 +5,7 @@ export type DemandResponseProvided = {
     Price: number;
     Quantity: number;
     Revenue: number;
+    Entropy: number;
 };
 
 /**

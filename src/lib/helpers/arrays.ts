@@ -136,6 +136,26 @@ export function appendResponse(algo: DemandAgent, expend: number) {
     Price: algo.prediction,
     Quantity: expend / algo.prediction,
     Revenue: expend,
+    Entropy: 0,
+  });
+}
+
+/** appendDemandResponse
+ *
+ * Append response to demand algorithm, including entropy of the current belief
+ * distribution at the time of the observation.
+ *
+ * @param {DemandAgent} algo algorithm
+ * @param {number} expend observed reinforcer value quantity
+ * @param {number} entropy Shannon entropy (nats) of beliefsCumulative after this trial
+ *
+ */
+export function appendDemandResponse(algo: DemandAgent, expend: number, entropy: number) {
+  algo.responses.push({
+    Price: algo.prediction,
+    Quantity: expend / algo.prediction,
+    Revenue: expend,
+    Entropy: entropy,
   });
 }
 

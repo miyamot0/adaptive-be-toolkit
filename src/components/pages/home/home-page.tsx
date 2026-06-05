@@ -88,6 +88,24 @@ export default function HomePage({
               Adaptive Discounting Task
             </Link>
           </Button>
+
+          <Button variant="outline" asChild>
+            <Link
+              className="text-sm font-medium text-primary hover:underline"
+              to="/demand/$id"
+              params={{ id: "12345678" }}
+              search={{
+                debug: "true",
+                figures: "true",
+                reinforcer: "Coffee",
+                algo: "RegretMin",
+                beta: "0.5",
+                compound: true,
+              }}
+            >
+              Adaptive Purchase Task
+            </Link>
+          </Button>
         </section>
       </main>
     </PageWrapper>
