@@ -22,6 +22,10 @@ import {
 
 // ── Shared helpers ────────────────────────────────────────────────────────────
 
+const origin = import.meta.env.DEV
+  ? "http://localhost:3000"
+  : "https://adaptive-be-toolkit.vercel.app";
+
 const PLACEHOLDER_ID = "CHANGEME";
 
 function buildDemandUrl(
@@ -34,7 +38,7 @@ function buildDemandUrl(
   compound: boolean,
   prices: string,
 ): string {
-  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  // const origin = typeof window !== "undefined" ? window.location.origin : "";
   const params = new URLSearchParams();
 
   if (reinforcer.trim()) params.set("reinforcer", reinforcer.trim());
@@ -200,8 +204,8 @@ function AlgorithmSection({
         </Label>
       </div>
       <p className="text-xs text-muted-foreground -mt-2">
-        Off: beliefs × β per trial. On: beliefs × β<sup>k</sup>, where k is the trial
-        number — suppression intensifies with each question.
+        Off: beliefs × β per trial. On: beliefs × β<sup>k</sup>, where k is the
+        trial number — suppression intensifies with each question.
       </p>
     </>
   );
