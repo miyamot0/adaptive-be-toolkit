@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './../routes/__root'
 import { Route as IndexRouteImport } from './../routes/index'
 import { Route as DocumentationIndexRouteImport } from './../routes/documentation/index'
+import { Route as BuilderIndexRouteImport } from './../routes/builder/index'
 import { Route as DocumentationSlugIndexRouteImport } from './../routes/documentation/$slug.index'
 import { Route as DemandIdIndexRouteImport } from './../routes/demand/$id.index'
 import { Route as DiscountingIdMethodIndexRouteImport } from './../routes/discounting/$id.$method.index'
@@ -23,6 +24,11 @@ const IndexRoute = IndexRouteImport.update({
 const DocumentationIndexRoute = DocumentationIndexRouteImport.update({
   id: '/documentation/',
   path: '/documentation/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuilderIndexRoute = BuilderIndexRouteImport.update({
+  id: '/builder/',
+  path: '/builder/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DocumentationSlugIndexRoute = DocumentationSlugIndexRouteImport.update({
@@ -44,6 +50,7 @@ const DiscountingIdMethodIndexRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/builder/': typeof BuilderIndexRoute
   '/documentation/': typeof DocumentationIndexRoute
   '/demand/$id/': typeof DemandIdIndexRoute
   '/documentation/$slug/': typeof DocumentationSlugIndexRoute
@@ -51,6 +58,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/builder': typeof BuilderIndexRoute
   '/documentation': typeof DocumentationIndexRoute
   '/demand/$id': typeof DemandIdIndexRoute
   '/documentation/$slug': typeof DocumentationSlugIndexRoute
@@ -59,6 +67,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/builder/': typeof BuilderIndexRoute
   '/documentation/': typeof DocumentationIndexRoute
   '/demand/$id/': typeof DemandIdIndexRoute
   '/documentation/$slug/': typeof DocumentationSlugIndexRoute
@@ -68,6 +77,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/builder/'
     | '/documentation/'
     | '/demand/$id/'
     | '/documentation/$slug/'
@@ -75,6 +85,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/builder'
     | '/documentation'
     | '/demand/$id'
     | '/documentation/$slug'
@@ -82,6 +93,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/builder/'
     | '/documentation/'
     | '/demand/$id/'
     | '/documentation/$slug/'
@@ -90,6 +102,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BuilderIndexRoute: typeof BuilderIndexRoute
   DocumentationIndexRoute: typeof DocumentationIndexRoute
   DemandIdIndexRoute: typeof DemandIdIndexRoute
   DocumentationSlugIndexRoute: typeof DocumentationSlugIndexRoute
@@ -110,6 +123,13 @@ declare module '@tanstack/react-router' {
       path: '/documentation'
       fullPath: '/documentation/'
       preLoaderRoute: typeof DocumentationIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/builder/': {
+      id: '/builder/'
+      path: '/builder'
+      fullPath: '/builder/'
+      preLoaderRoute: typeof BuilderIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/documentation/$slug/': {
@@ -138,6 +158,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BuilderIndexRoute: BuilderIndexRoute,
   DocumentationIndexRoute: DocumentationIndexRoute,
   DemandIdIndexRoute: DemandIdIndexRoute,
   DocumentationSlugIndexRoute: DocumentationSlugIndexRoute,

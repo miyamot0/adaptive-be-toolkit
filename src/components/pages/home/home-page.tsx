@@ -106,6 +106,15 @@ export default function HomePage({
               Adaptive Purchase Task
             </Link>
           </Button>
+
+          <Button variant="outline" asChild>
+            <Link
+              className="text-sm font-medium text-primary hover:underline"
+              to="/builder"
+            >
+              Link Builder
+            </Link>
+          </Button>
         </section>
       </main>
     </PageWrapper>
