@@ -1,5 +1,5 @@
 import type { DiscountingResponseProvided } from "#/types/discounting/discounting-response-output.ts";
-import { DemandAgent } from "../posm/demand/demand-agent";
+import type { DemandAgent } from "../posm/demand/demand-agent";
 import type { DiscountingAgent } from "../posm/discounting/discounting-agent";
 
 /** sum_array
@@ -25,7 +25,7 @@ function sum_array(arr: number[]): number {
 function select_by_index(
   arr: number[],
   start_index: number,
-  end_index: number
+  end_index: number,
 ) {
   const result = [];
 
@@ -150,7 +150,11 @@ export function appendResponse(algo: DemandAgent, expend: number) {
  * @param {number} entropy Shannon entropy (nats) of beliefsCumulative after this trial
  *
  */
-export function appendDemandResponse(algo: DemandAgent, expend: number, entropy: number) {
+export function appendDemandResponse(
+  algo: DemandAgent,
+  expend: number,
+  entropy: number,
+) {
   algo.responses.push({
     Price: algo.prediction,
     Quantity: expend / algo.prediction,
@@ -182,7 +186,11 @@ export function computeEntropy(beliefs: number[]): number {
  * @param {number} entropy belief entropy (nats) at the time of this response
  *
  */
-export function appendDiscountingResponse(algo: DiscountingAgent, waited: boolean, entropy: number) {
+export function appendDiscountingResponse(
+  algo: DiscountingAgent,
+  waited: boolean,
+  entropy: number,
+) {
   algo.responses.push({
     Delay: algo.prediction,
     SSR: algo.ssr,

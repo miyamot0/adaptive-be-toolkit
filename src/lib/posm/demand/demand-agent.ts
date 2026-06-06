@@ -18,11 +18,11 @@ export class DemandAgent extends Algorithm {
   last_p: number | undefined = undefined;
 
   // Max expenditure
-  max_expend: number = 0;
+  max_expend = 0;
   // Max price assoc. w/ expenditure
-  max_expend_price: number = 0;
+  max_expend_price = 0;
   // Max quantity assoc. w/ expenditure
-  max_q: number = 0;
+  max_q = 0;
 
   // Responses across task
   responses: DemandResponseProvided[] = [];
@@ -76,7 +76,6 @@ export class DemandAgent extends Algorithm {
    *
    * @param {number} turns
    */
-
 
   /** set min_nonzero_consumption_points
    *

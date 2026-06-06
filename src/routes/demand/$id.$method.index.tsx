@@ -10,9 +10,9 @@ import { AlgorithmThreshold } from "#/types/survey.ts";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
 const DEFAULT_PRICES = [
-  ...[0.1, 0.25, 0.5, 0.75],
-  ...Array.from({ length: 19 }, (_, i) => i * 0.5 + 1), // Generates [1, 1.5, 2, ..., 10]
-  ...Array.from({ length: 40 }, (_, i) => i * 1 + 11), // Generates [11, 12, 13, ..., 50]
+  ...Array.from({ length: 19 }, (_, i) => i * 0.25 + 1), // Generates [1, 1.25, 1.5, ..., 5]
+  ...Array.from({ length: 40 }, (_, i) => i * 0.5 + 5), // Generates [5, 5.5, 6, ..., 25]
+  ...Array.from({ length: 75 }, (_, i) => i * 1 + 25), // Generates [25, 26, 27, ..., 75]
 ];
 
 export const Route = createFileRoute("/demand/$id/$method/")({

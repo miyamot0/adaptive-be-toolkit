@@ -1,5 +1,5 @@
-import { BeliefUpdating, } from "../types/enums";
-import { DemandAgent } from "./demand-agent";
+import { BeliefUpdating } from "../types/enums";
+import type { DemandAgent } from "./demand-agent";
 
 export type IncludeIndex = true;
 export type ExcludeIndex = false;
@@ -26,8 +26,11 @@ export function agent_update_improvement(expend: number, algo: DemandAgent) {
  * @param {BeliefUpdating} observation observed belief updating
  * @param {DemandAgent} algo observed reinforcer value quantity
  */
-export function agent_update_beliefs(observation: BeliefUpdating, algo: DemandAgent, includeIndex: IncludeIndexType = false) {
-
+export function agent_update_beliefs(
+  observation: BeliefUpdating,
+  algo: DemandAgent,
+  includeIndex: IncludeIndexType = false,
+) {
   const suppressionFactor = algo.get_suppression_factor();
 
   switch (observation) {
@@ -40,7 +43,7 @@ export function agent_update_beliefs(observation: BeliefUpdating, algo: DemandAg
           return i >= algo.index_max ? value : value * suppressionFactor;
         }
 
-        return (i > algo.index_max ? value : value * suppressionFactor);
+        return i > algo.index_max ? value : value * suppressionFactor;
       });
     case BeliefUpdating.AboveIndex:
       // Note: Beliefs updated at/above index, low prices more interesting
@@ -51,10 +54,12 @@ export function agent_update_beliefs(observation: BeliefUpdating, algo: DemandAg
           return i <= algo.index_max ? value : value * suppressionFactor;
         }
 
-        return (i < algo.index_max ? value : value * suppressionFactor);
+        return i < algo.index_max ? value : value * suppressionFactor;
       });
 
     default:
-      throw new Error("Invalid BeliefUpdating value provided to agent_update_beliefs");
+      throw new Error(
+        "Invalid BeliefUpdating value provided to agent_update_beliefs",
+      );
   }
 }

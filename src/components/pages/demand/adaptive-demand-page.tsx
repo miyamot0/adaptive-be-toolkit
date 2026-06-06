@@ -20,7 +20,7 @@ type AdaptiveDemandPageProps = {
   DebugOutput?: boolean;
   Algorithm?: AlgorithmThreshold;
   Beta?: number;
-  Prices?: number[];
+  Prices: number[];
   CompoundSuppression?: boolean;
   MaxTrials?: number;
 };
@@ -32,7 +32,7 @@ export default function AdaptiveDemandPage({
   RenderFigures = false,
   DebugOutput = false,
   Algorithm = AlgorithmThreshold.MaximumIteration,
-  Beta,
+  Beta = 0.25,
   Prices,
   CompoundSuppression = false,
   MaxTrials = 20,
@@ -41,13 +41,7 @@ export default function AdaptiveDemandPage({
   const { HasFinished, HasConfirmed, setHasConfirmed } = use(CommonTaskContext);
 
   useEffect(() => {
-    const DEFAULT_PRICES = [
-      ...[0.1, 0.25, 0.5, 0.75],
-      ...Array.from({ length: 19 }, (_, i) => i * 0.5 + 1), // Generates [1, 1.5, 2, ..., 10]
-      ...Array.from({ length: 40 }, (_, i) => i * 1 + 11), // Generates [11, 12, 13, ..., 50]
-    ];
-
-    POSM.init(Prices ?? DEFAULT_PRICES, ID, Beta);
+    POSM.init(Prices, ID, Beta);
     POSM.set_algorithm(Algorithm);
     POSM.set_compound_suppression(CompoundSuppression);
     POSM.set_max_turns(MaxTrials);
