@@ -1,9 +1,6 @@
 import { use, useEffect } from "react";
 import { ContentWrapper } from "../../layout/content-wrapper";
 import { QuestionPresentation } from "./views/demand-question-presentation";
-import ChartRawConsumption from "./views/chart-raw-consumption";
-import ChartRawExpenditure from "./views/chart-raw-expenditure";
-import ChartBeliefs from "./views/chart-beliefs";
 import { Button } from "#/components/ui/button.tsx";
 import { DynamicDemandInstructions } from "#/components/pages/demand/views/dynamic-demand-instructions.tsx";
 import { AdaptiveDemandContext } from "#/components/context/adaptive-demand-context.tsx";
@@ -11,6 +8,9 @@ import { AlgorithmThreshold } from "#/types/survey.ts";
 import TaskCompleted from "#/components/common/task-completed.tsx";
 import { CommonTaskContext } from "#/components/context/common-task-context.tsx";
 import type { DemandMethodology } from "#/types/demand/demand-methodology.ts";
+import { ChartDemandBeliefs } from "#/components/figures/chart-beliefs.tsx";
+import ChartEntropy from "#/components/figures/chart-entropy.tsx";
+import ChartRawChoice from "#/components/figures/chart-raw-choice.tsx";
 
 type AdaptiveDemandPageProps = {
   ID: string;
@@ -32,7 +32,7 @@ export default function AdaptiveDemandPage({
   RenderFigures = false,
   DebugOutput = false,
   Algorithm = AlgorithmThreshold.MaximumIteration,
-  Beta = 0.5,
+  Beta,
   Prices,
   CompoundSuppression = false,
   MaxTrials = 20,
@@ -71,18 +71,65 @@ export default function AdaptiveDemandPage({
     );
   }
 
-  if (HasFinished) {
-    return <TaskCompleted />;
-  }
-
   const renderFigures =
     RenderFigures === false ? null : (
-      <div className="grid grid-cols-3 w-full gap-4 min-h-30">
-        <ChartBeliefs />
-        <ChartRawExpenditure />
-        <ChartRawConsumption />
+      <div className="grid grid-cols-4 w-full gap-2 min-h-50">
+        <ChartDemandBeliefs
+          seriesData={{
+            label: "Belief Distribution",
+            data: POSM.levels.map((_, index) => ({
+              x: POSM.levels[index],
+              y: POSM.beliefsCumulative[index],
+            })),
+          }}
+        />
+        <ChartEntropy
+          seriesData={{
+            label: "Belief Entropy",
+            data: POSM.responses.map((response, index) => ({
+              x: index + 1,
+              y: response.Entropy,
+            })),
+          }}
+        />
+        <ChartRawChoice
+          seriesData={{
+            label: "Raw Expenditure Data",
+            data: POSM.responses.map((response) => ({
+              x: response.Price,
+              y: response.Revenue,
+            })),
+          }}
+        />
+
+        <ChartRawChoice
+          seriesData={{
+            label: "Raw Consumption Data",
+            data: POSM.responses.map((response) => ({
+              x: response.Price,
+              y: response.Quantity,
+            })),
+          }}
+        />
       </div>
     );
+
+  if (HasFinished) {
+    return (
+      <div className="flex flex-col gap-2">
+        {renderFigures}
+        {DebugOutput && <pre>{JSON.stringify(POSM.prediction, null, 2)}</pre>}
+        <TaskCompleted />
+      </div>
+    );
+  }
+
+  console.log(
+    POSM.responses.map((response, index) => ({
+      x: index + 1,
+      y: response.Entropy,
+    })),
+  );
 
   const sortedBeliefsCumulative = [...POSM.beliefsCumulative].sort(
     (a, b) => b - a,
@@ -92,41 +139,15 @@ export default function AdaptiveDemandPage({
     (b) => b === highestBelief,
   ).length;
 
-  const twoHighestBeliefs = sortedBeliefsCumulative.slice(0, 2);
-  const totalAtTwoHighest = twoHighestBeliefs.reduce(
-    (acc, val) => acc + val,
-    0,
-  );
-  const nMatchingTwoHighest = sortedBeliefsCumulative.filter((b) =>
-    twoHighestBeliefs.includes(b),
-  ).length;
-
-  const threeHighestBeliefs = sortedBeliefsCumulative.slice(0, 3);
-  const totalAtThreeHighest = threeHighestBeliefs.reduce(
-    (acc, val) => acc + val,
-    0,
-  );
-  const nMatchingThreeHighest = sortedBeliefsCumulative.filter((b) =>
-    threeHighestBeliefs.includes(b),
-  ).length;
-
   return (
     <ContentWrapper Title={`Hypothetical Purchase Task for ${Reinforcer}`}>
       {DebugOutput && (
         <div className="flex flex-row gap-2">
           <span className="text-sm text-gray-500">
-            Questions Asked: {POSM.turn - 1}
+            Questions Asked: {POSM.turn - 1};
           </span>
           <span className="text-sm text-gray-500">
             Highest Belief: {highestBelief.toFixed(2)} (n = {nAtHighestBelief})
-          </span>
-          <span className="text-sm text-gray-500">
-            Total at Two Highest Beliefs: {totalAtTwoHighest.toFixed(2)} (n ={" "}
-            {nMatchingTwoHighest})
-          </span>
-          <span className="text-sm text-gray-500">
-            Total at Three Highest Beliefs: {totalAtThreeHighest.toFixed(2)} (n
-            = {nMatchingThreeHighest})
           </span>
         </div>
       )}

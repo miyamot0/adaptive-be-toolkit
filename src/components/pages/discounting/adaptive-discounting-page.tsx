@@ -4,7 +4,7 @@ import { Button } from "#/components/ui/button.tsx";
 import type { AlgorithmThreshold } from "#/types/survey.ts";
 import { use, useEffect } from "react";
 import { DiscountingQuestionPresentation } from "./views/discounting-question-presentation";
-import ChartDiscountingBeliefs from "../../figures/chart-beliefs";
+import { ChartDiscountingBeliefs } from "../../figures/chart-beliefs";
 import ChartRawChoice from "../../figures/chart-raw-choice";
 import ChartEntropy from "../../figures/chart-entropy";
 import { DynamicDiscountingInstructions } from "#/components/pages/discounting/views/dynamic-discounting-instructions.tsx";
