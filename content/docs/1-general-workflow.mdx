@@ -134,6 +134,11 @@ window.addEventListener('message', function(event) {
 
 **Security note:** Always check `event.origin` before processing a message. Without this check, any page that can embed your survey could dispatch forged `ACTION_COMPLETE` messages. Set the origin to the exact domain where the toolkit is deployed.
 
+## Algorithm Options
+
+- **Algorithm Name**: Explanation of how the algorithm works.
+  - **Parameter**: Description of the parameter and its impact.
+
 ## Example: Qualtrics
 
 The most common integration pattern is to embed the iframe inside a Qualtrics survey question and use the JavaScript editor attached to that question to listen for the completion event. When the event arrives, the results are written to Qualtrics Embedded Data fields, and the Next button is programmatically clicked to advance the survey.
@@ -213,3 +218,14 @@ The general workflow for incorporating any toolkit measure into a survey platfor
 3. **Store and advance** — Write the result fields to the platform's data store (e.g., Qualtrics Embedded Data) and trigger whatever action should follow task completion, such as advancing to the next survey page.
 
 This architecture eliminates the need for researchers to implement or maintain any of the adaptive logic themselves. The measures are self-contained — they handle trial sequencing, belief updating, stopping criteria, and result packaging internally. Customization through URL parameters covers the most common research needs: adjusting the commodity or reward label, setting reward magnitudes for discounting, and enabling diagnostic output during piloting. Because the iframe communicates entirely through standard browser APIs, the same integration pattern works across Qualtrics, REDCap, custom web applications, and any other platform capable of rendering an iframe and executing JavaScript.
+
+## Settings Overview
+
+- **Setting Name**: Description of what the setting does.
+- **Setting Name**: Description of what the setting does.
+
+## Implementation Details
+
+1. **Step 1**: Description of the first step.
+2. **Step 2**: Description of the second step.
+3. **Step 3**: Description of the third step.

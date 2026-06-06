@@ -31,6 +31,50 @@ Two measures are currently included:
 
 Both tasks operate entirely within the participant's browser. No server infrastructure is required, and no response data is stored or transmitted by the toolkit itself — all output is returned directly to the host survey platform at task completion.
 
+## Researcher Customization
+
+Researchers can customize the Adaptive BE Toolkit by configuring URL query parameters. These parameters allow researchers to specify task-specific settings such as reinforcer names, price ranges, delays, and more. For example:
+
+- **Reinforcer**: The commodity being purchased (e.g., 'Coffee', 'Cigarettes'). Displayed in question prompts.
+- **Price**: The cost presented to the participant for a given quantity of the reinforcer.
+- **Quantity / Consumption**: How many units the participant reports they would purchase at the presented price.
+- **Expenditure / Revenue**: Price × Quantity — the primary signal the algorithm optimizes around.
+
+These parameters can be overridden by appending them as query parameters to the task URL. For example:
+
+```
+/demand/12345?reinforcer=Coffee&priceRange=0-100&breakpoint=50
+```
+
+## Survey Platform Integration
+
+The Adaptive BE Toolkit can be easily integrated into existing survey platforms such as Qualtrics, REDCap, and custom web studies. The toolkit operates entirely within the participant's browser, requiring no server infrastructure or data storage by the toolkit itself. Results are returned directly to the host survey platform via the browser's native `postMessage` API.
+
+### Qualtrics Integration
+
+To integrate the Adaptive BE Toolkit into a Qualtrics survey, follow these steps:
+
+1. Embed an HTML iframe element in your Qualtrics survey page.
+2. Add a short JavaScript event listener to capture the results and post them back to the parent window using `postMessage`.
+
+Example code snippet for Qualtrics integration:
+
+```javascript
+// Embed the Adaptive BE Toolkit iframe
+const iframe = document.createElement("iframe");
+iframe.src =
+  "https://example.com/demand/12345?reinforcer=Coffee&priceRange=0-100";
+document.body.appendChild(iframe);
+
+// Listen for results and post them back to Qualtrics
+window.addEventListener("message", function (event) {
+  if (event.origin !== "https://example.com") return;
+  const result = event.data;
+  Qualtrics.SurveyEngine.setEmbeddedData("O_max", result.MaxExpenditure);
+  Qualtrics.SurveyEngine.setEmbeddedData("P_max", result.MaxExpenditurePrice);
+});
+```
+
 ## Intended Use Cases
 
 The toolkit is intended for researchers studying behavioral phenomena that depend on demand-side measurement: sensitivity to commodity price, preference for immediate over delayed rewards, and the patterns of consumption that characterize different populations or conditions. Relevant application areas include:

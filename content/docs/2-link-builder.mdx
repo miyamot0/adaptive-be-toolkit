@@ -1,0 +1,82 @@
+---
+title: "General Workflow"
+description: "An overview of how to embed toolkit measures into survey platforms via iframes, configure tasks through URL parameters, and capture results through the postMessage callback API."
+summary: "An overview of how to embed toolkit measures into survey platforms via iframes, configure tasks through URL parameters, and capture results through the postMessage callback API."
+index: 2
+type: general
+slug: link-builder
+date: 2026-06-05
+---
+
+## Overview
+
+The `LinkBuilderPage` component is responsible for creating and displaying the link to embed the Adaptive BE Toolkit measures into survey platforms. It allows users to configure various settings through URL parameters and preview the generated link.
+
+## Function of the Page
+
+The `LinkBuilderPage` component provides a user interface for configuring and generating links to embed the Adaptive BE Toolkit measures into survey platforms. Users can set various parameters such as reinforcer, figures, debug mode, algorithm thresholds, maximum trials, beta values, compound options, prices, and delays.
+
+## Discounting Tool
+
+### Fields/Features
+
+- **Reinforcer**: The commodity being purchased (e.g., "Coffee", "Cigarettes"). Displayed in question prompts.
+  - Example: `reinforcer=Coffee`
+- **Show Figures**: Toggle to display diagnostic charts.
+  - Example: `figures=true`
+- **Show Debug**: Toggle to display development stats overlay.
+  - Example: `debug=true`
+- **Algorithm**: The adaptive algorithm used (e.g., "ED50").
+  - Example: `algorithm=ED50`
+- **Maximum Trials**: Maximum number of trials allowed.
+  - Example: `maxTrials=20`
+- **Beta**: Adaptation rate for the belief-updating procedure.
+  - Example: `beta=0.5`
+- **Compound**: Toggle to enable compound interest calculations.
+  - Example: `compound=true`
+- **SSR (Smaller-Sooner Reinforcer)**: Immediate reward amount.
+  - Example: `ssr=50`
+- **LLR (Larger-Later Reinforcer)**: Delayed reward amount.
+  - Example: `llr=100`
+- **Delays**: Delays in days for each trial.
+  - Example: `delays=1,2,3`
+
+### URL String Example
+
+```plaintext
+/demand/CHANGEME?reinforcer=Coffee&figures=true&debug=true&algorithm=ED50&maxTrials=20&beta=0.5&compound=true&prices=50,100,150
+```
+
+## Debug and Figure Flags
+
+- **Show Figures**: Visualize information related to question selection and relevant metrics.
+  - Example: `figures=true`
+- **Show Debug**: Display development stats overlay for debugging purposes.
+  - Example: `debug=true`
+
+## Demand Tool
+
+### Fields/Features
+
+- **Reinforcer**: The commodity being purchased (e.g., "Coffee", "Cigarettes"). Displayed in question prompts.
+  - Example: `reinforcer=Coffee`
+- **Show Figures**: Toggle to display diagnostic charts.
+  - Example: `figures=true`
+- **Show Debug**: Toggle to display development stats overlay.
+  - Example: `debug=true`
+- **Algorithm**: The adaptive algorithm used (e.g., "O_max").
+  - Example: `algorithm=O_max`
+- **Maximum Trials**: Maximum number of trials allowed.
+  - Example: `maxTrials=20`
+- **Beta**: Adaptation rate for the belief-updating procedure.
+  - Example: `beta=0.5`
+- **Compound**: Toggle to enable compound interest calculations.
+  - Example: `compound=true`
+- **Prices**: Prices presented to the participant for a given quantity of the reinforcer.
+  - Example: `prices=50,100,150`
+
+### URL String Example
+
+```plaintext
+/discounting/CHANGEME?reinforcer=Dollars&ssr=20&llr=100&delays=1,2,3
+```
