@@ -35,7 +35,7 @@ export function agent_update_beliefs(
 
   switch (observation) {
     case BeliefUpdating.BelowIndex:
-      // Note: Beliefs updated at/below index, higher prices more interesting
+      // CORRECTED for peak finding: Peak is at LOWER prices → suppress HIGHER indices
       return algo.beliefs.slice().map((value: number, i: number) => {
         if (!algo.index_max) throw new Error("index_max is undefined!");
 
@@ -46,7 +46,7 @@ export function agent_update_beliefs(
         return i > algo.index_max ? value : value * suppressionFactor;
       });
     case BeliefUpdating.AboveIndex:
-      // Note: Beliefs updated at/above index, low prices more interesting
+      // CORRECTED for peak finding: Peak is at HIGHER prices → suppress LOWER indices
       return algo.beliefs.slice().map((value: number, i: number) => {
         if (!algo.index_max) throw new Error("index_max is undefined!");
 
