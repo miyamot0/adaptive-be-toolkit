@@ -5,7 +5,7 @@ import AdaptiveDemandPage from "#/components/pages/demand/adaptive-demand-page.t
 import { createMetaTags } from "#/lib/seo.ts";
 import { mergedDemandParamsSchema } from "#/schema/demand/demand-params.ts";
 import { demandSearchFlagSchema } from "#/schema/demand/demand-search.ts";
-import type { DemandSearchFlags } from "#/schema/demand/demand-search.ts";
+import type { DemandMethodology } from "#/types/demand/demand-methodology.ts";
 import { AlgorithmThreshold } from "#/types/survey.ts";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
@@ -15,14 +15,14 @@ const DEFAULT_PRICES = [
   ...Array.from({ length: 40 }, (_, i) => i * 1 + 11), // Generates [11, 12, 13, ..., 50]
 ];
 
-export const Route = createFileRoute("/demand/$id/")({
+export const Route = createFileRoute("/demand/$id/$method/")({
   head: () => ({
     ...createMetaTags({
       pageName: `Adaptive Demand Assessment`,
       content: "Adaptive Demand Assessment page",
     }),
   }),
-  validateSearch: (search: unknown & DemandSearchFlags) => {
+  validateSearch: (search: unknown) => {
     return demandSearchFlagSchema.parse(search);
   },
   loaderDeps: async ({ search }) => {
@@ -95,6 +95,7 @@ export const Route = createFileRoute("/demand/$id/")({
 
       return {
         ID: validated.id,
+        Method: validated.method,
         SRType,
         ShowDebug,
         ShowFigures,
@@ -129,11 +130,13 @@ type DemandSearchParams = {
 
 type DemandSettings = DemandSearchParams & {
   ID: string;
+  Method: DemandMethodology;
 };
 
 function RouteComponent() {
   const {
     ID,
+    Method,
     SRType,
     ShowDebug,
     ShowFigures,
@@ -144,23 +147,33 @@ function RouteComponent() {
     MaxTrials,
   } = Route.useLoaderData();
 
-  return (
-    <CommonTaskContextProvider>
-      <AdaptiveDemandContextProvider>
-        <PageWrapper>
-          <AdaptiveDemandPage
-            ID={ID}
-            Reinforcer={SRType}
-            RenderFigures={ShowFigures}
-            DebugOutput={ShowDebug}
-            Algorithm={Algorithm}
-            Beta={Beta}
-            Prices={Prices}
-            CompoundSuppression={CompoundSuppression}
-            MaxTrials={MaxTrials}
-          />
-        </PageWrapper>
-      </AdaptiveDemandContextProvider>
-    </CommonTaskContextProvider>
-  );
+  switch (Method) {
+    case "posm":
+      return (
+        <CommonTaskContextProvider>
+          <AdaptiveDemandContextProvider>
+            <PageWrapper>
+              <AdaptiveDemandPage
+                ID={ID}
+                Reinforcer={SRType}
+                RenderFigures={ShowFigures}
+                DebugOutput={ShowDebug}
+                Algorithm={Algorithm}
+                Beta={Beta}
+                Prices={Prices}
+                CompoundSuppression={CompoundSuppression}
+                MaxTrials={MaxTrials}
+              />
+            </PageWrapper>
+          </AdaptiveDemandContextProvider>
+        </CommonTaskContextProvider>
+      );
+    default:
+      throw redirect({
+        to: "/",
+        search: {
+          error: "Invalid method parameter for Adaptive Demand Assessment",
+        },
+      });
+  }
 }

@@ -13,8 +13,8 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as DocumentationIndexRouteImport } from './routes/documentation/index'
 import { Route as BuilderIndexRouteImport } from './routes/builder/index'
 import { Route as DocumentationSlugIndexRouteImport } from './routes/documentation/$slug.index'
-import { Route as DemandIdIndexRouteImport } from './routes/demand/$id.index'
 import { Route as DiscountingIdMethodIndexRouteImport } from './routes/discounting/$id.$method.index'
+import { Route as DemandIdMethodIndexRouteImport } from './routes/demand/$id.$method.index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -36,32 +36,32 @@ const DocumentationSlugIndexRoute = DocumentationSlugIndexRouteImport.update({
   path: '/documentation/$slug/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DemandIdIndexRoute = DemandIdIndexRouteImport.update({
-  id: '/demand/$id/',
-  path: '/demand/$id/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const DiscountingIdMethodIndexRoute =
   DiscountingIdMethodIndexRouteImport.update({
     id: '/discounting/$id/$method/',
     path: '/discounting/$id/$method/',
     getParentRoute: () => rootRouteImport,
   } as any)
+const DemandIdMethodIndexRoute = DemandIdMethodIndexRouteImport.update({
+  id: '/demand/$id/$method/',
+  path: '/demand/$id/$method/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/builder/': typeof BuilderIndexRoute
   '/documentation/': typeof DocumentationIndexRoute
-  '/demand/$id/': typeof DemandIdIndexRoute
   '/documentation/$slug/': typeof DocumentationSlugIndexRoute
+  '/demand/$id/$method/': typeof DemandIdMethodIndexRoute
   '/discounting/$id/$method/': typeof DiscountingIdMethodIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/builder': typeof BuilderIndexRoute
   '/documentation': typeof DocumentationIndexRoute
-  '/demand/$id': typeof DemandIdIndexRoute
   '/documentation/$slug': typeof DocumentationSlugIndexRoute
+  '/demand/$id/$method': typeof DemandIdMethodIndexRoute
   '/discounting/$id/$method': typeof DiscountingIdMethodIndexRoute
 }
 export interface FileRoutesById {
@@ -69,8 +69,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/builder/': typeof BuilderIndexRoute
   '/documentation/': typeof DocumentationIndexRoute
-  '/demand/$id/': typeof DemandIdIndexRoute
   '/documentation/$slug/': typeof DocumentationSlugIndexRoute
+  '/demand/$id/$method/': typeof DemandIdMethodIndexRoute
   '/discounting/$id/$method/': typeof DiscountingIdMethodIndexRoute
 }
 export interface FileRouteTypes {
@@ -79,24 +79,24 @@ export interface FileRouteTypes {
     | '/'
     | '/builder/'
     | '/documentation/'
-    | '/demand/$id/'
     | '/documentation/$slug/'
+    | '/demand/$id/$method/'
     | '/discounting/$id/$method/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/builder'
     | '/documentation'
-    | '/demand/$id'
     | '/documentation/$slug'
+    | '/demand/$id/$method'
     | '/discounting/$id/$method'
   id:
     | '__root__'
     | '/'
     | '/builder/'
     | '/documentation/'
-    | '/demand/$id/'
     | '/documentation/$slug/'
+    | '/demand/$id/$method/'
     | '/discounting/$id/$method/'
   fileRoutesById: FileRoutesById
 }
@@ -104,8 +104,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BuilderIndexRoute: typeof BuilderIndexRoute
   DocumentationIndexRoute: typeof DocumentationIndexRoute
-  DemandIdIndexRoute: typeof DemandIdIndexRoute
   DocumentationSlugIndexRoute: typeof DocumentationSlugIndexRoute
+  DemandIdMethodIndexRoute: typeof DemandIdMethodIndexRoute
   DiscountingIdMethodIndexRoute: typeof DiscountingIdMethodIndexRoute
 }
 
@@ -139,18 +139,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DocumentationSlugIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/demand/$id/': {
-      id: '/demand/$id/'
-      path: '/demand/$id'
-      fullPath: '/demand/$id/'
-      preLoaderRoute: typeof DemandIdIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/discounting/$id/$method/': {
       id: '/discounting/$id/$method/'
       path: '/discounting/$id/$method'
       fullPath: '/discounting/$id/$method/'
       preLoaderRoute: typeof DiscountingIdMethodIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demand/$id/$method/': {
+      id: '/demand/$id/$method/'
+      path: '/demand/$id/$method'
+      fullPath: '/demand/$id/$method/'
+      preLoaderRoute: typeof DemandIdMethodIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -160,8 +160,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BuilderIndexRoute: BuilderIndexRoute,
   DocumentationIndexRoute: DocumentationIndexRoute,
-  DemandIdIndexRoute: DemandIdIndexRoute,
   DocumentationSlugIndexRoute: DocumentationSlugIndexRoute,
+  DemandIdMethodIndexRoute: DemandIdMethodIndexRoute,
   DiscountingIdMethodIndexRoute: DiscountingIdMethodIndexRoute,
 }
 export const routeTree = rootRouteImport

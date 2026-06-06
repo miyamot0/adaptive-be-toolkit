@@ -92,8 +92,8 @@ export default function HomePage({
           <Button variant="outline" asChild>
             <Link
               className="text-sm font-medium text-primary hover:underline"
-              to="/demand/$id"
-              params={{ id: "12345678" }}
+              to="/demand/$id/$method"
+              params={{ id: "12345678", method: "posm" }}
               search={{
                 debug: "true",
                 figures: "true",

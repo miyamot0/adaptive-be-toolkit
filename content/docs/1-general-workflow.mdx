@@ -2,7 +2,7 @@
 title: "General Program Workflow"
 description: "This page provides an overview of the intended workflow for using the Adaptive BE Toolkit, outlining the steps and processes involved in effectively utilizing the toolkit for behavioral economics research and applications."
 summary: "An overview of how to embed toolkit measures into survey platforms via iframes, configure tasks through URL parameters, and capture results through the postMessage callback API."
-index: 0
+index: 1
 type: general
 slug: general-workflow
 date: 2026-06-03
@@ -40,21 +40,21 @@ The following query parameters are accepted by each task:
 
 **Adaptive Purchase Task** (`/demand/<id>`)
 
-| Parameter | Type | Default | Description |
-|---|---|---|---|
-| `reinforcer` | string | `"Example Reinforcers"` | Label for the commodity being purchased. Displayed in question prompts. |
-| `figures` | `"true"` | *(omit)* | Renders live diagnostic charts (belief distribution, expenditure curve, consumption curve). Intended for development and piloting only. |
-| `debug` | `"true"` | *(omit)* | Displays trial count and belief summary statistics below the question. Intended for development and piloting only. |
+| Parameter    | Type     | Default                 | Description                                                                                                                             |
+| ------------ | -------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `reinforcer` | string   | `"Example Reinforcers"` | Label for the commodity being purchased. Displayed in question prompts.                                                                 |
+| `figures`    | `"true"` | _(omit)_                | Renders live diagnostic charts (belief distribution, expenditure curve, consumption curve). Intended for development and piloting only. |
+| `debug`      | `"true"` | _(omit)_                | Displays trial count and belief summary statistics below the question. Intended for development and piloting only.                      |
 
 **Adaptive Delay Discounting Task** (`/discounting/<id>`)
 
-| Parameter | Type | Default | Description |
-|---|---|---|---|
-| `reinforcer` | string | `"Dollars"` | Label for the reward referenced in choice prompts. |
-| `ssr` | number | `50` | Smaller-sooner reinforcer (SSR) magnitude — the immediate reward amount. |
-| `llr` | number | `100` | Larger-later reinforcer (LLR) magnitude — the delayed reward amount. |
-| `figures` | `"true"` | *(omit)* | Renders live diagnostic charts. Intended for development and piloting only. |
-| `debug` | `"true"` | *(omit)* | Displays trial count and belief statistics. Intended for development and piloting only. |
+| Parameter    | Type     | Default     | Description                                                                             |
+| ------------ | -------- | ----------- | --------------------------------------------------------------------------------------- |
+| `reinforcer` | string   | `"Dollars"` | Label for the reward referenced in choice prompts.                                      |
+| `ssr`        | number   | `50`        | Smaller-sooner reinforcer (SSR) magnitude — the immediate reward amount.                |
+| `llr`        | number   | `100`       | Larger-later reinforcer (LLR) magnitude — the delayed reward amount.                    |
+| `figures`    | `"true"` | _(omit)_    | Renders live diagnostic charts. Intended for development and piloting only.             |
+| `debug`      | `"true"` | _(omit)_    | Displays trial count and belief statistics. Intended for development and piloting only. |
 
 To embed either task inside a survey page, add a standard `<iframe>` element with the configured URL as the `src`. The example below embeds a Purchase Task for a participant whose ID is stored in a Qualtrics embedded data field called `ResponseID`, asking about coffee purchases:
 
@@ -64,7 +64,8 @@ To embed either task inside a survey page, add a standard `<iframe>` element wit
   width="100%"
   height="600"
   frameborder="0"
-  allowtransparency="true">
+  allowtransparency="true"
+>
 </iframe>
 ```
 
@@ -76,7 +77,8 @@ For a Delay Discounting task comparing $20 now versus $100 later for a monetary 
   width="100%"
   height="600"
   frameborder="0"
-  allowtransparency="true">
+  allowtransparency="true"
+>
 </iframe>
 ```
 
@@ -99,32 +101,32 @@ The `type` field will always be `"ACTION_COMPLETE"`. The `payload` object contai
 
 **Adaptive Purchase Task payload fields**
 
-| Field | Type | Description |
-|---|---|---|
-| `ID` | string | The participant identifier passed in the URL path. |
-| `MaxExpenditure` | number | Maximum total expenditure observed (O<sub>max</sub>). |
-| `MaxExpenditurePrice` | number | The price at which maximum expenditure occurred (P<sub>max</sub>). |
-| `MaxExpenditureQuantity` | number | Quantity consumed at P<sub>max</sub>. |
-| `Beta` | number | Adaptation rate used by the algorithm. |
+| Field                    | Type   | Description                                                        |
+| ------------------------ | ------ | ------------------------------------------------------------------ |
+| `ID`                     | string | The participant identifier passed in the URL path.                 |
+| `MaxExpenditure`         | number | Maximum total expenditure observed (O<sub>max</sub>).              |
+| `MaxExpenditurePrice`    | number | The price at which maximum expenditure occurred (P<sub>max</sub>). |
+| `MaxExpenditureQuantity` | number | Quantity consumed at P<sub>max</sub>.                              |
+| `Beta`                   | number | Adaptation rate used by the algorithm.                             |
 
 **Adaptive Delay Discounting payload fields**
 
-| Field | Type | Description |
-|---|---|---|
-| `ID` | string | The participant identifier passed in the URL path. |
+| Field      | Type   | Description                                                                                    |
+| ---------- | ------ | ---------------------------------------------------------------------------------------------- |
+| `ID`       | string | The participant identifier passed in the URL path.                                             |
 | `MaxDelay` | number | Maximum delay (in days) at which the participant chose the delayed reward — the ED50 estimate. |
-| `Beta` | number | Adaptation rate used by the algorithm. |
+| `Beta`     | number | Adaptation rate used by the algorithm.                                                         |
 
 A minimal event listener looks like this:
 
 ```javascript
-window.addEventListener('message', function(event) {
+window.addEventListener("message", function (event) {
   // Always verify the origin before trusting message contents.
-  if (event.origin !== 'https://your-deployment.com') return;
+  if (event.origin !== "https://your-deployment.com") return;
 
   var data = event.data;
 
-  if (data.type === 'ACTION_COMPLETE') {
+  if (data.type === "ACTION_COMPLETE") {
     var payload = data.payload;
     // payload.ID, payload.MaxExpenditure, payload.MaxDelay, etc.
     handleTaskComplete(payload);
@@ -147,7 +149,7 @@ The following is a complete example for a **Purchase Task**. The same pattern ap
 
 **Step 1 — Create Embedded Data fields**
 
-In your Qualtrics survey flow, add an Embedded Data block *before* the question containing the iframe and define the fields you intend to capture:
+In your Qualtrics survey flow, add an Embedded Data block _before_ the question containing the iframe and define the fields you intend to capture:
 
 - `MaxExpenditure`
 - `MaxExpenditurePrice`
@@ -164,34 +166,44 @@ In the question body, switch to HTML view and insert the iframe. Use Qualtrics p
   width="100%"
   height="650"
   frameborder="0"
-  allowtransparency="true">
+  allowtransparency="true"
+>
 </iframe>
 ```
 
 **Step 3 — Hide the Next button and add the event listener**
 
-In the question's JavaScript editor (accessed via the gear icon → *Add JavaScript*), add the following:
+In the question's JavaScript editor (accessed via the gear icon → _Add JavaScript_), add the following:
 
 ```javascript
-Qualtrics.SurveyEngine.addOnload(function() {
+Qualtrics.SurveyEngine.addOnload(function () {
   // Hide the Next button until the task completes.
   this.hideNextButton();
 
   var engine = this;
 
-  window.addEventListener('message', function(event) {
+  window.addEventListener("message", function (event) {
     // Replace with the actual origin of your toolkit deployment.
-    if (event.origin !== 'https://your-deployment.com') return;
+    if (event.origin !== "https://your-deployment.com") return;
 
     var data = event.data;
 
-    if (data.type === 'ACTION_COMPLETE') {
+    if (data.type === "ACTION_COMPLETE") {
       var payload = data.payload;
 
       // Write results to Qualtrics Embedded Data.
-      Qualtrics.SurveyEngine.setEmbeddedData('MaxExpenditure',      payload.MaxExpenditure);
-      Qualtrics.SurveyEngine.setEmbeddedData('MaxExpenditurePrice',  payload.MaxExpenditurePrice);
-      Qualtrics.SurveyEngine.setEmbeddedData('MaxExpenditureQuantity', payload.MaxExpenditureQuantity);
+      Qualtrics.SurveyEngine.setEmbeddedData(
+        "MaxExpenditure",
+        payload.MaxExpenditure,
+      );
+      Qualtrics.SurveyEngine.setEmbeddedData(
+        "MaxExpenditurePrice",
+        payload.MaxExpenditurePrice,
+      );
+      Qualtrics.SurveyEngine.setEmbeddedData(
+        "MaxExpenditureQuantity",
+        payload.MaxExpenditureQuantity,
+      );
 
       // Re-show and automatically click Next to advance the survey.
       engine.showNextButton();
@@ -204,7 +216,7 @@ Qualtrics.SurveyEngine.addOnload(function() {
 For the **Discounting task**, replace the iframe `src` path and the embedded data writes accordingly:
 
 ```javascript
-Qualtrics.SurveyEngine.setEmbeddedData('MaxDelay', payload.MaxDelay);
+Qualtrics.SurveyEngine.setEmbeddedData("MaxDelay", payload.MaxDelay);
 ```
 
 Once the survey is collected, the embedded data fields will be available in the response export alongside all other survey data, ready for downstream analysis.

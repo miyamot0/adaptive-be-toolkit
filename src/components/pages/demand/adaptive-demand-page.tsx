@@ -10,10 +10,12 @@ import { AdaptiveDemandContext } from "#/components/context/adaptive-demand-cont
 import { AlgorithmThreshold } from "#/types/survey.ts";
 import TaskCompleted from "#/components/common/task-completed.tsx";
 import { CommonTaskContext } from "#/components/context/common-task-context.tsx";
+import type { DemandMethodology } from "#/types/demand/demand-methodology.ts";
 
 type AdaptiveDemandPageProps = {
   ID: string;
   Reinforcer: string;
+  Method?: DemandMethodology;
   RenderFigures?: boolean;
   DebugOutput?: boolean;
   Algorithm?: AlgorithmThreshold;
@@ -26,6 +28,7 @@ type AdaptiveDemandPageProps = {
 export default function AdaptiveDemandPage({
   ID,
   Reinforcer,
+  Method = "posm",
   RenderFigures = false,
   DebugOutput = false,
   Algorithm = AlgorithmThreshold.MaximumIteration,
@@ -58,6 +61,7 @@ export default function AdaptiveDemandPage({
         <DynamicDemandInstructions
           Reinforcer={Reinforcer}
           Duration="over the past three months"
+          Method={Method}
         >
           <Button onClick={() => setHasConfirmed(true)}>
             Confirm Understanding
