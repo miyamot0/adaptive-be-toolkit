@@ -67,7 +67,7 @@ export default function HomePage({
         </section>
 
         <section className="flex flex-col gap-4 mt-8">
-          <h2 className="text-xl font-bold">Testing: Available Tasks</h2>
+          <h2 className="text-xl font-bold">Preview: Available Tasks</h2>
 
           <Button variant="outline" asChild>
             <Link
@@ -104,15 +104,6 @@ export default function HomePage({
               }}
             >
               Adaptive Purchase Task
-            </Link>
-          </Button>
-
-          <Button variant="outline" asChild>
-            <Link
-              className="text-sm font-medium text-primary hover:underline"
-              to="/builder"
-            >
-              Link Builder
             </Link>
           </Button>
         </section>

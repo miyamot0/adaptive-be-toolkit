@@ -11,13 +11,22 @@ export default function Header() {
           </h2>
         </Link>
 
-
         <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
-          <Link to="/documentation" className={buttonVariants({ variant: "outline", size: "sm" })}>
+          <Link
+            to="/builder"
+            className={buttonVariants({ variant: "outline", size: "sm" })}
+          >
+            Link Builder
+          </Link>
+
+          <Link
+            to="/documentation"
+            className={buttonVariants({ variant: "outline", size: "sm" })}
+          >
             Documentation
           </Link>
         </div>
       </nav>
     </header>
-  )
+  );
 }
