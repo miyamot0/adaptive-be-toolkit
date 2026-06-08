@@ -46,7 +46,7 @@ export class DemandAgent extends Algorithm {
    *
    */
   public reset() {
-    this.beta = 0.5;
+    this.beta = 0.25;
     this.turn = 1;
 
     this.n_levels = 0;
@@ -118,9 +118,11 @@ export class DemandAgent extends Algorithm {
       case AlgorithmAction.NonconsumptionFound:
         explore_zero(value, this);
         break;
+
       case AlgorithmAction.ConsumptionFoundInitial:
         explore_non_zero(value, this);
         break;
+
       case AlgorithmAction.ConsumptionFoundNonInitial:
         exploit(value, this);
         break;

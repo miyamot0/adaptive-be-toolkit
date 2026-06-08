@@ -118,13 +118,6 @@ export default function AdaptiveDemandPage({
     );
   }
 
-  console.log(
-    POSM.responses.map((response, index) => ({
-      x: index + 1,
-      y: response.Entropy,
-    })),
-  );
-
   const sortedBeliefsCumulative = [...POSM.beliefsCumulative].sort(
     (a, b) => b - a,
   );

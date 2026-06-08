@@ -9,14 +9,14 @@ import type { DemandAgent } from "./demand-agent";
  * @returns {EvaluateChange}
  */
 export function agent_pathway(algo: DemandAgent) {
-    // Note: Predicted price is greater than previous empirical pmax
-    if (algo.prediction > algo.max_expend_price)
-        return EvaluateChange.PriceIncreased;
+  // Note: Predicted price is greater than previous empirical pmax
+  if (algo.prediction > algo.max_expend_price)
+    return EvaluateChange.PriceIncreased;
 
-    // Note: Predicted price is equal to previous empirical pmax
-    //if (algo.prediction === algo.max_expend_price)
-    //  return EvaluateChange.PriceIdentical;
+  // Note: Predicted price is equal to previous empirical pmax
+  if (algo.prediction === algo.max_expend_price)
+    return EvaluateChange.PriceIdentical;
 
-    // Note: Default is to explore lower prices
-    return EvaluateChange.PriceDecreased;
+  // Note: Default is to explore lower prices
+  return EvaluateChange.PriceDecreased;
 }
