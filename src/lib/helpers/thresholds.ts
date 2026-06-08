@@ -2,10 +2,10 @@ import { AlgorithmThreshold } from "@/types/survey";
 import type { DemandAgent } from "../posm/demand/demand-agent";
 import type { DiscountingAgent } from "../posm/discounting/discounting-agent";
 
-const ENTROPY_PLATEAU_THRESHOLD = 0.01; // Minimum average per-trial entropy drop (nats) to consider beliefs still concentrating
+// const ENTROPY_PLATEAU_THRESHOLD = 0.01; // Minimum average per-trial entropy drop (nats) to consider beliefs still concentrating
 const ENTROPY_WINDOW = 3; // Number of recent trials used to compute the rolling ∆H average
 
-export function evaluate_threshold(posm: DemandAgent) {
+export function evaluate_threshold(posm: DemandAgent, threshold = 0.01) {
   switch (posm.threshhold) {
     case AlgorithmThreshold.MaximumIteration:
       if (posm.turn > posm.max_turns) return true;
@@ -29,7 +29,7 @@ export function evaluate_threshold(posm: DemandAgent) {
       }
       const avgDrop = totalDrop / (window.length - 1);
 
-      return avgDrop < ENTROPY_PLATEAU_THRESHOLD;
+      return avgDrop < threshold;
     }
 
     default:
@@ -37,7 +37,10 @@ export function evaluate_threshold(posm: DemandAgent) {
   }
 }
 
-export function evaluate_discounting_threshold(posm: DiscountingAgent) {
+export function evaluate_discounting_threshold(
+  posm: DiscountingAgent,
+  threshold = 0.01,
+) {
   switch (posm.threshhold) {
     case AlgorithmThreshold.MaximumIteration:
       if (posm.turn > posm.max_turns) return true;
@@ -61,7 +64,7 @@ export function evaluate_discounting_threshold(posm: DiscountingAgent) {
       }
       const avgDrop = totalDrop / (window.length - 1);
 
-      return avgDrop < ENTROPY_PLATEAU_THRESHOLD;
+      return avgDrop < threshold;
     }
 
     default:
