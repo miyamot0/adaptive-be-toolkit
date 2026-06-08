@@ -392,24 +392,25 @@ export default function LinkBuilderPage() {
                     idPrefix="d"
                   />
 
-                  {/* Entropy Threshold for Demand */}
-                  <FieldRow>
-                    <Label htmlFor="d-entropy">Entropy Threshold</Label>
-                    <Input
-                      id="d-entropy"
-                      type="number"
-                      min="0"
-                      max="0.5"
-                      step="0.01"
-                      value={dEntropyThreshold}
-                      onChange={(e) => setDEntropyThreshold(e.target.value)}
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Controls when algorithm stops based on belief
-                      concentration (0 = never stop, 0.5 = stop immediately).
-                      Default: 0.25
-                    </p>
-                  </FieldRow>
+                  {dAlgorithm === AlgorithmThreshold.RegretMin && (
+                    <FieldRow>
+                      <Label htmlFor="d-entropy">Entropy Threshold</Label>
+                      <Input
+                        id="d-entropy"
+                        type="number"
+                        min="0"
+                        max="0.5"
+                        step="0.01"
+                        value={dEntropyThreshold}
+                        onChange={(e) => setDEntropyThreshold(e.target.value)}
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        Controls when algorithm stops based on belief
+                        concentration (0 = never stop, 0.5 = stop immediately).
+                        Default: 0.25
+                      </p>
+                    </FieldRow>
+                  )}
                 </div>
 
                 {/* Right column — reinforcer + price levels + diagnostics */}
@@ -476,24 +477,25 @@ export default function LinkBuilderPage() {
                     idPrefix="c"
                   />
 
-                  {/* Entropy Threshold for Discounting */}
-                  <FieldRow>
-                    <Label htmlFor="c-entropy">Entropy Threshold</Label>
-                    <Input
-                      id="c-entropy"
-                      type="number"
-                      min="0"
-                      max="0.5"
-                      step="0.01"
-                      value={cEntropyThreshold}
-                      onChange={(e) => setCEntropyThreshold(e.target.value)}
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Controls when algorithm stops based on belief
-                      concentration (0 = never stop, 0.5 = stop immediately).
-                      Default: 0.25
-                    </p>
-                  </FieldRow>
+                  {cAlgorithm === AlgorithmThreshold.RegretMin && (
+                    <FieldRow>
+                      <Label htmlFor="c-entropy">Entropy Threshold</Label>
+                      <Input
+                        id="c-entropy"
+                        type="number"
+                        min="0"
+                        max="0.5"
+                        step="0.01"
+                        value={cEntropyThreshold}
+                        onChange={(e) => setCEntropyThreshold(e.target.value)}
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        Controls when algorithm stops based on belief
+                        concentration (0 = never stop, 0.5 = stop immediately).
+                        Default: 0.25
+                      </p>
+                    </FieldRow>
+                  )}
                 </div>
 
                 {/* Right column — reinforcer + reward values + delay levels + diagnostics */}
