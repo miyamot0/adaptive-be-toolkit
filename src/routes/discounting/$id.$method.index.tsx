@@ -82,6 +82,14 @@ export const Route = createFileRoute("/discounting/$id/$method/")({
           !isNaN(parseInt(validatedSearch.maxTrials))
             ? Math.max(4, parseInt(validatedSearch.maxTrials))
             : 20,
+        EntropyThreshold:
+          validatedSearch.entropyThreshold &&
+          !isNaN(parseFloat(validatedSearch.entropyThreshold))
+            ? Math.min(
+                0.5,
+                Math.max(0, parseFloat(validatedSearch.entropyThreshold)),
+              )
+            : 0.25,
       } satisfies DiscountingSearchParams;
     } catch (error) {
       throw redirect({
@@ -104,6 +112,7 @@ export const Route = createFileRoute("/discounting/$id/$method/")({
       Delays,
       CompoundSuppression,
       MaxTrials,
+      EntropyThreshold,
     } = await deps;
 
     try {
@@ -122,6 +131,7 @@ export const Route = createFileRoute("/discounting/$id/$method/")({
         Algorithm,
         CompoundSuppression,
         MaxTrials,
+        EntropyThreshold,
       } satisfies DiscountingSettings;
     } catch (error) {
       throw redirect({
@@ -146,6 +156,7 @@ type DiscountingSearchParams = {
   Delays: number[];
   CompoundSuppression: boolean;
   MaxTrials: number;
+  EntropyThreshold: number;
 };
 
 type DiscountingSettings = DiscountingSearchParams & {

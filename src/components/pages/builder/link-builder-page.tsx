@@ -59,7 +59,7 @@ function buildDemandUrl(
   const entropyNum = parseFloat(entropyThreshold);
   if (!isNaN(entropyNum)) params.set("entropyThreshold", String(entropyNum));
 
-  return `${origin}/demand/${PLACEHOLDER_ID}?${params.toString()}`;
+  return `${origin}/demand/${PLACEHOLDER_ID}/posm?${params.toString()}`;
 }
 
 function buildDiscountingUrl(

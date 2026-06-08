@@ -68,6 +68,14 @@ export const Route = createFileRoute("/demand/$id/$method/")({
           !isNaN(parseInt(validatedSearch.maxTrials))
             ? Math.max(4, parseInt(validatedSearch.maxTrials))
             : 20,
+        EntropyThreshold:
+          validatedSearch.entropyThreshold &&
+          !isNaN(parseFloat(validatedSearch.entropyThreshold))
+            ? Math.min(
+                0.5,
+                Math.max(0, parseFloat(validatedSearch.entropyThreshold)),
+              )
+            : 0.05,
       } satisfies DemandSearchParams;
     } catch (error) {
       throw redirect({
@@ -88,6 +96,7 @@ export const Route = createFileRoute("/demand/$id/$method/")({
       Prices,
       CompoundSuppression,
       MaxTrials,
+      EntropyThreshold,
     } = await deps;
 
     try {
@@ -104,6 +113,7 @@ export const Route = createFileRoute("/demand/$id/$method/")({
         Algorithm,
         CompoundSuppression,
         MaxTrials,
+        EntropyThreshold,
       } satisfies DemandSettings;
     } catch (error) {
       throw redirect({
@@ -126,6 +136,7 @@ type DemandSearchParams = {
   Prices: number[];
   CompoundSuppression: boolean;
   MaxTrials: number;
+  EntropyThreshold: number;
 };
 
 type DemandSettings = DemandSearchParams & {
@@ -148,6 +159,7 @@ function RouteComponent() {
   } = Route.useLoaderData();
 
   switch (Method) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     case "posm":
       return (
         <CommonTaskContextProvider>

@@ -23,6 +23,7 @@ type AdaptiveDemandPageProps = {
   Prices: number[];
   CompoundSuppression?: boolean;
   MaxTrials?: number;
+  EntropyThreshold?: number;
 };
 
 export default function AdaptiveDemandPage({
@@ -36,6 +37,7 @@ export default function AdaptiveDemandPage({
   Prices,
   CompoundSuppression = false,
   MaxTrials = 20,
+  EntropyThreshold = 0.05,
 }: AdaptiveDemandPageProps) {
   const { POSM, setPOSM } = use(AdaptiveDemandContext);
   const { HasFinished, HasConfirmed, setHasConfirmed } = use(CommonTaskContext);
