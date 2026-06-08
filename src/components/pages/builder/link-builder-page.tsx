@@ -37,6 +37,7 @@ function buildDemandUrl(
   beta: string,
   compound: boolean,
   prices: string,
+  entropyThreshold: string,
 ): string {
   // const origin = typeof window !== "undefined" ? window.location.origin : "";
   const params = new URLSearchParams();
@@ -54,6 +55,10 @@ function buildDemandUrl(
   }
   if (prices.trim()) params.set("prices", prices.trim());
 
+  // Entropy threshold parameter (0.00-0.5 range)
+  const entropyNum = parseFloat(entropyThreshold);
+  if (!isNaN(entropyNum)) params.set("entropyThreshold", String(entropyNum));
+
   return `${origin}/demand/${PLACEHOLDER_ID}?${params.toString()}`;
 }
 
@@ -68,6 +73,7 @@ function buildDiscountingUrl(
   ssr: string,
   llr: string,
   delays: string,
+  entropyThreshold: string,
 ): string {
   const origin = typeof window !== "undefined" ? window.location.origin : "";
   const params = new URLSearchParams();
@@ -88,6 +94,10 @@ function buildDiscountingUrl(
   if (!isNaN(ssrNum)) params.set("ssr", String(ssrNum));
   if (!isNaN(llrNum)) params.set("llr", String(llrNum));
   if (delays.trim()) params.set("delays", delays.trim());
+
+  // Entropy threshold parameter (0.00-0.5 range)
+  const entropyNum = parseFloat(entropyThreshold);
+  if (!isNaN(entropyNum)) params.set("entropyThreshold", String(entropyNum));
 
   return `${origin}/discounting/${PLACEHOLDER_ID}/posm?${params.toString()}`;
 }
@@ -297,6 +307,7 @@ export default function LinkBuilderPage() {
   const [dBeta, setDBeta] = useState("0.25");
   const [dCompound, setDCompound] = useState(false);
   const [dPrices, setDPrices] = useState("");
+  const [dEntropyThreshold, setDEntropyThreshold] = useState("0.25");
 
   // ── Discounting state ─────────────────────────────────────
   const [cReinforcer, setCReinforcer] = useState("Dollars");
@@ -311,6 +322,7 @@ export default function LinkBuilderPage() {
   const [cSsr, setCsSsr] = useState("50");
   const [cLlr, setCsLlr] = useState("100");
   const [cDelays, setCDelays] = useState("");
+  const [cEntropyThreshold, setCEntropyThreshold] = useState("0.25");
 
   const demandUrl = buildDemandUrl(
     dReinforcer,
@@ -321,6 +333,7 @@ export default function LinkBuilderPage() {
     dBeta,
     dCompound,
     dPrices,
+    dEntropyThreshold,
   );
 
   const discountingUrl = buildDiscountingUrl(
@@ -334,6 +347,7 @@ export default function LinkBuilderPage() {
     cSsr,
     cLlr,
     cDelays,
+    cEntropyThreshold,
   );
 
   return (
@@ -377,6 +391,25 @@ export default function LinkBuilderPage() {
                     setCompound={setDCompound}
                     idPrefix="d"
                   />
+
+                  {/* Entropy Threshold for Demand */}
+                  <FieldRow>
+                    <Label htmlFor="d-entropy">Entropy Threshold</Label>
+                    <Input
+                      id="d-entropy"
+                      type="number"
+                      min="0"
+                      max="0.5"
+                      step="0.01"
+                      value={dEntropyThreshold}
+                      onChange={(e) => setDEntropyThreshold(e.target.value)}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Controls when algorithm stops based on belief
+                      concentration (0 = never stop, 0.5 = stop immediately).
+                      Default: 0.25
+                    </p>
+                  </FieldRow>
                 </div>
 
                 {/* Right column — reinforcer + price levels + diagnostics */}
@@ -442,6 +475,25 @@ export default function LinkBuilderPage() {
                     setCompound={setCCompound}
                     idPrefix="c"
                   />
+
+                  {/* Entropy Threshold for Discounting */}
+                  <FieldRow>
+                    <Label htmlFor="c-entropy">Entropy Threshold</Label>
+                    <Input
+                      id="c-entropy"
+                      type="number"
+                      min="0"
+                      max="0.5"
+                      step="0.01"
+                      value={cEntropyThreshold}
+                      onChange={(e) => setCEntropyThreshold(e.target.value)}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Controls when algorithm stops based on belief
+                      concentration (0 = never stop, 0.5 = stop immediately).
+                      Default: 0.25
+                    </p>
+                  </FieldRow>
                 </div>
 
                 {/* Right column — reinforcer + reward values + delay levels + diagnostics */}

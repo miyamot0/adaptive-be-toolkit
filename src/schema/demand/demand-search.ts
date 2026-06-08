@@ -26,6 +26,9 @@ export const demandSearchFlagSchema = z.object({
 
   // String: Maximum number of trials when using MaximumIteration stopping rule
   maxTrials: z.coerce.string().optional(),
+
+  // String: Entropy threshold for stopping (0.00-0.5 range)
+  entropyThreshold: z.coerce.string().optional(),
 });
 
 export type DemandSearchFlags = z.infer<typeof demandSearchFlagSchema>;
