@@ -67,6 +67,9 @@ export function AlgorithmSection({
             </SelectItem>
           </SelectContent>
         </Select>
+        <p className="text-xs text-muted-foreground">
+          Algorithm for informing the questions presented.
+        </p>
       </div>
 
       {algorithm === AlgorithmThreshold.MaximumIteration && (
