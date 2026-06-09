@@ -1,5 +1,4 @@
 import { AlgorithmAction } from "../types/enums";
-import { is_undefined } from "../../helpers/type-check";
 import type { DemandAgent } from "./demand-agent";
 
 /** agent_decision
@@ -15,7 +14,7 @@ export function agent_decision(expend: number, algo: DemandAgent) {
   if (expend <= 0) return AlgorithmAction.NonconsumptionFound;
 
   // Note: Pretty much the standard after consumption recorded
-  if (!is_undefined(algo.last_q))
+  if (algo.last_q !== undefined)
     return AlgorithmAction.ConsumptionFoundNonInitial;
 
   // Note: The default if a 'first' measure of consumption
