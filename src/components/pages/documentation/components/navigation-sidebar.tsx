@@ -15,11 +15,56 @@ interface Documentation {
 
 type GroupedDocs = Record<string, Documentation[]>;
 
+/**
+ * Groups documentation entries by their 'type' field.
+ *
+ * @param {Documentation[]} docs
+ * @return {*}  {GroupedDocs}
+ */
+function groupByType(docs: Documentation[]): GroupedDocs {
+  const grouped = new Map<string, Documentation[]>();
+  docs.forEach((doc) => {
+    if (!grouped.has(doc.type)) {
+      grouped.set(doc.type, []);
+    }
+    grouped.get(doc.type)?.push(doc);
+  });
+
+  return Object.fromEntries(grouped.entries());
+}
+
+/**
+ * Returns an appropriate icon component based on the documentation type.
+ *
+ * @param {string} type
+ * @return {*}
+ */
+function getIconForType(type: string) {
+  switch (type) {
+    case "general":
+      return <BookOpen className="h-4 w-4" />;
+    case "discounting":
+      return <DollarSign className="h-4 w-4" />;
+    case "demand":
+      return <TrendingUp className="h-4 w-4" />;
+    default:
+      return <FileText className="h-4 w-4" />;
+  }
+}
+
+/**
+ * Formats the documentation type name for display purposes.
+ *
+ * @param {string} type
+ * @return {string}
+ */
+function formatTypeName(type: string): string {
+  return type.charAt(0).toUpperCase() + type.slice(1);
+}
+
 export function NavigationSidebar() {
   const location = useLocation();
   const pathname = location.pathname;
-
-  // Group documentation by type
   const groupedDocs = groupByType(allDocumentations);
 
   return (
@@ -44,9 +89,6 @@ export function NavigationSidebar() {
                           : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                       }`}
                     >
-                      <span className="text-xs text-muted-foreground mt-1">
-                        {doc.index + 1}
-                      </span>
                       <span className="flex-1 truncate">{doc.title}</span>
                     </Link>
                   </li>
@@ -58,33 +100,4 @@ export function NavigationSidebar() {
       </nav>
     </aside>
   );
-}
-
-function groupByType(docs: Documentation[]): GroupedDocs {
-  const grouped = new Map<string, Documentation[]>();
-  docs.forEach((doc) => {
-    if (!grouped.has(doc.type)) {
-      grouped.set(doc.type, []);
-    }
-    grouped.get(doc.type)?.push(doc);
-  });
-
-  return Object.fromEntries(grouped.entries());
-}
-
-function getIconForType(type: string) {
-  switch (type) {
-    case "general":
-      return <BookOpen className="h-4 w-4" />;
-    case "discounting":
-      return <DollarSign className="h-4 w-4" />;
-    case "demand":
-      return <TrendingUp className="h-4 w-4" />;
-    default:
-      return <FileText className="h-4 w-4" />;
-  }
-}
-
-function formatTypeName(type: string): string {
-  return type.charAt(0).toUpperCase() + type.slice(1);
 }

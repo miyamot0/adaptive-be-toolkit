@@ -1,22 +1,20 @@
 ---
-title: "Iframe Documentation"
-description: "This page provides an overview of the iframe settings available in the Adaptive BE Toolkit, including how to configure them through URL parameters and what options are available."
-summary: "An overview of the iframe settings available in the Adaptive BE Toolkit, including how to configure them through URL parameters and what options are available."
-index: 4
+title: "Program Link Builder"
+description: "An overview of how to embed toolkit measures into survey platforms via iframes, configure tasks through URL parameters, and capture results through the postMessage callback API."
+summary: "An overview of how to embed toolkit measures into survey platforms via iframes, configure tasks through URL parameters, and capture results through the postMessage callback API."
+index: 2
 type: general
-slug: iframe-documentation
+slug: link-builder
 date: 2026-06-05
 ---
 
-## Overview
+# Program Link Builder
 
 The `LinkBuilderPage` component is responsible for creating and displaying the link to embed the Adaptive BE Toolkit measures into survey platforms. It allows users to configure various settings through URL parameters and preview the generated link.
 
-## Function of the Page
-
 The `LinkBuilderPage` component provides a user interface for configuring and generating links to embed the Adaptive BE Toolkit measures into survey platforms. Users can set various parameters such as reinforcer, figures, debug mode, algorithm thresholds, maximum trials, beta values, compound options, prices, and delays.
 
-## Discounting Tool
+## Adaptive Discounting Link Builder
 
 ### Fields/Features
 
@@ -47,7 +45,14 @@ The `LinkBuilderPage` component provides a user interface for configuring and ge
 /demand/CHANGEME?reinforcer=Coffee&figures=true&debug=true&algorithm=ED50&maxTrials=20&beta=0.5&compound=true&prices=50,100,150
 ```
 
-## Demand Tool
+## Debug and Figure Flags
+
+- **Show Figures**: Visualize information related to question selection and relevant metrics.
+  - Example: `figures=true`
+- **Show Debug**: Display development stats overlay for debugging purposes.
+  - Example: `debug=true`
+
+## Adaptive Demand Link Builder
 
 ### Fields/Features
 
@@ -73,18 +78,3 @@ The `LinkBuilderPage` component provides a user interface for configuring and ge
 ```plaintext
 /discounting/CHANGEME?reinforcer=Dollars&ssr=20&llr=100&delays=1,2,3
 ```
-
-## Debug and Figure Flags
-
-- **Show Figures**: Visualize information related to question selection and relevant metrics.
-  - Example: `figures=true`
-- **Show Debug**: Display development stats overlay for debugging purposes.
-  - Example: `debug=true`
-
-## Entropy and Average Entropy Change
-
-The **Entropy** figure provides insights into the uncertainty of beliefs across levels. Shannon entropy measures the average amount of information needed to specify an outcome from a set of possible outcomes. Higher entropy indicates higher uncertainty, while lower entropy indicates more certainty.
-
-### Dynamic Stop Point
-
-Changes in entropy can indicate when additional trials are unlikely to contribute new information. A plateau in entropy suggests that the algorithm has converged and is likely at or near the optimal solution. This helps in determining a dynamic 'stop point' for the task.

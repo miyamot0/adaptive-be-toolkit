@@ -5,8 +5,6 @@ interface TableOfContentsProps {
 }
 
 export function TableOfContents({ toc }: TableOfContentsProps) {
-  console.log(toc);
-
   return (
     <aside className="w-64 shrink-0">
       <div className="sticky top-14 h-[calc(100vh-56px)] overflow-y-auto p-4 border-l bg-background">
