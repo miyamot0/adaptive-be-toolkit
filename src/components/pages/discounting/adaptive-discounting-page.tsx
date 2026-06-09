@@ -23,6 +23,7 @@ type AdaptiveDiscountingPageProps = {
   Beta: number;
   Delays: number[];
   MaxTrials?: number;
+  EntropyThreshold?: number;
 };
 
 export default function AdaptiveDiscountingPage({
@@ -37,12 +38,14 @@ export default function AdaptiveDiscountingPage({
   Beta,
   Delays,
   MaxTrials = 20,
+  EntropyThreshold = 0.05,
 }: AdaptiveDiscountingPageProps) {
   const { POSM, setPOSM } = use(AdaptiveDiscountingContext);
   const { HasFinished, HasConfirmed, setHasConfirmed } = use(CommonTaskContext);
 
   useEffect(() => {
     POSM.init(Delays, ID, Beta);
+    POSM.set_entropy_threshold(EntropyThreshold);
     POSM.setValues(SSR, LLR);
     POSM.set_algorithm(Algorithm);
     POSM.set_compound_suppression(CompoundSuppression);

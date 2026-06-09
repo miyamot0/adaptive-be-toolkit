@@ -44,6 +44,7 @@ export default function AdaptiveDemandPage({
 
   useEffect(() => {
     POSM.init(Prices, ID, Beta);
+    POSM.set_entropy_threshold(EntropyThreshold);
     POSM.set_algorithm(Algorithm);
     POSM.set_compound_suppression(CompoundSuppression);
     POSM.set_max_turns(MaxTrials);

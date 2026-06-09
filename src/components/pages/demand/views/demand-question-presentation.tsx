@@ -1,7 +1,6 @@
 import { use, useState } from "react";
 import { Input } from "#/components/ui/input.tsx";
 import { Button } from "#/components/ui/button.tsx";
-import { evaluate_threshold } from "#/lib/helpers/thresholds.ts";
 import { NotifyParentAdaptiveDemand } from "#/components/pages/demand/helpers/demand-notify-parent.ts";
 import PriceGroupingView from "./price-grouping-view";
 import { AdaptiveDemandContext } from "#/components/context/adaptive-demand-context.tsx";
@@ -41,7 +40,7 @@ export function QuestionPresentation() {
     setPOSM(POSM);
     setEntryValue("");
 
-    const evaluate_state_terminate = evaluate_threshold(POSM, 0.05);
+    const evaluate_state_terminate = POSM.evaluate_threshold();
 
     setResponseCount(POSM.responses.length);
 

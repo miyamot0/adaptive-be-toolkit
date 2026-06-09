@@ -1,7 +1,6 @@
 import { use } from "react";
 import { AdaptiveDiscountingContext } from "#/components/context/adaptive-discounting-context.tsx";
 import { Button } from "#/components/ui/button.tsx";
-import { evaluate_discounting_threshold } from "#/lib/helpers/thresholds.ts";
 import { NotifyParentAdaptiveDiscounting } from "#/components/pages/discounting/helpers/discounting-notify-parent.ts";
 import { CommonTaskContext } from "#/components/context/common-task-context.tsx";
 
@@ -26,7 +25,7 @@ export function DiscountingQuestionPresentation({
     POSM.iterate(waited ? 1 : 0);
     setPOSM(POSM);
 
-    const evaluate_state_terminate = evaluate_discounting_threshold(POSM);
+    const evaluate_state_terminate = POSM.evaluate_threshold();
 
     setResponseCount(POSM.responses.length);
 

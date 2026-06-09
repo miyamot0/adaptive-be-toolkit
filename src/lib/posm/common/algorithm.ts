@@ -31,6 +31,8 @@ export abstract class Algorithm {
   // Minimum number of responses required before threshold evaluation begins
   min_responses = 5;
 
+  entropy_threshold = 0.05;
+
   public abstract init(levels: number[]): void;
 
   public abstract iterate(value: number): void;
@@ -74,6 +76,18 @@ export abstract class Algorithm {
    */
   public get_suppression_factor(): number {
     return this.compoundSuppression ? this.beta ** this.turn : this.beta;
+  }
+
+  /**
+   * set_entropy_threshold
+   *
+   * Set the entropy threshold for the RegretMin stopping rule. When using RegretMin,
+   *
+   * @param {number} threshold entropy threshold (0.00-0.5 range) for stopping criterion
+   * @memberof Algorithm
+   */
+  public set_entropy_threshold(threshold: number) {
+    this.entropy_threshold = threshold;
   }
 
   /** compute_entropy
