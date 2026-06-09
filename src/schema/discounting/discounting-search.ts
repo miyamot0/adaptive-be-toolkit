@@ -4,13 +4,13 @@ import { z } from "zod";
 
 export const discountingSearchFlagSchema = z.object({
   // Flag: show figures or not ('true' or 'false')
-  figures: z.string().optional(),
+  figures: z.coerce.string().optional(),
 
   // Flag: show debug output or not ('true' or 'false')
-  debug: z.string().optional(),
+  debug: z.coerce.string().optional(),
 
   // String: type of reinforcer (e.g., 'Dollar', "Euro", etc.)
-  reinforcer: z.string().optional(),
+  reinforcer: z.coerce.string().optional(),
 
   // String: SSR value (e.g., 50 by default)
   ssr: z.coerce.string().optional(),
@@ -19,7 +19,7 @@ export const discountingSearchFlagSchema = z.object({
   llr: z.coerce.string().optional(),
 
   // String: Algorithm type (e.g., 'MaximumEntropy')
-  algo: z.string().optional(),
+  algo: z.coerce.string().optional(),
 
   // Flag: whether to use compound suppression or not (coerced from string 'true'/'false')
   compound: z.coerce.boolean().optional(),
@@ -28,7 +28,7 @@ export const discountingSearchFlagSchema = z.object({
   beta: z.coerce.string().optional(),
 
   // String: Delays, expected as a comma-separated list of numbers (e.g., "1,7,30,90,...")
-  delays: z.string().optional(),
+  delays: z.coerce.string().optional(),
 
   // String: Maximum number of trials when using MaximumIteration stopping rule
   maxTrials: z.coerce.string().optional(),

@@ -4,16 +4,16 @@ import { z } from "zod";
 
 export const demandSearchFlagSchema = z.object({
   // Flag: show figures or not ('true' or 'false')
-  figures: z.string().optional(),
+  figures: z.coerce.string().optional(),
 
   // Flag: show debug output or not ('true' or 'false')
-  debug: z.string().optional(),
+  debug: z.coerce.string().optional(),
 
   // String: type of reinforcer (e.g., 'Coffee', 'Cigarettes', etc.)
   reinforcer: z.string().optional(),
 
   // String: Algorithm type ('MaximumIteration' or 'RegretMin')
-  algo: z.string().optional(),
+  algo: z.coerce.string().optional(),
 
   // Flag: whether to use compound suppression or not (coerced from string 'true'/'false')
   compound: z.coerce.boolean().optional(),
@@ -22,7 +22,7 @@ export const demandSearchFlagSchema = z.object({
   beta: z.coerce.string().optional(),
 
   // String: Prices, expected as a comma-separated list of numbers (e.g., "0.1,0.25,0.5,...")
-  prices: z.string().optional(),
+  prices: z.coerce.string().optional(),
 
   // String: Maximum number of trials when using MaximumIteration stopping rule
   maxTrials: z.coerce.string().optional(),
