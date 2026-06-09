@@ -84,20 +84,6 @@ export function argmax(arr: number[]): number {
   return maxIndex;
 }
 
-/** sequenceFromTo
- *
- * Generate sequence of numbers from `from` to `to`
- *
- * @param {Number} from starting number
- * @param {Number} to ending number
- * @returns {Array} sequence of numbers
- */
-export function sequenceFromTo(from: number, to: number): number[] {
-  const length = to - from + 1;
-
-  return Array.from({ length }, (_, k) => k + from);
-}
-
 /** pullNormalizationConstant
  *
  * Scan through array to get peak, thus normalizing beliefs
@@ -121,23 +107,6 @@ export function normalizeBeliefs(arr: number[]) {
   const max = pullNormalizationConstant(arr);
 
   return arr.map((val) => val / max);
-}
-
-/** appendResponse
- *
- * Append response to algorithm
- *
- * @param {DemandAgent} algo algorithm
- * @param {number} expend observed reinforcer value quantity
- *
- */
-export function appendResponse(algo: DemandAgent, expend: number) {
-  algo.responses.push({
-    Price: algo.prediction,
-    Quantity: expend / algo.prediction,
-    Revenue: expend,
-    Entropy: 0,
-  });
 }
 
 /** appendDemandResponse
