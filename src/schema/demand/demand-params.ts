@@ -1,15 +1,10 @@
 import { z } from "zod";
-import { idSchema } from "../common";
-import { DemandMethodologyTypes } from "#/types/demand/demand-methodology.ts";
-
-// Route params schema
-
-const demandMethodSchema = z.enum(DemandMethodologyTypes);
+import { idSchema, methodSchema } from "../common";
 
 export const mergedDemandParamsSchema = z.object({
   // ID parameter from URL, used to link task instance to participant/session
   id: idSchema,
 
   // Method parameter from URL, specifying the methodology to use
-  method: demandMethodSchema,
+  method: methodSchema,
 });
