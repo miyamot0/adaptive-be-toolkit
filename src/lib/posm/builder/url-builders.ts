@@ -12,9 +12,7 @@ export const PLACEHOLDER_ID = "CHANGEME";
  * Origin URL for demand task links.
  * Uses development server in DEV mode, production Vercel app otherwise.
  */
-const DEMAND_ORIGIN = import.meta.env.DEV
-  ? "http://localhost:3000"
-  : "https://be-toolkit-testing.smallnstats.com";
+const DEMAND_ORIGIN = import.meta.env.VITE_APP_URL ?? "http://localhost:3000";
 
 /**
  * Origin URL for discounting task links (uses runtime window origin).
