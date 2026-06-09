@@ -59,11 +59,11 @@ export function AlgorithmSection({
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value={AlgorithmThreshold.MaximumIteration}>
-              Maximum Iterations (fixed trial count)
-            </SelectItem>
             <SelectItem value={AlgorithmThreshold.RegretMin}>
-              Entropy Plateau (adaptive stopping)
+              Entropy Plateau (Adaptive Stopping)
+            </SelectItem>
+            <SelectItem value={AlgorithmThreshold.MaximumIteration}>
+              Maximum Iterations (Fixed Trial Count)
             </SelectItem>
           </SelectContent>
         </Select>

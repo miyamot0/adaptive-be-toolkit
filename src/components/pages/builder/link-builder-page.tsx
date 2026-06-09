@@ -42,11 +42,11 @@ export default function LinkBuilderPage(_props: LinkBuilderPageProps) {
     showFigures: false,
     showDebug: false,
     algorithm: AlgorithmThreshold.RegretMin,
-    maxTrials: "20",
+    maxTrials: "10",
     beta: "0.25",
-    compound: false,
+    compound: true,
     prices: "",
-    entropyThreshold: "0.25",
+    entropyThreshold: "0.01",
   });
 
   // ── Discounting section state with reducer ──────────────────────────────────
@@ -57,13 +57,13 @@ export default function LinkBuilderPage(_props: LinkBuilderPageProps) {
       showFigures: false,
       showDebug: false,
       algorithm: AlgorithmThreshold.RegretMin,
-      maxTrials: "20",
+      maxTrials: "10",
       beta: "0.25",
-      compound: false,
+      compound: true,
       ssr: "50",
       llr: "100",
       delays: "",
-      entropyThreshold: "0.25",
+      entropyThreshold: "0.01",
     },
   );
 
@@ -156,6 +156,11 @@ export default function LinkBuilderPage(_props: LinkBuilderPageProps) {
                           })
                         }
                       />
+                      <p className="text-xs text-muted-foreground">
+                        Entropy threshold for adaptive stopping (0.01 = stop
+                        early when beliefs concentrate, 0.5 = run many trials).
+                        Default: 0.01
+                      </p>
                     </FieldRow>
                   )}
                 </div>
@@ -234,6 +239,11 @@ export default function LinkBuilderPage(_props: LinkBuilderPageProps) {
                           })
                         }
                       />
+                      <p className="text-xs text-muted-foreground">
+                        Entropy threshold for adaptive stopping (0.01 = stop
+                        early when beliefs concentrate, 0.5 = run many trials).
+                        Default: 0.01
+                      </p>
                     </FieldRow>
                   )}
                 </div>

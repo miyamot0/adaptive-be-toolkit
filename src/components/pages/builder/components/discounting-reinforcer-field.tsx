@@ -31,6 +31,10 @@ export function DiscountingReinforcerField({
           onChange={(e) => onChange(e.target.value)}
           placeholder="e.g. Dollars"
         />
+        <p className="text-xs text-muted-foreground">
+          The reward participants choose between in the discounting task (e.g.,
+          $5 now vs. $10 later).
+        </p>
       </div>
     </>
   );

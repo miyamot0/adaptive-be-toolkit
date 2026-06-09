@@ -31,6 +31,9 @@ export function DemandReinforcerField({
           onChange={(e) => onChange(e.target.value)}
           placeholder="e.g. Coffee"
         />
+        <p className="text-xs text-muted-foreground">
+          The item or reward participants earn in the adaptive purchase task.
+        </p>
       </div>
     </>
   );

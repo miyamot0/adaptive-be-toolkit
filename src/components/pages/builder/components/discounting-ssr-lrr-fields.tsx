@@ -36,6 +36,10 @@ export function DiscountingSSRLRRFields({
           value={ssr}
           onChange={(e) => setSsr(e.target.value)}
         />
+        <p className="text-xs text-muted-foreground">
+          Immediate reward amount (e.g., $5 now). Lower SSR relative to LLR
+          increases patience.
+        </p>
       </div>
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="c-llr">Larger-Later Reinforcer (LLR)</Label>
@@ -46,6 +50,10 @@ export function DiscountingSSRLRRFields({
           value={llr}
           onChange={(e) => setLlr(e.target.value)}
         />
+        <p className="text-xs text-muted-foreground">
+          Delayed reward amount (e.g., $10 later). Higher LLR relative to SSR
+          encourages waiting.
+        </p>
       </div>
     </>
   );
