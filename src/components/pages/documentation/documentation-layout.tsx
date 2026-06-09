@@ -18,7 +18,6 @@ interface DocumentationLayoutProps {
 
 export function DocumentationLayout({
   children,
-  docs = [],
   tocItems = [],
 }: DocumentationLayoutProps) {
   return (
@@ -26,7 +25,7 @@ export function DocumentationLayout({
       <main className="flex flex-col gap-4">
         <div className="grid grid-cols-[250px_1fr] lg:grid-cols-[250px_1fr_280px] min-h-[calc(100vh-64px)]">
           {/* Left Sidebar - Navigation */}
-          <NavigationSidebar docs={docs} />
+          <NavigationSidebar />
 
           {/* Center Content Area */}
           <section className="min-h-full py-8 px-4 lg:px-8 border-r bg-background">

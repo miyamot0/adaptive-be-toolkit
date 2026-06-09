@@ -1,4 +1,6 @@
 import { Link, useLocation } from "@tanstack/react-router";
+import { allDocumentations } from "content-collections";
+
 import { BookOpen, FileText, DollarSign, TrendingUp } from "lucide-react";
 
 interface Documentation {
@@ -13,20 +15,12 @@ interface Documentation {
 
 type GroupedDocs = Record<string, Documentation[]>;
 
-interface NavigationSidebarProps {
-  docs: Documentation[];
-  currentSlug?: string;
-}
-
-export function NavigationSidebar({
-  docs,
-  currentSlug,
-}: NavigationSidebarProps) {
+export function NavigationSidebar() {
   const location = useLocation();
   const pathname = location.pathname;
 
   // Group documentation by type
-  const groupedDocs = groupByType(docs);
+  const groupedDocs = groupByType(allDocumentations);
 
   return (
     <aside className="w-64 flex-shrink-0">
@@ -75,10 +69,10 @@ function groupByType(docs: Documentation[]): GroupedDocs {
     grouped.get(doc.type)?.push(doc);
   });
 
-  return Object.fromEntries(grouped.entries()) as GroupedDocs;
+  return Object.fromEntries(grouped.entries());
 }
 
-function getIconForType(type: string): React.ReactNode {
+function getIconForType(type: string) {
   switch (type) {
     case "general":
       return <BookOpen className="h-4 w-4" />;

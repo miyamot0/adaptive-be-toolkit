@@ -1,6 +1,4 @@
-import PageWrapper from "#/components/layout/page-wrapper.tsx";
-import type { TOCItem } from "#/components/pages/documentation/types.ts";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { allDocumentations } from "content-collections";
 import type { Documentation } from "content-collections";
 import { MarkdownComponents } from "#/components/markdown/markdown-components.tsx";
@@ -16,7 +14,9 @@ export const Route = createFileRoute("/documentation/$slug/")({
     const doc = allDocumentations.find((doc) => doc.slug === params.slug);
 
     if (!doc) {
-      throw new Response("Not Found", { status: 404 });
+      throw redirect({
+        to: "/documentation",
+      });
     }
 
     return { params };
@@ -26,27 +26,23 @@ export const Route = createFileRoute("/documentation/$slug/")({
       (doc) => doc.slug === params.slug,
     );
 
-    if (!currentDoc) {
-      throw new Response("Not Found", { status: 404 });
-    }
-
     const nextDoc: Documentation | undefined = allDocumentations.find(
-      (doc) => doc.index === currentDoc.index + 1,
+      (doc) => doc.index === currentDoc!.index + 1,
     );
     const prevDoc: Documentation | undefined = allDocumentations.find(
-      (doc) => doc.index === currentDoc.index - 1,
+      (doc) => doc.index === currentDoc!.index - 1,
     );
 
     // Extract table of contents from MDX content
-    const tocItems = extractHeadingsFromMdx(currentDoc.mdx);
+    const tocItems = extractHeadingsFromMdx(currentDoc!.mdx);
 
     return { currentDoc, nextDoc, prevDoc, tocItems };
   },
   component: RouteComponent,
   head: ({ loaderData }) => ({
     ...createMetaTags({
-      pageName: loaderData!.currentDoc.title,
-      content: loaderData!.currentDoc.summary,
+      pageName: loaderData!.currentDoc!.title,
+      content: loaderData!.currentDoc!.summary,
     }),
   }),
 });
@@ -57,7 +53,7 @@ function RouteComponent() {
   return (
     <DocumentationLayout docs={allDocumentations}>
       <main className="flex flex-col gap-2">
-        <MDXContent code={currentDoc.mdx} components={MarkdownComponents} />
+        <MDXContent code={currentDoc!.mdx} components={MarkdownComponents} />
 
         <div className="flex flex-row justify-between items-center pt-4 border-t">
           {prevDoc ? (

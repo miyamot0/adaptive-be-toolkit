@@ -8,10 +8,13 @@ import type { TOCItem } from "./types";
 export function extractHeadingsFromMdx(mdxCode: string): TOCItem[] {
   const lines = mdxCode.split("\n");
   const tocItems: TOCItem[] = [];
-  let currentParent: TOCItem | null = null;
+
+  console.log(lines);
 
   // Skip frontmatter (lines starting with ---)
   let inFrontmatter = false;
+  let currentParent: TOCItem | null = null;
+
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
 
@@ -41,30 +44,28 @@ export function extractHeadingsFromMdx(mdxCode: string): TOCItem[] {
 
       // Build hierarchy based on heading depth
       if (level === 1) {
-        // H1 is root level - clear any existing parents
+        // H1 is root level - clear any existing parents and add as root item
         currentParent = null;
-      } else if (currentParent && currentParent.level < level) {
-        // New deeper level - find the parent at previous level
+        tocItems.push(tocItem);
+      } else if (!currentParent || currentParent.level >= level) {
+        // New shallower or equal level - find parent at previous level
         const newParent = findItemAtLevel(tocItems, level - 1);
         if (newParent) {
           currentParent = newParent;
+          if (!newParent.children) {
+            newParent.children = [];
+          }
+          newParent.children.push(tocItem);
+        } else {
+          // No parent found at this level, add as root item
+          tocItems.push(tocItem);
         }
-      } else if (currentParent && currentParent.level >= level) {
-        // New shallower or equal level - replace parent chain
-        const newParent = findItemAtLevel(tocItems, level - 1);
-        if (newParent) {
-          currentParent = newParent;
-        }
-      }
-
-      // Add to parent's children or as root item
-      if (currentParent) {
+      } else {
+        // Deeper level - add to current parent's children
         if (!currentParent.children) {
           currentParent.children = [];
         }
         currentParent.children.push(tocItem);
-      } else {
-        tocItems.push(tocItem);
       }
 
       // Update current parent for next iteration
