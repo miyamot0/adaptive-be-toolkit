@@ -1,8 +1,10 @@
 import { AlgorithmThreshold } from "@/types/survey";
 import { argmax, argmin } from "../../helpers/arrays";
 import { Algorithm } from "../common/algorithm";
-import type { DiscountingResponseProvided } from "#/types/discounting.ts";
 import { exploit } from "./discounting-agent-exploit";
+import type { DiscountingResponseProvided } from "#/types/discounting/discounting-response-output.ts";
+
+const ENTROPY_WINDOW = 3; // Number of recent trials used to compute the rolling ∆H average
 
 export class DiscountingAgent extends Algorithm {
   id: string | undefined = undefined;
@@ -13,7 +15,7 @@ export class DiscountingAgent extends Algorithm {
   last_delay: number | undefined = undefined;
 
   // Max expenditure
-  max_wait: number = 0;
+  max_wait = 0;
   // Max price assoc. w/ expenditure
 
   // Responses across task
@@ -22,8 +24,8 @@ export class DiscountingAgent extends Algorithm {
   // Decision-making for termination
   threshhold = AlgorithmThreshold.MaximumIteration;
 
-  ssr: number = 50;
-  llr: number = 100;
+  ssr = 50;
+  llr = 100;
 
   /** reset
    *
@@ -49,6 +51,8 @@ export class DiscountingAgent extends Algorithm {
     this.last_regret = undefined;
 
     this.max_wait = 0;
+    this.min_responses = 5;
+    this.compoundSuppression = false;
 
     this.responses = [];
   }
@@ -73,7 +77,7 @@ export class DiscountingAgent extends Algorithm {
 
   /**
    * setValues
-   * 
+   *
    * @param {number} ssr smaller-sooner reinforcer value
    * @param {number} llr larger-later reinforcer value
    * @returns {void}
@@ -124,5 +128,37 @@ export class DiscountingAgent extends Algorithm {
    */
   public set_algorithm(threshhold: AlgorithmThreshold) {
     this.threshhold = threshhold;
+  }
+
+  public evaluate_threshold() {
+    switch (this.threshhold) {
+      case AlgorithmThreshold.MaximumIteration:
+        if (this.turn > this.max_turns) return true;
+
+        return false;
+
+      case AlgorithmThreshold.RegretMin: {
+        // Plateau detection: returns true when the average per-trial entropy drop
+        // over the last ENTROPY_WINDOW trials falls below ENTROPY_PLATEAU_THRESHOLD,
+        // indicating beliefs have stopped concentrating and no new information is
+        // being gained from additional trials.
+        if (this.responses.length < this.min_responses) return false;
+
+        const window = this.responses.slice(-ENTROPY_WINDOW - 1);
+
+        if (window.length < 2) return false;
+
+        let totalDrop = 0;
+        for (let i = 1; i < window.length; i++) {
+          totalDrop += window[i - 1].Entropy - window[i].Entropy;
+        }
+        const avgDrop = totalDrop / (window.length - 1);
+
+        return avgDrop < this.entropy_threshold;
+      }
+
+      default:
+        throw new Error(`Unknown threshold type: ${this.threshhold}`);
+    }
   }
 }

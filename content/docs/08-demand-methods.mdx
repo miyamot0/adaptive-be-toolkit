@@ -1,0 +1,74 @@
+---
+title: "Demand Tasks"
+description: "This page provides an overview of the Adaptive Demand Task, a tool used to assess consumer demand and preferences in various contexts."
+summary: "This page provides an overview of the Adaptive Demand Task, a tool used to assess consumer demand and preferences in various contexts."
+index: 8
+type: demand
+slug: demand-methods
+date: 2026-05-24
+---
+
+# Adaptive Demand Tasks
+
+The **Adaptive Demand Task** is an agent-based, adaptive operant demand procedure. The goal is to efficiently estimate **O_max** (the maximum total expenditure a participant exhibits) and **P_max** (the price at which that maximum expenditure occurs). Rather than presenting a fixed list of prices, the algorithm uses a belief-updating procedure to select the next price point based on the participant's response history, converging on the demand curve's peak expenditure region with a minimal number of trials (default maximum: 20).
+
+## Background
+
+The Adaptive Demand Task is designed to measure consumer preferences and decision-making under different pricing conditions. It is particularly useful in understanding how individuals value immediate rewards versus delayed rewards, which can provide insights into various behavioral economic phenomena such as discounting behavior.
+
+## Criteria for Participation
+
+To participate in the Adaptive Demand Task, participants must meet certain criteria:
+
+- Be at least 18 years old.
+- Have no known cognitive or psychological conditions that might affect their decision-making abilities.
+- Be able to understand and follow the instructions provided during the task.
+
+## Settings and Parameters
+
+The Adaptive Demand Task can be customized with various settings and parameters to tailor the experience to different research needs. Key parameters include:
+
+- **Reinforcer**: The commodity being purchased (e.g., "Coffee", "Cigarettes").
+- **Price Range**: The range of prices presented to participants.
+- **Beta**: The adaptation rate, which controls how aggressively beliefs are updated.
+- **Max Trials**: The maximum number of trials allowed in the task.
+
+## Mechanics and Logic
+
+The task presents a binary choice on each trial:
+
+> _"Would you prefer $50 now or $100 in X days?"_
+
+The price `X` is selected adaptively by the algorithm on each trial. After the participant responds, the algorithm updates its internal model of where the indifference point lies and selects the next price accordingly. This continues until a stopping criterion is met.
+
+## Stopping Criteria
+
+The task terminates when one of the following criteria is met:
+
+- **Maximum Iteration**: The default maximum number of trials (20).
+- **Regret Min**: The participant's regret in choosing the smaller-sooner reward drops below a certain threshold.
+- **Belief Concentration**: The algorithm's belief mass around the estimated indifference point reaches a specified level.
+
+## Output Payload
+
+The task returns the following payload fields:
+
+- `ID`: The unique identifier for the participant/session.
+- `MaxExpenditure`: The maximum total expenditure observed across all trials.
+- `MaxExpenditurePrice`: The price at which the maximum expenditure occurs.
+- `MaxExpenditureQuantity`: The quantity of the reinforcer purchased at the maximum expenditure price.
+- `Beta`: The adaptation rate used in the algorithm.
+
+## Example Usage
+
+To use the Adaptive Demand Task, researchers can access it via a URL with participant-specific parameters:
+
+```plaintext
+/demand/<participantId>?reinforcer=Coffee&figures=true&debug=true
+```
+
+The participant `id` is embedded in the URL path and is echoed back verbatim in the completion payload.
+
+## Conclusion
+
+The Adaptive Demand Task is a powerful tool for assessing consumer demand and preferences. By providing an efficient and adaptive approach to estimating expenditure behavior, it offers valuable insights into various economic phenomena and can be used across different research contexts.

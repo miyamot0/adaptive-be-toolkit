@@ -1,0 +1,159 @@
+---
+title: "Dynamic Algorithm"
+description: "Documentation for the entropy-based stopping criterion for the Adaptive Discounting Task, including mechanics, output fields, and all configurable parameters."
+summary: "Documentation for the entropy-based adaptive stopping criterion, which terminates the discounting task when the belief distribution stops concentrating."
+index: 7
+type: discounting
+slug: discounting-methods-delta-entropy
+date: 2026-06-03
+---
+
+# Adaptive Discounting: Entropy Algorithm
+
+The Entropy algorithm terminates the adaptive discounting task when the belief distribution over delay levels stops concentrating — that is, when additional trials are no longer contributing meaningful new information about the participant's indifference point. Rather than running for a fixed number of questions, the task length adapts to the participant: it ends earlier for participants whose indifference point is quickly resolved and continues longer for those with more variable or ambiguous response patterns.
+
+This makes the entropy algorithm more efficient on average than the number threshold approach and produces better-calibrated per-participant estimates. It is recommended for studies where minimizing participant burden is a priority and where unequal trial counts across participants are acceptable.
+
+## Mechanics and Logic
+
+The trial-by-trial belief updating procedure is identical to the [Number Threshold Algorithm](/documentation/discounting-methods-nquestions): each response scales down the probability mass of delays inconsistent with the observed choice, the distribution is renormalized, and the next delay is drawn from the peak of the updated distribution.
+
+What differs is the stopping rule. After each trial, the algorithm computes the **Shannon entropy** of the current belief distribution:
+
+$$H_t = -\sum_{i=1}^{N} p_i \ln(p_i)$$
+
+where $p_i$ is the normalized belief mass on delay level $i$ and $N$ is the total number of delay levels. Entropy is measured in nats.
+
+**Interpreting entropy values:**
+
+- At initialization, beliefs are uniform: $H_0 = \ln(N)$. For the default delay set (~560 levels), this is approximately 6.3 nats.
+- After a consistent sequence of responses, entropy decreases as beliefs concentrate around the ED50 region.
+- A value near 0 would indicate near-complete certainty about a single delay. In practice, entropy converges to a small positive value reflecting irreducible uncertainty across a few neighboring delays on the grid.
+
+**The plateau detection rule** computes the per-trial entropy drop $\Delta H_t = H_{t-1} - H_t$ after each response. When the rolling average of $\Delta H$ over the last 3 trials falls below 0.01 nats, the distribution is considered to have plateaued and the task terminates.
+
+A minimum response count (`minresponses`, default: 5) prevents early termination during the initial exploration phase, when beliefs may temporarily stabilize briefly before sufficient data has been collected.
+
+### Comparison to Number Threshold
+
+|                    | Number Threshold                          | Entropy Algorithm                                    |
+| ------------------ | ----------------------------------------- | ---------------------------------------------------- |
+| Trial count        | Fixed, equal across participants          | Variable, adapts to response patterns                |
+| Stopping criterion | Count reaches `n`                         | avg(ΔH) falls below threshold                        |
+| Efficiency         | Predictable, simple                       | Higher on average; lower for noisy responders        |
+| Time allocation    | Uniform                                   | Unequal across participants                          |
+| Best for           | Studies requiring consistent trial counts | Studies prioritizing estimate quality and efficiency |
+
+## Results
+
+At task completion, the final estimate is the delay at the peak of the belief distribution — the delay the algorithm has identified as most likely to be the participant's ED50.
+
+The output payload transmitted via `postMessage` to the host page includes:
+
+| Field      | Description                                              |
+| ---------- | -------------------------------------------------------- |
+| `ID`       | The participant identifier provided in the URL path      |
+| `MaxDelay` | The longest delay at which the participant chose to wait |
+| `Beta`     | The adaptation rate used during the task                 |
+
+Each individual response is also stored with an `Entropy` field recording the belief entropy (in nats) at the time of that response. This per-trial entropy trajectory can be used to visualize convergence and assess response consistency. A smooth downward curve indicates steady convergence; a jagged or non-monotonic trajectory indicates inconsistent responding. The entropy chart in the diagnostic figures view (`figures=true`) plots this directly — the plateau visible in the chart corresponds exactly to the condition that triggers task termination.
+
+## Settings and Parameters
+
+All settings are passed as URL query parameters. No source code changes are required.
+
+```
+/discounting/<participantId>/adjusting-amount-ascending?algo=RegretMin&beta=0.25&minresponses=5
+```
+
+### Required
+
+| Parameter       | Location | Format                                                        | Description                                                    |
+| --------------- | -------- | ------------------------------------------------------------- | -------------------------------------------------------------- |
+| `participantId` | URL path | string, min 6 characters                                      | Participant identifier. Echoed verbatim in the output payload. |
+| `method`        | URL path | `adjusting-amount-ascending` or `adjusting-amount-descending` | Presentation order of the delay sequence.                      |
+
+### Algorithm
+
+| Parameter | Default     | Accepted values                 | Description                                                            |
+| --------- | ----------- | ------------------------------- | ---------------------------------------------------------------------- |
+| `algo`    | `RegretMin` | `MaximumIteration`, `RegretMin` | Stopping criterion. Use `RegretMin` for the entropy plateau algorithm. |
+
+### Rewards
+
+| Parameter    | Default   | Format  | Description                                              |
+| ------------ | --------- | ------- | -------------------------------------------------------- |
+| `reinforcer` | `Dollars` | string  | The commodity label displayed in the choice prompt.      |
+| `ssr`        | `50`      | integer | The smaller-sooner reward amount.                        |
+| `llr`        | `100`     | integer | The larger-later reward amount. A 2:1 ratio is standard. |
+
+### Adaptation
+
+| Parameter | Default | Range             | Description                                                                                                                                                                                                                                                               |
+| --------- | ------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `beta`    | `0.25`  | 0 – 1 (exclusive) | Adaptation rate. Controls how aggressively beliefs are updated after each response. Lower values produce smoother, more gradual convergence; higher values converge faster but may overshoot for inconsistent responders. Values between `0.1` and `0.5` are recommended. |
+
+### Minimum Responses
+
+| Parameter      | Default | Minimum | Description                                                                                                                                                                                                                                                                                                                                                                                  |
+| -------------- | ------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `minresponses` | `5`     | 1       | The number of responses that must be collected before the entropy plateau check begins. This acts as a warm-up period, preventing early termination when beliefs happen to stabilize briefly before sufficient data has been gathered. Increasing this value (e.g., `minresponses=8`) provides a stronger data floor at the cost of additional trials for participants who converge quickly. |
+
+### Delay Points
+
+| Parameter | Default   | Minimum count | Description                                   |
+| --------- | --------- | ------------- | --------------------------------------------- |
+| `delays`  | See below | 8             | Comma-separated list of delay values in days. |
+
+The default delay set spans 1 day to 20 years. A broader range improves the algorithm's ability to resolve indifference points at the extremes of the distribution. The entropy algorithm is particularly sensitive to range specification: if the true indifference point lies outside the delay set, the belief distribution will pile up at the boundary and entropy will artificially plateau at a non-informative value — the task will terminate without having found the true ED50.
+
+**Guidance:**
+
+- Use the widest plausible range for the commodity and population being studied.
+- Ensure fine-grained spacing in the region where most indifference points are expected (typically days to months for monetary rewards).
+- The minimum required delay count is 8; fewer points may cause the distribution to plateau trivially.
+
+**Example — standard research deployment:**
+
+```
+delays=1,2,3,5,7,14,30,60,90,180,270,365,548,730,1095,1460,1825,2555,3650
+```
+
+**Example — commodities with short indifference horizons (e.g., food, cigarettes):**
+
+```
+delays=1,2,3,4,5,6,7,10,14,21,30,45,60,90,180,365
+```
+
+### Developer / Diagnostic Parameters
+
+| Parameter | Default | Description                                                                                                                                                                                                                                                                                           |
+| --------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `figures` | `false` | Set to `true` to render diagnostic charts alongside the task: belief distribution over delays, raw choice history, and the per-trial entropy trajectory. The entropy chart shows the convergence curve directly — a plateau in the chart corresponds to the condition that triggers task termination. |
+| `debug`   | `false` | Set to `true` to display a real-time statistics overlay showing trial count and belief concentration.                                                                                                                                                                                                 |
+
+### Example URLs
+
+**Standard deployment with entropy stopping:**
+
+```
+/discounting/PARTICIPANT001/adjusting-amount-ascending?algo=RegretMin&reinforcer=Dollars&ssr=50&llr=100
+```
+
+**Conservative warm-up — require 8 responses before plateau check:**
+
+```
+/discounting/PARTICIPANT001/adjusting-amount-ascending?algo=RegretMin&minresponses=8&beta=0.25
+```
+
+**Pilot session with diagnostics:**
+
+```
+/discounting/PILOT001/adjusting-amount-ascending?algo=RegretMin&figures=true&debug=true&reinforcer=Coffee&ssr=1&llr=5
+```
+
+**Narrow delay range for short-horizon commodity:**
+
+```
+/discounting/PARTICIPANT001/adjusting-amount-ascending?algo=RegretMin&delays=1,2,3,5,7,14,30,60,90,180,365
+```

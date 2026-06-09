@@ -1,0 +1,31 @@
+---
+title: "Program Debugging"
+description: "This page provides an overview of the debug and figure settings available in the Adaptive BE Toolkit, including how to enable them through URL parameters and what information they display during task execution."
+summary: "An overview of the debug and figure settings available in the Adaptive BE Toolkit, including how to enable them through URL parameters and what information they display during task execution."
+index: 3
+type: general
+slug: debug-figure-settings
+date: 2026-06-05
+---
+
+# Debugging and Visualizations
+
+## Beliefs Distribution
+
+The **Beliefs Distribution** figure provides insights into the algorithm's belief distribution over levels (e.g., delays or prices) based on participant responses. This distribution is updated using a Bayesian approach, where each response shifts the probability mass towards the estimated target region.
+
+### Certainty and ED50/OMAX/PMAX
+
+Certainty in beliefs is represented by the height of the belief distribution at different levels. The **ED50** (Discounting) or **OMAX/PMAX** (Demand) values are key points where the algorithm converges, indicating the most likely expenditure region. Higher certainty around these values suggests that additional trials are unlikely to provide new information.
+
+### Bayesian Update
+
+The algorithm updates its beliefs using a Bayesian approach, where each response shifts the probability mass towards the estimated target region. This update process is crucial for selecting the next question and refining the estimate of **ED50** or **OMAX/PMAX**.
+
+## Entropy and Average Entropy Change
+
+The **Entropy** figure provides insights into the uncertainty of beliefs across levels. Shannon entropy measures the average amount of information needed to specify an outcome from a set of possible outcomes. Higher entropy indicates higher uncertainty, while lower entropy indicates more certainty.
+
+### Dynamic Stop Point
+
+Changes in entropy can indicate when additional trials are unlikely to contribute new information. A plateau in entropy suggests that the algorithm has converged and is likely at or near the optimal solution. This helps in determining a dynamic 'stop point' for the task.

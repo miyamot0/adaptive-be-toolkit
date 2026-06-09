@@ -1,0 +1,243 @@
+---
+title: "Program Workflow"
+description: "This page provides an overview of the intended workflow for using the Adaptive BE Toolkit, outlining the steps and processes involved in effectively utilizing the toolkit for behavioral economics research and applications."
+summary: "An overview of how to embed toolkit measures into survey platforms via iframes, configure tasks through URL parameters, and capture results through the postMessage callback API."
+index: 1
+type: general
+slug: general-workflow
+date: 2026-06-03
+---
+
+# Implementation of Measures
+
+The Adaptive BE Toolkit is designed to be embedded directly inside existing survey frameworks — such as Qualtrics, REDCap, or any custom web-based study — as a self-contained iframe. Each measure operates entirely within the iframe and requires no server-side infrastructure from the researcher. The parent survey platform is responsible for two things: supplying a unique participant identifier when the iframe is loaded, and listening for a completion event that the toolkit dispatches when the task finishes.
+
+No response data is stored or transmitted by the toolkit itself. All task output is returned in real time to the parent page via the browser's native `postMessage` API, at which point the survey platform is free to store, process, or act on those results however it chooses. This stateless architecture keeps the toolkit lightweight and makes it straightforward to integrate into any platform that can render an iframe and run JavaScript.
+
+Two measures are currently available:
+
+- **Adaptive Purchase Task** — an agent-based adaptive operant demand procedure that converges on O<sub>max</sub> and P<sub>max</sub> estimates with a minimal number of trials.
+- **Adaptive Delay Discounting Task** — an agent-based adaptive discounting procedure that converges on an ED50 estimate (the delay at which the participant is indifferent between an immediate and a delayed reward).
+
+## Simplified Design of Measures
+
+A central design goal of the toolkit is that researchers should be able to deploy and configure a measure without writing any code inside the iframe itself. All task configuration is expressed through URL query parameters appended to the iframe's `src` attribute. Changing the commodity being purchased, adjusting reward magnitudes for the discounting task, or enabling diagnostic visualizations all require nothing more than modifying the URL string.
+
+This approach keeps integration friction low. A researcher embedding a Purchase Task into a Qualtrics survey, for example, only needs to construct the correct URL and drop an `<iframe>` tag onto the page — the adaptive algorithm, question sequencing, belief updating, and result packaging are all handled internally.
+
+The measures are also fully responsive and operate on mobile devices without modification, making them suitable for large-scale online studies where participants are likely to complete surveys on phones or tablets.
+
+### Incorporation into Survey Platforms
+
+Each measure is accessed at a distinct URL path. A **unique participant identifier** must be included in the path itself (not as a query parameter) and must be at least six characters long. This identifier is echoed back verbatim in the completion payload so the parent platform can match the result to the correct participant record.
+
+```
+https://<your-deployment>/demand/<participantId>?<options>
+https://<your-deployment>/discounting/<participantId>?<options>
+```
+
+The following query parameters are accepted by each task:
+
+**Adaptive Purchase Task** (`/demand/<id>`)
+
+| Parameter    | Type     | Default                 | Description                                                                                                                             |
+| ------------ | -------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `reinforcer` | string   | `"Example Reinforcers"` | Label for the commodity being purchased. Displayed in question prompts.                                                                 |
+| `figures`    | `"true"` | _(omit)_                | Renders live diagnostic charts (belief distribution, expenditure curve, consumption curve). Intended for development and piloting only. |
+| `debug`      | `"true"` | _(omit)_                | Displays trial count and belief summary statistics below the question. Intended for development and piloting only.                      |
+
+**Adaptive Delay Discounting Task** (`/discounting/<id>`)
+
+| Parameter    | Type     | Default     | Description                                                                             |
+| ------------ | -------- | ----------- | --------------------------------------------------------------------------------------- |
+| `reinforcer` | string   | `"Dollars"` | Label for the reward referenced in choice prompts.                                      |
+| `ssr`        | number   | `50`        | Smaller-sooner reinforcer (SSR) magnitude — the immediate reward amount.                |
+| `llr`        | number   | `100`       | Larger-later reinforcer (LLR) magnitude — the delayed reward amount.                    |
+| `figures`    | `"true"` | _(omit)_    | Renders live diagnostic charts. Intended for development and piloting only.             |
+| `debug`      | `"true"` | _(omit)_    | Displays trial count and belief statistics. Intended for development and piloting only. |
+
+To embed either task inside a survey page, add a standard `<iframe>` element with the configured URL as the `src`. The example below embeds a Purchase Task for a participant whose ID is stored in a Qualtrics embedded data field called `ResponseID`, asking about coffee purchases:
+
+```html
+<iframe
+  src="https://your-deployment.com/demand/PARTICIPANT_ID?reinforcer=Coffee"
+  width="100%"
+  height="600"
+  frameborder="0"
+  allowtransparency="true"
+>
+</iframe>
+```
+
+For a Delay Discounting task comparing $20 now versus $100 later for a monetary reward:
+
+```html
+<iframe
+  src="https://your-deployment.com/discounting/PARTICIPANT_ID?reinforcer=Dollars&ssr=20&llr=100"
+  width="100%"
+  height="600"
+  frameborder="0"
+  allowtransparency="true"
+>
+</iframe>
+```
+
+In practice, `PARTICIPANT_ID` is typically injected dynamically by the survey platform using a pipe or template variable (e.g., Qualtrics' `${e://Field/ResponseID}` syntax) at the time the page is rendered.
+
+### Handling Events and Callback
+
+When a participant completes a task — either by satisfying the algorithm's stopping criterion or reaching the maximum trial count — the toolkit dispatches a `message` event to the parent window using the browser's `postMessage` API. The parent page must register a `message` event listener to receive this notification and extract the results.
+
+The message payload always has the following top-level shape:
+
+```javascript
+{
+  type: "ACTION_COMPLETE",
+  payload: { /* task results */ }
+}
+```
+
+The `type` field will always be `"ACTION_COMPLETE"`. The `payload` object contains the task results. Its specific fields differ by task:
+
+**Adaptive Purchase Task payload fields**
+
+| Field                    | Type   | Description                                                        |
+| ------------------------ | ------ | ------------------------------------------------------------------ |
+| `ID`                     | string | The participant identifier passed in the URL path.                 |
+| `MaxExpenditure`         | number | Maximum total expenditure observed (O<sub>max</sub>).              |
+| `MaxExpenditurePrice`    | number | The price at which maximum expenditure occurred (P<sub>max</sub>). |
+| `MaxExpenditureQuantity` | number | Quantity consumed at P<sub>max</sub>.                              |
+| `Beta`                   | number | Adaptation rate used by the algorithm.                             |
+
+**Adaptive Delay Discounting payload fields**
+
+| Field      | Type   | Description                                                                                    |
+| ---------- | ------ | ---------------------------------------------------------------------------------------------- |
+| `ID`       | string | The participant identifier passed in the URL path.                                             |
+| `MaxDelay` | number | Maximum delay (in days) at which the participant chose the delayed reward — the ED50 estimate. |
+| `Beta`     | number | Adaptation rate used by the algorithm.                                                         |
+
+A minimal event listener looks like this:
+
+```javascript
+window.addEventListener("message", function (event) {
+  // Always verify the origin before trusting message contents.
+  if (event.origin !== "https://your-deployment.com") return;
+
+  var data = event.data;
+
+  if (data.type === "ACTION_COMPLETE") {
+    var payload = data.payload;
+    // payload.ID, payload.MaxExpenditure, payload.MaxDelay, etc.
+    handleTaskComplete(payload);
+  }
+});
+```
+
+**Security note:** Always check `event.origin` before processing a message. Without this check, any page that can embed your survey could dispatch forged `ACTION_COMPLETE` messages. Set the origin to the exact domain where the toolkit is deployed.
+
+## Algorithm Options
+
+- **Algorithm Name**: Explanation of how the algorithm works.
+  - **Parameter**: Description of the parameter and its impact.
+
+## Example: Qualtrics
+
+The most common integration pattern is to embed the iframe inside a Qualtrics survey question and use the JavaScript editor attached to that question to listen for the completion event. When the event arrives, the results are written to Qualtrics Embedded Data fields, and the Next button is programmatically clicked to advance the survey.
+
+The following is a complete example for a **Purchase Task**. The same pattern applies to the Discounting task — only the embedded data field names and the payload properties differ.
+
+**Step 1 — Create Embedded Data fields**
+
+In your Qualtrics survey flow, add an Embedded Data block _before_ the question containing the iframe and define the fields you intend to capture:
+
+- `MaxExpenditure`
+- `MaxExpenditurePrice`
+- `MaxExpenditureQuantity`
+
+**Step 2 — Add the iframe to a question**
+
+In the question body, switch to HTML view and insert the iframe. Use Qualtrics piped text to inject the participant's Response ID as the task identifier:
+
+```html
+<iframe
+  id="adaptive-task-frame"
+  src="https://your-deployment.com/demand/${e://Field/ResponseID}?reinforcer=Coffee"
+  width="100%"
+  height="650"
+  frameborder="0"
+  allowtransparency="true"
+>
+</iframe>
+```
+
+**Step 3 — Hide the Next button and add the event listener**
+
+In the question's JavaScript editor (accessed via the gear icon → _Add JavaScript_), add the following:
+
+```javascript
+Qualtrics.SurveyEngine.addOnload(function () {
+  // Hide the Next button until the task completes.
+  this.hideNextButton();
+
+  var engine = this;
+
+  window.addEventListener("message", function (event) {
+    // Replace with the actual origin of your toolkit deployment.
+    if (event.origin !== "https://your-deployment.com") return;
+
+    var data = event.data;
+
+    if (data.type === "ACTION_COMPLETE") {
+      var payload = data.payload;
+
+      // Write results to Qualtrics Embedded Data.
+      Qualtrics.SurveyEngine.setEmbeddedData(
+        "MaxExpenditure",
+        payload.MaxExpenditure,
+      );
+      Qualtrics.SurveyEngine.setEmbeddedData(
+        "MaxExpenditurePrice",
+        payload.MaxExpenditurePrice,
+      );
+      Qualtrics.SurveyEngine.setEmbeddedData(
+        "MaxExpenditureQuantity",
+        payload.MaxExpenditureQuantity,
+      );
+
+      // Re-show and automatically click Next to advance the survey.
+      engine.showNextButton();
+      engine.clickNextButton();
+    }
+  });
+});
+```
+
+For the **Discounting task**, replace the iframe `src` path and the embedded data writes accordingly:
+
+```javascript
+Qualtrics.SurveyEngine.setEmbeddedData("MaxDelay", payload.MaxDelay);
+```
+
+Once the survey is collected, the embedded data fields will be available in the response export alongside all other survey data, ready for downstream analysis.
+
+## Recap and Summary
+
+The general workflow for incorporating any toolkit measure into a survey platform involves three steps:
+
+1. **Configure and embed** — Construct the task URL with the participant identifier in the path and any desired query parameters, then embed it as an iframe on the relevant survey page.
+2. **Listen for completion** — Register a `message` event listener on the parent page that checks for `type === "ACTION_COMPLETE"` and verifies the message origin before processing the payload.
+3. **Store and advance** — Write the result fields to the platform's data store (e.g., Qualtrics Embedded Data) and trigger whatever action should follow task completion, such as advancing to the next survey page.
+
+This architecture eliminates the need for researchers to implement or maintain any of the adaptive logic themselves. The measures are self-contained — they handle trial sequencing, belief updating, stopping criteria, and result packaging internally. Customization through URL parameters covers the most common research needs: adjusting the commodity or reward label, setting reward magnitudes for discounting, and enabling diagnostic output during piloting. Because the iframe communicates entirely through standard browser APIs, the same integration pattern works across Qualtrics, REDCap, custom web applications, and any other platform capable of rendering an iframe and executing JavaScript.
+
+## Settings Overview
+
+- **Setting Name**: Description of what the setting does.
+- **Setting Name**: Description of what the setting does.
+
+## Implementation Details
+
+1. **Step 1**: Description of the first step.
+2. **Step 2**: Description of the second step.
+3. **Step 3**: Description of the third step.

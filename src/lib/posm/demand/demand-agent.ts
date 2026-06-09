@@ -5,7 +5,9 @@ import { agent_decision } from "./demand-agent-decision";
 import { explore_non_zero, explore_zero } from "./demand-agent-explore";
 import { exploit } from "./demand-agent-exploit";
 import { Algorithm } from "../common/algorithm";
-import type { DemandResponseProvided } from "#/types/demand.ts";
+import type { DemandResponseProvided } from "#/types/demand/demand-response-output.ts";
+
+const ENTROPY_WINDOW = 3; // Number of recent trials used to compute the rolling ∆H average
 
 export class DemandAgent extends Algorithm {
   id: string | undefined = undefined;
@@ -18,11 +20,11 @@ export class DemandAgent extends Algorithm {
   last_p: number | undefined = undefined;
 
   // Max expenditure
-  max_expend: number = 0;
+  max_expend = 0;
   // Max price assoc. w/ expenditure
-  max_expend_price: number = 0;
+  max_expend_price = 0;
   // Max quantity assoc. w/ expenditure
-  max_q: number = 0;
+  max_q = 0;
 
   // Responses across task
   responses: DemandResponseProvided[] = [];
@@ -46,7 +48,7 @@ export class DemandAgent extends Algorithm {
    *
    */
   public reset() {
-    this.beta = 0.5;
+    this.beta = 0.25;
     this.turn = 1;
 
     this.n_levels = 0;
@@ -76,7 +78,6 @@ export class DemandAgent extends Algorithm {
    *
    * @param {number} turns
    */
-
 
   /** set min_nonzero_consumption_points
    *
@@ -119,9 +120,11 @@ export class DemandAgent extends Algorithm {
       case AlgorithmAction.NonconsumptionFound:
         explore_zero(value, this);
         break;
+
       case AlgorithmAction.ConsumptionFoundInitial:
         explore_non_zero(value, this);
         break;
+
       case AlgorithmAction.ConsumptionFoundNonInitial:
         exploit(value, this);
         break;
@@ -157,5 +160,37 @@ export class DemandAgent extends Algorithm {
    */
   public set_algorithm(threshhold: AlgorithmThreshold) {
     this.threshhold = threshhold;
+  }
+
+  public evaluate_threshold() {
+    switch (this.threshhold) {
+      case AlgorithmThreshold.MaximumIteration:
+        if (this.turn > this.max_turns) return true;
+
+        return false;
+
+      case AlgorithmThreshold.RegretMin: {
+        // Plateau detection: returns true when the average per-trial entropy drop
+        // over the last ENTROPY_WINDOW trials falls below ENTROPY_PLATEAU_THRESHOLD,
+        // indicating beliefs have stopped concentrating and no new information is
+        // being gained from additional trials.
+        if (this.responses.length < this.min_responses) return false;
+
+        const window = this.responses.slice(-ENTROPY_WINDOW - 1);
+
+        if (window.length < 2) return false;
+
+        let totalDrop = 0;
+        for (let i = 1; i < window.length; i++) {
+          totalDrop += window[i - 1].Entropy - window[i].Entropy;
+        }
+        const avgDrop = totalDrop / (window.length - 1);
+
+        return avgDrop < this.entropy_threshold;
+      }
+
+      default:
+        throw new Error(`Unknown threshold type: ${this.threshhold}`);
+    }
   }
 }

@@ -10,53 +10,116 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as IdDiscountingIndexRouteImport } from './routes/$id.discounting.index'
-import { Route as IdDemandIndexRouteImport } from './routes/$id.demand.index'
+import { Route as Documentation2IndexRouteImport } from './routes/documentation2.index'
+import { Route as DocumentationIndexRouteImport } from './routes/documentation/index'
+import { Route as BuilderIndexRouteImport } from './routes/builder/index'
+import { Route as DocumentationSlugIndexRouteImport } from './routes/documentation/$slug.index'
+import { Route as DiscountingIdMethodIndexRouteImport } from './routes/discounting/$id.$method.index'
+import { Route as DemandIdMethodIndexRouteImport } from './routes/demand/$id.$method.index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IdDiscountingIndexRoute = IdDiscountingIndexRouteImport.update({
-  id: '/$id/discounting/',
-  path: '/$id/discounting/',
+const Documentation2IndexRoute = Documentation2IndexRouteImport.update({
+  id: '/documentation2/',
+  path: '/documentation2/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IdDemandIndexRoute = IdDemandIndexRouteImport.update({
-  id: '/$id/demand/',
-  path: '/$id/demand/',
+const DocumentationIndexRoute = DocumentationIndexRouteImport.update({
+  id: '/documentation/',
+  path: '/documentation/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuilderIndexRoute = BuilderIndexRouteImport.update({
+  id: '/builder/',
+  path: '/builder/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocumentationSlugIndexRoute = DocumentationSlugIndexRouteImport.update({
+  id: '/documentation/$slug/',
+  path: '/documentation/$slug/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiscountingIdMethodIndexRoute =
+  DiscountingIdMethodIndexRouteImport.update({
+    id: '/discounting/$id/$method/',
+    path: '/discounting/$id/$method/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DemandIdMethodIndexRoute = DemandIdMethodIndexRouteImport.update({
+  id: '/demand/$id/$method/',
+  path: '/demand/$id/$method/',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/$id/demand/': typeof IdDemandIndexRoute
-  '/$id/discounting/': typeof IdDiscountingIndexRoute
+  '/builder/': typeof BuilderIndexRoute
+  '/documentation/': typeof DocumentationIndexRoute
+  '/documentation2/': typeof Documentation2IndexRoute
+  '/documentation/$slug/': typeof DocumentationSlugIndexRoute
+  '/demand/$id/$method/': typeof DemandIdMethodIndexRoute
+  '/discounting/$id/$method/': typeof DiscountingIdMethodIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/$id/demand': typeof IdDemandIndexRoute
-  '/$id/discounting': typeof IdDiscountingIndexRoute
+  '/builder': typeof BuilderIndexRoute
+  '/documentation': typeof DocumentationIndexRoute
+  '/documentation2': typeof Documentation2IndexRoute
+  '/documentation/$slug': typeof DocumentationSlugIndexRoute
+  '/demand/$id/$method': typeof DemandIdMethodIndexRoute
+  '/discounting/$id/$method': typeof DiscountingIdMethodIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/$id/demand/': typeof IdDemandIndexRoute
-  '/$id/discounting/': typeof IdDiscountingIndexRoute
+  '/builder/': typeof BuilderIndexRoute
+  '/documentation/': typeof DocumentationIndexRoute
+  '/documentation2/': typeof Documentation2IndexRoute
+  '/documentation/$slug/': typeof DocumentationSlugIndexRoute
+  '/demand/$id/$method/': typeof DemandIdMethodIndexRoute
+  '/discounting/$id/$method/': typeof DiscountingIdMethodIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/$id/demand/' | '/$id/discounting/'
+  fullPaths:
+    | '/'
+    | '/builder/'
+    | '/documentation/'
+    | '/documentation2/'
+    | '/documentation/$slug/'
+    | '/demand/$id/$method/'
+    | '/discounting/$id/$method/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$id/demand' | '/$id/discounting'
-  id: '__root__' | '/' | '/$id/demand/' | '/$id/discounting/'
+  to:
+    | '/'
+    | '/builder'
+    | '/documentation'
+    | '/documentation2'
+    | '/documentation/$slug'
+    | '/demand/$id/$method'
+    | '/discounting/$id/$method'
+  id:
+    | '__root__'
+    | '/'
+    | '/builder/'
+    | '/documentation/'
+    | '/documentation2/'
+    | '/documentation/$slug/'
+    | '/demand/$id/$method/'
+    | '/discounting/$id/$method/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  IdDemandIndexRoute: typeof IdDemandIndexRoute
-  IdDiscountingIndexRoute: typeof IdDiscountingIndexRoute
+  BuilderIndexRoute: typeof BuilderIndexRoute
+  DocumentationIndexRoute: typeof DocumentationIndexRoute
+  Documentation2IndexRoute: typeof Documentation2IndexRoute
+  DocumentationSlugIndexRoute: typeof DocumentationSlugIndexRoute
+  DemandIdMethodIndexRoute: typeof DemandIdMethodIndexRoute
+  DiscountingIdMethodIndexRoute: typeof DiscountingIdMethodIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -68,18 +131,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/$id/discounting/': {
-      id: '/$id/discounting/'
-      path: '/$id/discounting'
-      fullPath: '/$id/discounting/'
-      preLoaderRoute: typeof IdDiscountingIndexRouteImport
+    '/documentation2/': {
+      id: '/documentation2/'
+      path: '/documentation2'
+      fullPath: '/documentation2/'
+      preLoaderRoute: typeof Documentation2IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/$id/demand/': {
-      id: '/$id/demand/'
-      path: '/$id/demand'
-      fullPath: '/$id/demand/'
-      preLoaderRoute: typeof IdDemandIndexRouteImport
+    '/documentation/': {
+      id: '/documentation/'
+      path: '/documentation'
+      fullPath: '/documentation/'
+      preLoaderRoute: typeof DocumentationIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/builder/': {
+      id: '/builder/'
+      path: '/builder'
+      fullPath: '/builder/'
+      preLoaderRoute: typeof BuilderIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/documentation/$slug/': {
+      id: '/documentation/$slug/'
+      path: '/documentation/$slug'
+      fullPath: '/documentation/$slug/'
+      preLoaderRoute: typeof DocumentationSlugIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/discounting/$id/$method/': {
+      id: '/discounting/$id/$method/'
+      path: '/discounting/$id/$method'
+      fullPath: '/discounting/$id/$method/'
+      preLoaderRoute: typeof DiscountingIdMethodIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demand/$id/$method/': {
+      id: '/demand/$id/$method/'
+      path: '/demand/$id/$method'
+      fullPath: '/demand/$id/$method/'
+      preLoaderRoute: typeof DemandIdMethodIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -87,18 +178,13 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  IdDemandIndexRoute: IdDemandIndexRoute,
-  IdDiscountingIndexRoute: IdDiscountingIndexRoute,
+  BuilderIndexRoute: BuilderIndexRoute,
+  DocumentationIndexRoute: DocumentationIndexRoute,
+  Documentation2IndexRoute: Documentation2IndexRoute,
+  DocumentationSlugIndexRoute: DocumentationSlugIndexRoute,
+  DemandIdMethodIndexRoute: DemandIdMethodIndexRoute,
+  DiscountingIdMethodIndexRoute: DiscountingIdMethodIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
