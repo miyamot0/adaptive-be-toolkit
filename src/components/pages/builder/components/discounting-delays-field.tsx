@@ -21,9 +21,6 @@ export function DiscountingDelaysField({
 }: DiscountingDelaysFieldProps) {
   return (
     <>
-      <h3 className="text-sm font-semibold text-foreground/80 uppercase tracking-wide">
-        Delay Levels
-      </h3>
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="c-delays">
           Custom Delays{" "}

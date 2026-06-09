@@ -38,7 +38,7 @@ interface LinkBuilderPageProps {}
 export default function LinkBuilderPage(_props: LinkBuilderPageProps) {
   // ── Demand section state with reducer ───────────────────────────────────────
   const [demandState, dispatchDemand] = useReducer(demandReducer, {
-    reinforcer: "Coffee",
+    reinforcer: "Chicken Wings",
     showFigures: false,
     showDebug: false,
     algorithm: AlgorithmThreshold.RegretMin,

@@ -24,9 +24,6 @@ export function DiscountingSSRLRRFields({
 }: DiscountingSSRLRRFieldsProps) {
   return (
     <>
-      <h3 className="text-sm font-semibold text-foreground/80 uppercase tracking-wide">
-        Reward Values
-      </h3>
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="c-ssr">Smaller-Sooner Reinforcer (SSR)</Label>
         <Input

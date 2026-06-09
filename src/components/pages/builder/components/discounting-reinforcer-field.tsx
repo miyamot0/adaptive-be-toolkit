@@ -21,7 +21,7 @@ export function DiscountingReinforcerField({
   return (
     <>
       <h3 className="text-sm font-semibold text-foreground/80 uppercase tracking-wide">
-        Reinforcer
+        Reinforcer Information
       </h3>
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="c-reinforcer">Reinforcer Label</Label>
@@ -33,7 +33,7 @@ export function DiscountingReinforcerField({
         />
         <p className="text-xs text-muted-foreground">
           The reward participants choose between in the discounting task (e.g.,
-          $5 now vs. $10 later).
+          $50 now vs. $100 later).
         </p>
       </div>
     </>

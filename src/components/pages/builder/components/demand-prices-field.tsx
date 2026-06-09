@@ -18,9 +18,6 @@ interface DemandPricesFieldProps {
 export function DemandPricesField({ value, onChange }: DemandPricesFieldProps) {
   return (
     <>
-      <h3 className="text-sm font-semibold text-foreground/80 uppercase tracking-wide">
-        Price Levels
-      </h3>
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="d-prices">
           Custom Prices{" "}
