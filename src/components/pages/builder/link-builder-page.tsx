@@ -1,7 +1,6 @@
 // ── Link Builder Page (Refactored) ─────────────────────────────────────────────
 
 import { useReducer } from "react";
-import { toast } from "sonner";
 import PageWrapper from "#/components/layout/page-wrapper.tsx";
 import {
   Tabs,
@@ -14,30 +13,17 @@ import {
   buildDiscountingUrl,
 } from "#/lib/posm/builder/url-builders.js";
 import { AlgorithmThreshold } from "#/types/survey.js";
-
-// ── Imports from new modules ───────────────────────────────────────────────────
-
-// Components
-import {
-  SectionHeading,
-  FieldRow,
-  AlgorithmSection,
-  LinkPreview,
-} from "./components/index.js";
-
-// Demand-specific components
+import { FieldRow } from "./components/field-row.js";
+import { AlgorithmSection } from "./components/algorithm-section.js";
+import { LinkPreview } from "./components/link-preview.js";
 import { DemandReinforcerField } from "./components/demand-reinforcer-field.js";
 import { DemandPricesField } from "./components/demand-prices-field.js";
 import { DemandEntropyField } from "./components/demand-entropy-field.js";
-
-// Discounting-specific components
 import { DiscountingReinforcerField } from "./components/discounting-reinforcer-field.js";
 import { DiscountingSSRLRRFields } from "./components/discounting-ssr-lrr-fields.js";
 import { DiscountingDelaysField } from "./components/discounting-delays-field.js";
-
-// State management
-import { demandReducer, discountingReducer } from "./state/index.js";
-import type { DemandState, DiscountingState } from "./types/index.js";
+import { demandReducer } from "./state/demand-reducer.js";
+import { discountingReducer } from "./state/discounting-reducer.js";
 
 /**
  * Props for the LinkBuilderPage component.

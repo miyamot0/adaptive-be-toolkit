@@ -3,7 +3,7 @@
 import type {
   DiscountingState,
   DiscountingAction,
-} from "#/components/pages/builder/types/index.js";
+} from "../types/discounting-state.js";
 
 /**
  * Reducer function for the Discounting section state.

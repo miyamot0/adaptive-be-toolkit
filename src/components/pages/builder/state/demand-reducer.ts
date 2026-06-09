@@ -1,9 +1,6 @@
 // ── Demand Section Reducer ──────────────────────────────────────────────────────
 
-import type {
-  DemandState,
-  DemandAction,
-} from "#/components/pages/builder/types/index.js";
+import type { DemandState, DemandAction } from "../types/demand-state.js";
 
 /**
  * Reducer function for the Demand section state.
