@@ -42,10 +42,10 @@ export default function LinkBuilderPage(_props: LinkBuilderPageProps) {
     showDebug: false,
     algorithm: AlgorithmThreshold.RegretMin,
     maxTrials: "10",
-    beta: "0.25",
+    beta: "0.125",
     compound: true,
     prices: "",
-    entropyThreshold: "0.01",
+    entropyThreshold: "0.05",
   });
 
   // ── Discounting section state with reducer ──────────────────────────────────

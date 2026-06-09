@@ -22,6 +22,35 @@ export const Route = createFileRoute("/demand/$id/$method/")({
       content: "Adaptive Demand Assessment page",
     }),
   }),
+  beforeLoad: async ({ params }) => {
+    const validated = mergedDemandParamsSchema.safeParse(params);
+
+    if (!validated.success) {
+      throw redirect({
+        to: "/",
+        search: {
+          error: "Invalid parameters for Adaptive Demand Assessment",
+        },
+      });
+    }
+
+    const { method } = validated.data;
+
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (method !== "posm") {
+      throw redirect({
+        to: "/",
+        search: {
+          error: "Invalid method parameter for Adaptive Demand Assessment",
+        },
+      });
+    }
+
+    return {
+      id: validated.data.id,
+      method: method,
+    };
+  },
   validateSearch: (search: unknown) => {
     return demandSearchFlagSchema.parse(search);
   },

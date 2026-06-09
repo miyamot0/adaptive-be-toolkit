@@ -102,10 +102,10 @@ export function AlgorithmSection({
           type="number"
           min="0.01"
           max="0.95"
-          step="0.05"
+          step="0.01"
           value={beta}
           onChange={(e) => setBeta(e.target.value)}
-          placeholder="0.5"
+          placeholder="0.25"
         />
         <p className="text-xs text-muted-foreground">
           Lower values concentrate beliefs more aggressively each trial.

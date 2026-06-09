@@ -22,6 +22,36 @@ const DEFAULT_DELAYS = [
 ];
 
 export const Route = createFileRoute("/discounting/$id/$method/")({
+  beforeLoad: async ({ params }) => {
+    const validated = mergedDiscountingParamsSchema.safeParse(params);
+
+    if (!validated.success) {
+      throw redirect({
+        to: "/",
+        search: {
+          error: "Invalid parameters for Adaptive Discounting Assessment",
+        },
+      });
+    }
+
+    const { method } = validated.data;
+
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (method !== "posm") {
+      throw redirect({
+        to: "/",
+        search: {
+          error: "Invalid method parameter for Adaptive Discounting Assessment",
+        },
+      });
+    }
+
+    return {
+      id: validated.data.id,
+      method: method,
+    };
+  },
+
   head: () => ({
     ...createMetaTags({
       pageName: `Adaptive Discounting Assessment`,
