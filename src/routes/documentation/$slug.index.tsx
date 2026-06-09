@@ -7,11 +7,13 @@ import { Button } from "#/components/ui/button.tsx";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { createMetaTags } from "#/lib/seo.ts";
 import { DocumentationLayout } from "#/components/pages/documentation/documentation-layout.tsx";
-import { extractHeadingsFromMdx } from "#/components/pages/documentation/utils.ts";
+import { createSlugger } from "#/lib/utils.ts";
 
 export const Route = createFileRoute("/documentation/$slug/")({
   beforeLoad: async ({ params }) => {
-    const doc = allDocumentations.find((doc) => doc.slug === params.slug);
+    const doc = allDocumentations.find(
+      (local_doc) => local_doc.slug === params.slug,
+    );
 
     if (!doc) {
       throw redirect({
@@ -34,7 +36,7 @@ export const Route = createFileRoute("/documentation/$slug/")({
     );
 
     // Extract table of contents from MDX content
-    const tocItems = extractHeadingsFromMdx(currentDoc!.mdx);
+    const tocItems = currentDoc!.toc;
 
     return { currentDoc, nextDoc, prevDoc, tocItems };
   },
@@ -50,8 +52,10 @@ export const Route = createFileRoute("/documentation/$slug/")({
 function RouteComponent() {
   const { currentDoc, nextDoc, prevDoc, tocItems } = Route.useLoaderData();
 
+  const mdxSlugger = createSlugger();
+
   return (
-    <DocumentationLayout docs={allDocumentations}>
+    <DocumentationLayout docs={allDocumentations} tocItems={tocItems}>
       <main className="flex flex-col gap-2">
         <MDXContent code={currentDoc!.mdx} components={MarkdownComponents} />
 

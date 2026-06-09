@@ -23,8 +23,8 @@ export function NavigationSidebar() {
   const groupedDocs = groupByType(allDocumentations);
 
   return (
-    <aside className="w-64 flex-shrink-0">
-      <nav className="sticky top-[56px] h-[calc(100vh-56px)] overflow-y-auto p-4 border-r bg-background">
+    <aside className="w-64 shrink-0">
+      <nav className="sticky top-14 h-[calc(100vh-56px)] overflow-y-auto p-4 border-r bg-background">
         <div className="space-y-8">
           {Object.entries(groupedDocs).map(([type, typeDocs]) => (
             <section key={type} className="space-y-3">

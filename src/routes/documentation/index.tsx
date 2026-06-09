@@ -13,5 +13,5 @@ export const Route = createFileRoute("/documentation/")({
 });
 
 function RouteComponent() {
-  return <DocumentationHome tocItems={[]} />;
+  return <DocumentationHome />;
 }
