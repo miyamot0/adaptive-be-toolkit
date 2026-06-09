@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './../routes/__root'
 import { Route as IndexRouteImport } from './../routes/index'
+import { Route as Documentation2IndexRouteImport } from './../routes/documentation2.index'
 import { Route as DocumentationIndexRouteImport } from './../routes/documentation/index'
 import { Route as BuilderIndexRouteImport } from './../routes/builder/index'
 import { Route as DocumentationSlugIndexRouteImport } from './../routes/documentation/$slug.index'
@@ -19,6 +20,11 @@ import { Route as DemandIdMethodIndexRouteImport } from './../routes/demand/$id.
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Documentation2IndexRoute = Documentation2IndexRouteImport.update({
+  id: '/documentation2/',
+  path: '/documentation2/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DocumentationIndexRoute = DocumentationIndexRouteImport.update({
@@ -52,6 +58,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/builder/': typeof BuilderIndexRoute
   '/documentation/': typeof DocumentationIndexRoute
+  '/documentation2/': typeof Documentation2IndexRoute
   '/documentation/$slug/': typeof DocumentationSlugIndexRoute
   '/demand/$id/$method/': typeof DemandIdMethodIndexRoute
   '/discounting/$id/$method/': typeof DiscountingIdMethodIndexRoute
@@ -60,6 +67,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/builder': typeof BuilderIndexRoute
   '/documentation': typeof DocumentationIndexRoute
+  '/documentation2': typeof Documentation2IndexRoute
   '/documentation/$slug': typeof DocumentationSlugIndexRoute
   '/demand/$id/$method': typeof DemandIdMethodIndexRoute
   '/discounting/$id/$method': typeof DiscountingIdMethodIndexRoute
@@ -69,6 +77,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/builder/': typeof BuilderIndexRoute
   '/documentation/': typeof DocumentationIndexRoute
+  '/documentation2/': typeof Documentation2IndexRoute
   '/documentation/$slug/': typeof DocumentationSlugIndexRoute
   '/demand/$id/$method/': typeof DemandIdMethodIndexRoute
   '/discounting/$id/$method/': typeof DiscountingIdMethodIndexRoute
@@ -79,6 +88,7 @@ export interface FileRouteTypes {
     | '/'
     | '/builder/'
     | '/documentation/'
+    | '/documentation2/'
     | '/documentation/$slug/'
     | '/demand/$id/$method/'
     | '/discounting/$id/$method/'
@@ -87,6 +97,7 @@ export interface FileRouteTypes {
     | '/'
     | '/builder'
     | '/documentation'
+    | '/documentation2'
     | '/documentation/$slug'
     | '/demand/$id/$method'
     | '/discounting/$id/$method'
@@ -95,6 +106,7 @@ export interface FileRouteTypes {
     | '/'
     | '/builder/'
     | '/documentation/'
+    | '/documentation2/'
     | '/documentation/$slug/'
     | '/demand/$id/$method/'
     | '/discounting/$id/$method/'
@@ -104,6 +116,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BuilderIndexRoute: typeof BuilderIndexRoute
   DocumentationIndexRoute: typeof DocumentationIndexRoute
+  Documentation2IndexRoute: typeof Documentation2IndexRoute
   DocumentationSlugIndexRoute: typeof DocumentationSlugIndexRoute
   DemandIdMethodIndexRoute: typeof DemandIdMethodIndexRoute
   DiscountingIdMethodIndexRoute: typeof DiscountingIdMethodIndexRoute
@@ -116,6 +129,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/documentation2/': {
+      id: '/documentation2/'
+      path: '/documentation2'
+      fullPath: '/documentation2/'
+      preLoaderRoute: typeof Documentation2IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/documentation/': {
@@ -160,6 +180,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BuilderIndexRoute: BuilderIndexRoute,
   DocumentationIndexRoute: DocumentationIndexRoute,
+  Documentation2IndexRoute: Documentation2IndexRoute,
   DocumentationSlugIndexRoute: DocumentationSlugIndexRoute,
   DemandIdMethodIndexRoute: DemandIdMethodIndexRoute,
   DiscountingIdMethodIndexRoute: DiscountingIdMethodIndexRoute,

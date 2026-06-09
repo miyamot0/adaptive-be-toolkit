@@ -1,4 +1,5 @@
 import PageWrapper from "#/components/layout/page-wrapper.tsx";
+import type { TOCItem } from "#/components/pages/documentation/types.ts";
 import { Button } from "#/components/ui/button.tsx";
 import {
   Card,
@@ -13,6 +14,7 @@ import { allDocumentations } from "content-collections";
 import { BookIcon } from "lucide-react";
 import { Badge } from "#/components/ui/badge.tsx";
 import { createMetaTags } from "#/lib/seo.ts";
+import { DocumentationLayout } from "#/components/pages/documentation/documentation-layout.tsx";
 
 export const Route = createFileRoute("/documentation/")({
   head: () => ({

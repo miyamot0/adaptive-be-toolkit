@@ -2,40 +2,39 @@ import {
   HeadContent,
   Scripts,
   createRootRouteWithContext,
-} from '@tanstack/react-router'
+} from "@tanstack/react-router";
+import appCss from "../styles.css?url";
+import Loading from "#/components/common/loading.tsx";
+import Error from "#/components/common/error.tsx";
+import { Toaster } from "#/components/ui/sonner.tsx";
 
-import appCss from '../styles.css?url'
-import Loading from '#/components/common/loading.tsx';
-import Error from '#/components/common/error.tsx';
-import { Toaster } from '#/components/ui/sonner.tsx';
-
-interface MyRouterContext { }
+interface MyRouterContext {}
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   head: () => ({
     meta: [
       {
-        charSet: 'utf-8',
+        charSet: "utf-8",
       },
       {
-        name: 'viewport',
-        content: 'width=device-width, initial-scale=1',
+        name: "viewport",
+        content: "width=device-width, initial-scale=1",
       },
       {
-        title: 'Adaptive BE Toolkit',
+        title: "Adaptive BE Toolkit",
       },
     ],
     links: [
       {
-        rel: 'stylesheet',
+        rel: "stylesheet",
         href: appCss,
       },
     ],
   }),
   shellComponent: RootDocument,
   pendingComponent: Loading,
-  errorComponent: Error
-})
+  errorComponent: Error,
+});
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
@@ -49,5 +48,5 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <Scripts />
       </body>
     </html>
-  )
+  );
 }

@@ -1,4 +1,5 @@
 import PageWrapper from "#/components/layout/page-wrapper.tsx";
+import type { TOCItem } from "#/components/pages/documentation/types.ts";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { allDocumentations } from "content-collections";
 import type { Documentation } from "content-collections";
@@ -7,6 +8,8 @@ import { MDXContent } from "@content-collections/mdx/react";
 import { Button } from "#/components/ui/button.tsx";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { createMetaTags } from "#/lib/seo.ts";
+import { DocumentationLayout } from "#/components/pages/documentation/documentation-layout.tsx";
+import { extractHeadingsFromMdx } from "#/components/pages/documentation/utils.ts";
 
 export const Route = createFileRoute("/documentation/$slug/")({
   beforeLoad: async ({ params }) => {
@@ -34,7 +37,10 @@ export const Route = createFileRoute("/documentation/$slug/")({
       (doc) => doc.index === currentDoc.index - 1,
     );
 
-    return { currentDoc, nextDoc, prevDoc };
+    // Extract table of contents from MDX content
+    const tocItems = extractHeadingsFromMdx(currentDoc.mdx);
+
+    return { currentDoc, nextDoc, prevDoc, tocItems };
   },
   component: RouteComponent,
   head: ({ loaderData }) => ({
@@ -46,10 +52,10 @@ export const Route = createFileRoute("/documentation/$slug/")({
 });
 
 function RouteComponent() {
-  const { currentDoc, nextDoc, prevDoc } = Route.useLoaderData();
+  const { currentDoc, nextDoc, prevDoc, tocItems } = Route.useLoaderData();
 
   return (
-    <PageWrapper ShowHeader={true} ShowFooter={true}>
+    <DocumentationLayout docs={allDocumentations}>
       <main className="flex flex-col gap-2">
         <MDXContent code={currentDoc.mdx} components={MarkdownComponents} />
 
@@ -85,6 +91,6 @@ function RouteComponent() {
           )}
         </div>
       </main>
-    </PageWrapper>
+    </DocumentationLayout>
   );
 }
