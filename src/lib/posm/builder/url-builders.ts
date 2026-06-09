@@ -14,7 +14,7 @@ export const PLACEHOLDER_ID = "CHANGEME";
  */
 const DEMAND_ORIGIN = import.meta.env.DEV
   ? "http://localhost:3000"
-  : "https://adaptive-be-toolkit.vercel.app";
+  : "https://be-toolkit-testing.smallnstats.com";
 
 /**
  * Origin URL for discounting task links (uses runtime window origin).

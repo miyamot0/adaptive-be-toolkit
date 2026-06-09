@@ -11,19 +11,18 @@ import {
 import {
   buildDemandUrl,
   buildDiscountingUrl,
-} from "#/lib/posm/builder/url-builders.js";
-import { AlgorithmThreshold } from "#/types/survey.js";
-import { FieldRow } from "./components/field-row.js";
-import { AlgorithmSection } from "./components/algorithm-section.js";
-import { LinkPreview } from "./components/link-preview.js";
-import { DemandReinforcerField } from "./components/demand-reinforcer-field.js";
-import { DemandPricesField } from "./components/demand-prices-field.js";
-import { AlgorithmSettingsField } from "./components/algorithm-settings-field.js";
-import { DiscountingReinforcerField } from "./components/discounting-reinforcer-field.js";
-import { DiscountingSSRLRRFields } from "./components/discounting-ssr-lrr-fields.js";
-import { DiscountingDelaysField } from "./components/discounting-delays-field.js";
-import { demandReducer } from "./state/demand-reducer.js";
-import { discountingReducer } from "./state/discounting-reducer.js";
+} from "#/lib/posm/builder/url-builders";
+import { AlgorithmThreshold } from "#/types/survey";
+import { AlgorithmSection } from "./components/algorithm-section";
+import { LinkPreview } from "./components/link-preview";
+import { DemandReinforcerField } from "./components/demand-reinforcer-field";
+import { DemandPricesField } from "./components/demand-prices-field";
+import { AlgorithmSettingsField } from "./components/algorithm-settings-field";
+import { DiscountingReinforcerField } from "./components/discounting-reinforcer-field";
+import { DiscountingSSRLRRFields } from "./components/discounting-ssr-lrr-fields";
+import { DiscountingDelaysField } from "./components/discounting-delays-field";
+import { demandReducer } from "./state/demand-reducer";
+import { discountingReducer } from "./state/discounting-reducer";
 
 /**
  * Props for the LinkBuilderPage component.
