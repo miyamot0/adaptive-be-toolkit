@@ -18,14 +18,14 @@ The **Beliefs Distribution** figure provides insights into the algorithm's belie
 
 Certainty in beliefs is represented by the height of the belief distribution at different levels. The **ED50** (Discounting) or **OMAX/PMAX** (Demand) values are key points where the algorithm converges, indicating the most likely expenditure region. Higher certainty around these values suggests that additional trials are unlikely to provide new information.
 
-### Bayesian Update
+### Belief Update (Bayesian Update)
 
 The algorithm updates its beliefs using a Bayesian approach, where each response shifts the probability mass towards the estimated target region. This update process is crucial for selecting the next question and refining the estimate of **ED50** or **OMAX/PMAX**.
 
 ## Entropy and Average Entropy Change
 
-The **Entropy** figure provides insights into the uncertainty of beliefs across levels. Shannon entropy measures the average amount of information needed to specify an outcome from a set of possible outcomes. Higher entropy indicates higher uncertainty, while lower entropy indicates more certainty.
+The **Entropy** figure provides insights into the uncertainty of beliefs across levels. Shannon entropy measures concentration of information and provides a metric for the amount of information for us to feel some level of 'confidence' that no further exploration would provide more precise estimates. The **Average Entropy Change** figure tracks how entropy changes across trials, indicating how much new information is being gained with each response (i.e., less change happening = less to gain from further queries).
 
 ### Dynamic Stop Point
 
-Changes in entropy can indicate when additional trials are unlikely to contribute new information. A plateau in entropy suggests that the algorithm has converged and is likely at or near the optimal solution. This helps in determining a dynamic 'stop point' for the task.
+Changes in entropy can indicate when additional trials are unlikely to contribute new information. A plateau in entropy suggests that the algorithm has converged and is likely at or near the optimal solution. This helps in determining a dynamic 'stop point' for the task. As a general baseline rule, a value of around 0.1 bits of average entropy change (nats) is a reasonable threshold for considering termination, but this can be adjusted based on the specific research context and desired precision.

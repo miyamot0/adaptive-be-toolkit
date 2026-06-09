@@ -16,8 +16,8 @@ No response data is stored or transmitted by the toolkit itself. All task output
 
 Two measures are currently available:
 
-- **Adaptive Purchase Task** — an agent-based adaptive operant demand procedure that converges on O<sub>max</sub> and P<sub>max</sub> estimates with a minimal number of trials.
-- **Adaptive Delay Discounting Task** — an agent-based adaptive discounting procedure that converges on an ED50 estimate (the delay at which the participant is indifferent between an immediate and a delayed reward).
+- **Adaptive Hypothetical Purchase Task** — an agent-based adaptive operant demand procedure that converges on O<sub>max</sub> and P<sub>max</sub> estimates with a minimal number of trials
+- **Adaptive Delay Discounting Task** — an agent-based adaptive discounting procedure that converges on an ED50 estimate (the delay at which the participant is indifferent between an immediate 50% reward and a delayed 100% reward)
 
 ## Simplified Design of Measures
 
@@ -32,13 +32,14 @@ The measures are also fully responsive and operate on mobile devices without mod
 Each measure is accessed at a distinct URL path. A **unique participant identifier** must be included in the path itself (not as a query parameter) and must be at least six characters long. This identifier is echoed back verbatim in the completion payload so the parent platform can match the result to the correct participant record.
 
 ```
-https://<your-deployment>/demand/<participantId>?<options>
-https://<your-deployment>/discounting/<participantId>?<options>
+https://be-toolkit.smallnstats.com/demand/posm/<participantId>?<options>
+
+https://be-toolkit.smallnstats.com/discounting/posm/<participantId>?<options>
 ```
 
-The following query parameters are accepted by each task:
+The following query parameters are accepted by each task (various other settings covered elsewhere):
 
-**Adaptive Purchase Task** (`/demand/<id>`)
+**Adaptive Purchase Task** (`/demand/posm/<id>`)
 
 | Parameter    | Type     | Default                 | Description                                                                                                                             |
 | ------------ | -------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
@@ -46,7 +47,7 @@ The following query parameters are accepted by each task:
 | `figures`    | `"true"` | _(omit)_                | Renders live diagnostic charts (belief distribution, expenditure curve, consumption curve). Intended for development and piloting only. |
 | `debug`      | `"true"` | _(omit)_                | Displays trial count and belief summary statistics below the question. Intended for development and piloting only.                      |
 
-**Adaptive Delay Discounting Task** (`/discounting/<id>`)
+**Adaptive Delay Discounting Task** (`/discounting/posm/<id>`)
 
 | Parameter    | Type     | Default     | Description                                                                             |
 | ------------ | -------- | ----------- | --------------------------------------------------------------------------------------- |
@@ -60,7 +61,7 @@ To embed either task inside a survey page, add a standard `<iframe>` element wit
 
 ```html
 <iframe
-  src="https://your-deployment.com/demand/PARTICIPANT_ID?reinforcer=Coffee"
+  src="https://be-toolkit.smallnstats.com/demand/posm/PARTICIPANT_ID?reinforcer=Coffee"
   width="100%"
   height="600"
   frameborder="0"
@@ -73,7 +74,7 @@ For a Delay Discounting task comparing $20 now versus $100 later for a monetary 
 
 ```html
 <iframe
-  src="https://your-deployment.com/discounting/PARTICIPANT_ID?reinforcer=Dollars&ssr=20&llr=100"
+  src="https://be-toolkit.smallnstats.com/discounting/posm/PARTICIPANT_ID?reinforcer=Dollars&ssr=20&llr=100"
   width="100%"
   height="600"
   frameborder="0"
@@ -122,7 +123,7 @@ A minimal event listener looks like this:
 ```javascript
 window.addEventListener("message", function (event) {
   // Always verify the origin before trusting message contents.
-  if (event.origin !== "https://your-deployment.com") return;
+  if (event.origin !== "https://be-toolkit.smallnstats.com") return;
 
   var data = event.data;
 
@@ -135,11 +136,6 @@ window.addEventListener("message", function (event) {
 ```
 
 **Security note:** Always check `event.origin` before processing a message. Without this check, any page that can embed your survey could dispatch forged `ACTION_COMPLETE` messages. Set the origin to the exact domain where the toolkit is deployed.
-
-## Algorithm Options
-
-- **Algorithm Name**: Explanation of how the algorithm works.
-  - **Parameter**: Description of the parameter and its impact.
 
 ## Example: Qualtrics
 
@@ -162,7 +158,7 @@ In the question body, switch to HTML view and insert the iframe. Use Qualtrics p
 ```html
 <iframe
   id="adaptive-task-frame"
-  src="https://your-deployment.com/demand/${e://Field/ResponseID}?reinforcer=Coffee"
+  src="https://be-toolkit.smallnstats.com/demand/posm/${e://Field/ResponseID}?reinforcer=Coffee"
   width="100%"
   height="650"
   frameborder="0"
@@ -184,7 +180,7 @@ Qualtrics.SurveyEngine.addOnload(function () {
 
   window.addEventListener("message", function (event) {
     // Replace with the actual origin of your toolkit deployment.
-    if (event.origin !== "https://your-deployment.com") return;
+    if (event.origin !== "https://be-toolkit.smallnstats.com") return;
 
     var data = event.data;
 
@@ -230,14 +226,3 @@ The general workflow for incorporating any toolkit measure into a survey platfor
 3. **Store and advance** — Write the result fields to the platform's data store (e.g., Qualtrics Embedded Data) and trigger whatever action should follow task completion, such as advancing to the next survey page.
 
 This architecture eliminates the need for researchers to implement or maintain any of the adaptive logic themselves. The measures are self-contained — they handle trial sequencing, belief updating, stopping criteria, and result packaging internally. Customization through URL parameters covers the most common research needs: adjusting the commodity or reward label, setting reward magnitudes for discounting, and enabling diagnostic output during piloting. Because the iframe communicates entirely through standard browser APIs, the same integration pattern works across Qualtrics, REDCap, custom web applications, and any other platform capable of rendering an iframe and executing JavaScript.
-
-## Settings Overview
-
-- **Setting Name**: Description of what the setting does.
-- **Setting Name**: Description of what the setting does.
-
-## Implementation Details
-
-1. **Step 1**: Description of the first step.
-2. **Step 2**: Description of the second step.
-3. **Step 3**: Description of the third step.

@@ -46,15 +46,15 @@ The concentration of beliefs around the final estimate reflects the reliability 
 All settings are passed as URL query parameters. No source code changes are required to adjust task behavior.
 
 ```
-/discounting/<participantId>/adjusting-amount-ascending?algo=MaximumIteration&reinforcer=Dollars&ssr=50&llr=100
+/discounting/<participantId>/posm?algo=MaximumIteration&reinforcer=Dollars&ssr=50&llr=100
 ```
 
 ### Required
 
-| Parameter       | Location | Format                                                        | Description                                                    |
-| --------------- | -------- | ------------------------------------------------------------- | -------------------------------------------------------------- |
-| `participantId` | URL path | string, min 6 characters                                      | Participant identifier. Echoed verbatim in the output payload. |
-| `method`        | URL path | `adjusting-amount-ascending` or `adjusting-amount-descending` | Presentation order of the delay sequence.                      |
+| Parameter       | Location | Format                   | Description                                                    |
+| --------------- | -------- | ------------------------ | -------------------------------------------------------------- |
+| `participantId` | URL path | string, min 6 characters | Participant identifier. Echoed verbatim in the output payload. |
+| `method`        | URL path | `posm`                   | Presentation order of the delay sequence.                      |
 
 ### Algorithm
 
@@ -121,17 +121,17 @@ delays=1,2,3,4,5,6,7,10,14,21,30,45,60,90,180,365,730
 **Standard deployment, 20 questions:**
 
 ```
-/discounting/PARTICIPANT001/adjusting-amount-ascending?algo=MaximumIteration&reinforcer=Dollars&ssr=50&llr=100
+/discounting/PARTICIPANT001/posm?algo=MaximumIteration&reinforcer=Dollars&ssr=50&llr=100
 ```
 
 **Pilot session with diagnostic charts, custom commodity:**
 
 ```
-/discounting/PILOT001/adjusting-amount-ascending?algo=MaximumIteration&reinforcer=Coffee&ssr=1&llr=5&figures=true&debug=true
+/discounting/PILOT001/posm?algo=MaximumIteration&reinforcer=Coffee&ssr=1&llr=5&figures=true&debug=true
 ```
 
 **Custom delay range focused on short delays:**
 
 ```
-/discounting/PARTICIPANT001/adjusting-amount-ascending?algo=MaximumIteration&delays=1,3,7,14,30,60,90,180,365
+/discounting/PARTICIPANT001/posm?algo=MaximumIteration&delays=1,3,7,14,30,60,90,180,365
 ```
