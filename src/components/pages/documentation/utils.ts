@@ -2,16 +2,26 @@ import type { TOCItem } from "./types";
 
 /**
  * Extracts headings from MDX content and builds a table of contents structure.
- * @param mdxContent - The raw MDX source code
+ * @param mdxCode - The raw MDX source code (not compiled)
  * @returns Array of TOC items with heading hierarchy
  */
-export function extractHeadingsFromMdx(mdxContent: string): TOCItem[] {
-  const lines = mdxContent.split("\n");
+export function extractHeadingsFromMdx(mdxCode: string): TOCItem[] {
+  const lines = mdxCode.split("\n");
   const tocItems: TOCItem[] = [];
   let currentParent: TOCItem | null = null;
 
+  // Skip frontmatter (lines starting with ---)
+  let inFrontmatter = false;
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
+
+    if (line.trim() === "---") {
+      inFrontmatter = !inFrontmatter;
+      continue;
+    }
+
+    // Only process outside frontmatter
+    if (inFrontmatter) continue;
 
     // Match markdown headings (# through ######)
     const headingMatch = line.match(/^(#{1,6})\s+(.+)$/);

@@ -1,9 +1,16 @@
 import { allDocumentations } from "content-collections";
+import type { TOCItem } from "./types.ts";
 import { DocumentationLayout } from "./documentation-layout.tsx";
 
-export default function DocumentationHome() {
+interface DocumentationHomeProps {
+  tocItems?: TOCItem[];
+}
+
+export default function DocumentationHome({
+  tocItems,
+}: DocumentationHomeProps) {
   return (
-    <DocumentationLayout docs={allDocumentations}>
+    <DocumentationLayout docs={allDocumentations} tocItems={tocItems}>
       <main className="flex flex-col gap-2">
         <h1 className="text-4xl font-bold tracking-tight mb-6">
           General Information
