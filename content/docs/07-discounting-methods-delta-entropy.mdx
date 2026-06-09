@@ -63,15 +63,15 @@ Each individual response is also stored with an `Entropy` field recording the be
 All settings are passed as URL query parameters. No source code changes are required.
 
 ```
-/discounting/<participantId>/adjusting-amount-ascending?algo=RegretMin&beta=0.25&minresponses=5
+/discounting/<participantId>/posm?algo=RegretMin&beta=0.25&minresponses=5
 ```
 
 ### Required
 
-| Parameter       | Location | Format                                                        | Description                                                    |
-| --------------- | -------- | ------------------------------------------------------------- | -------------------------------------------------------------- |
-| `participantId` | URL path | string, min 6 characters                                      | Participant identifier. Echoed verbatim in the output payload. |
-| `method`        | URL path | `adjusting-amount-ascending` or `adjusting-amount-descending` | Presentation order of the delay sequence.                      |
+| Parameter       | Location | Format                   | Description                                                    |
+| --------------- | -------- | ------------------------ | -------------------------------------------------------------- |
+| `participantId` | URL path | string, min 6 characters | Participant identifier. Echoed verbatim in the output payload. |
+| `method`        | URL path | `posm`                   | Presentation order of the delay sequence.                      |
 
 ### Algorithm
 
@@ -137,23 +137,23 @@ delays=1,2,3,4,5,6,7,10,14,21,30,45,60,90,180,365
 **Standard deployment with entropy stopping:**
 
 ```
-/discounting/PARTICIPANT001/adjusting-amount-ascending?algo=RegretMin&reinforcer=Dollars&ssr=50&llr=100
+/discounting/PARTICIPANT001/posm?algo=RegretMin&reinforcer=Dollars&ssr=50&llr=100
 ```
 
 **Conservative warm-up — require 8 responses before plateau check:**
 
 ```
-/discounting/PARTICIPANT001/adjusting-amount-ascending?algo=RegretMin&minresponses=8&beta=0.25
+/discounting/PARTICIPANT001/posm?algo=RegretMin&minresponses=8&beta=0.25
 ```
 
 **Pilot session with diagnostics:**
 
 ```
-/discounting/PILOT001/adjusting-amount-ascending?algo=RegretMin&figures=true&debug=true&reinforcer=Coffee&ssr=1&llr=5
+/discounting/PILOT001/posm?algo=RegretMin&figures=true&debug=true&reinforcer=Coffee&ssr=1&llr=5
 ```
 
 **Narrow delay range for short-horizon commodity:**
 
 ```
-/discounting/PARTICIPANT001/adjusting-amount-ascending?algo=RegretMin&delays=1,2,3,5,7,14,30,60,90,180,365
+/discounting/PARTICIPANT001/posm?algo=RegretMin&delays=1,2,3,5,7,14,30,60,90,180,365
 ```

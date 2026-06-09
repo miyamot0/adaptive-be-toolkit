@@ -12,7 +12,7 @@ date: 2026-06-05
 
 The `LinkBuilderPage` component is responsible for creating and displaying the link to embed the Adaptive BE Toolkit measures into survey platforms. It allows users to configure various settings through URL parameters and preview the generated link.
 
-The `LinkBuilderPage` component provides a user interface for configuring and generating links to embed the Adaptive BE Toolkit measures into survey platforms. Users can set various parameters such as reinforcer, figures, debug mode, algorithm thresholds, maximum trials, beta values, compound options, prices, and delays.
+The `LinkBuilderPage` component provides a user interface for configuring and generating links to embed the Adaptive BE Toolkit measures into survey platforms. Users can set various parameters such as reinforcer references, figures, debug mode, algorithm thresholds, maximum trials, beta values, compound options, prices, and delays.
 
 ## Adaptive Discounting Link Builder
 
@@ -24,12 +24,12 @@ The `LinkBuilderPage` component provides a user interface for configuring and ge
   - Example: `figures=true`
 - **Show Debug**: Toggle to display development stats overlay.
   - Example: `debug=true`
-- **Algorithm**: The adaptive algorithm used (e.g., "ED50").
-  - Example: `algorithm=ED50`
+- **Algorithm**: The termination algorithm used (e.g., "MaximumIteration", "RegretMin").
+  - Example: `algorithm=MaximumIteration`
 - **Maximum Trials**: Maximum number of trials allowed.
   - Example: `maxTrials=20`
 - **Beta**: Adaptation rate for the belief-updating procedure.
-  - Example: `beta=0.5`
+  - Example: `beta=0.25`
 - **Compound**: Toggle to enable compound interest calculations.
   - Example: `compound=true`
 - **SSR (Smaller-Sooner Reinforcer)**: Immediate reward amount.
@@ -42,7 +42,7 @@ The `LinkBuilderPage` component provides a user interface for configuring and ge
 ### URL String Example
 
 ```plaintext
-/demand/CHANGEME?reinforcer=Coffee&figures=true&debug=true&algorithm=ED50&maxTrials=20&beta=0.5&compound=true&prices=50,100,150
+/demand/CHANGEME/posm?reinforcer=Coffee&figures=true&debug=true&algorithm=ED50&maxTrials=20&beta=0.5&compound=true&prices=50,100,150
 ```
 
 ## Debug and Figure Flags
@@ -62,12 +62,12 @@ The `LinkBuilderPage` component provides a user interface for configuring and ge
   - Example: `figures=true`
 - **Show Debug**: Toggle to display development stats overlay.
   - Example: `debug=true`
-- **Algorithm**: The adaptive algorithm used (e.g., "O_max").
-  - Example: `algorithm=O_max`
+- **Algorithm**: The adaptive algorithm used.
+  - Example: `algorithm=MaximumIteration`
 - **Maximum Trials**: Maximum number of trials allowed.
   - Example: `maxTrials=20`
 - **Beta**: Adaptation rate for the belief-updating procedure.
-  - Example: `beta=0.5`
+  - Example: `beta=0.25`
 - **Compound**: Toggle to enable compound interest calculations.
   - Example: `compound=true`
 - **Prices**: Prices presented to the participant for a given quantity of the reinforcer.
@@ -76,5 +76,5 @@ The `LinkBuilderPage` component provides a user interface for configuring and ge
 ### URL String Example
 
 ```plaintext
-/discounting/CHANGEME?reinforcer=Dollars&ssr=20&llr=100&delays=1,2,3
+/discounting/CHANGEME/posm?reinforcer=Dollars&ssr=20&llr=100&delays=1,2,3
 ```

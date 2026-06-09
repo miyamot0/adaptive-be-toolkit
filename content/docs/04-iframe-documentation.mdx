@@ -24,12 +24,12 @@ The `LinkBuilderPage` component provides a user interface for configuring and ge
   - Example: `figures=true`
 - **Show Debug**: Toggle to display development stats overlay.
   - Example: `debug=true`
-- **Algorithm**: The adaptive algorithm used (e.g., "ED50").
-  - Example: `algorithm=ED50`
+- **Algorithm**: The adaptive algorithm used (e.g., "MaximumIteration").
+  - Example: `algorithm=MaximumIteration`
 - **Maximum Trials**: Maximum number of trials allowed.
   - Example: `maxTrials=20`
 - **Beta**: Adaptation rate for the belief-updating procedure.
-  - Example: `beta=0.5`
+  - Example: `beta=0.25`
 - **Compound**: Toggle to enable compound interest calculations.
   - Example: `compound=true`
 - **SSR (Smaller-Sooner Reinforcer)**: Immediate reward amount.
@@ -42,47 +42,9 @@ The `LinkBuilderPage` component provides a user interface for configuring and ge
 ### URL String Example
 
 ```plaintext
-/demand/CHANGEME?reinforcer=Coffee&figures=true&debug=true&algorithm=ED50&maxTrials=20&beta=0.5&compound=true&prices=50,100,150
+/demand/CHANGEME/posm?reinforcer=Coffee&figures=true&debug=true&algorithm=MaximumIteration&maxTrials=20&beta=0.25&compound=true&prices=50,100,150
 ```
 
-## Demand Tool
+### Handling Callback
 
-### Fields/Features
-
-- **Reinforcer**: The commodity being purchased (e.g., "Coffee", "Cigarettes"). Displayed in question prompts.
-  - Example: `reinforcer=Coffee`
-- **Show Figures**: Toggle to display diagnostic charts.
-  - Example: `figures=true`
-- **Show Debug**: Toggle to display development stats overlay.
-  - Example: `debug=true`
-- **Algorithm**: The adaptive algorithm used (e.g., "O_max").
-  - Example: `algorithm=O_max`
-- **Maximum Trials**: Maximum number of trials allowed.
-  - Example: `maxTrials=20`
-- **Beta**: Adaptation rate for the belief-updating procedure.
-  - Example: `beta=0.5`
-- **Compound**: Toggle to enable compound interest calculations.
-  - Example: `compound=true`
-- **Prices**: Prices presented to the participant for a given quantity of the reinforcer.
-  - Example: `prices=50,100,150`
-
-### URL String Example
-
-```plaintext
-/discounting/CHANGEME?reinforcer=Dollars&ssr=20&llr=100&delays=1,2,3
-```
-
-## Debug and Figure Flags
-
-- **Show Figures**: Visualize information related to question selection and relevant metrics.
-  - Example: `figures=true`
-- **Show Debug**: Display development stats overlay for debugging purposes.
-  - Example: `debug=true`
-
-## Entropy and Average Entropy Change
-
-The **Entropy** figure provides insights into the uncertainty of beliefs across levels. Shannon entropy measures the average amount of information needed to specify an outcome from a set of possible outcomes. Higher entropy indicates higher uncertainty, while lower entropy indicates more certainty.
-
-### Dynamic Stop Point
-
-Changes in entropy can indicate when additional trials are unlikely to contribute new information. A plateau in entropy suggests that the algorithm has converged and is likely at or near the optimal solution. This helps in determining a dynamic 'stop point' for the task.
+TODO
