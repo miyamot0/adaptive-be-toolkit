@@ -47,6 +47,7 @@ export function buildDemandUrl(
   compound: boolean,
   prices: string,
   entropyThreshold: string,
+  entropyWindowSize: string,
 ): string {
   const params = new URLSearchParams();
 
@@ -69,6 +70,12 @@ export function buildDemandUrl(
   // Entropy threshold parameter (0.00-0.5 range)
   const entropyNum = parseFloat(entropyThreshold);
   if (!isNaN(entropyNum)) params.set("entropyThreshold", String(entropyNum));
+
+  // Entropy window size parameter (integer, minimum 2)
+  const windowSizeNum = parseInt(entropyWindowSize, 10);
+  if (!isNaN(windowSizeNum) && windowSizeNum >= 2) {
+    params.set("entropyWindowSize", String(windowSizeNum));
+  }
 
   return `${DEMAND_ORIGIN}/demand/${PLACEHOLDER_ID}/posm?${params.toString()}`;
 }
@@ -101,6 +108,7 @@ export function buildDiscountingUrl(
   llr: string,
   delays: string,
   entropyThreshold: string,
+  entropyWindowSize: string,
 ): string {
   const params = new URLSearchParams();
 
@@ -127,6 +135,12 @@ export function buildDiscountingUrl(
   // Entropy threshold parameter (0.00-0.5 range)
   const entropyNum = parseFloat(entropyThreshold);
   if (!isNaN(entropyNum)) params.set("entropyThreshold", String(entropyNum));
+
+  // Entropy window size parameter (integer, minimum 2)
+  const windowSizeNum = parseInt(entropyWindowSize, 10);
+  if (!isNaN(windowSizeNum) && windowSizeNum >= 2) {
+    params.set("entropyWindowSize", String(windowSizeNum));
+  }
 
   return `${getDiscountingOrigin()}/discounting/${PLACEHOLDER_ID}/posm?${params.toString()}`;
 }

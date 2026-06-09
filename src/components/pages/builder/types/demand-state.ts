@@ -15,6 +15,7 @@ export interface DemandState {
   compound: boolean;
   prices: string;
   entropyThreshold: string;
+  entropyWindowSize: string;
 }
 
 /**
@@ -29,7 +30,8 @@ export type DemandAction =
   | { type: "SET_BETA"; payload: string }
   | { type: "SET_COMPOUND"; payload: boolean }
   | { type: "SET_PRICES"; payload: string }
-  | { type: "SET_ENTROPY_THRESHOLD"; payload: string };
+  | { type: "SET_ENTROPY_THRESHOLD"; payload: string }
+  | { type: "SET_ENTROPY_WINDOW_SIZE"; payload: string };
 
 /**
  * Initial state for the Demand section.
@@ -44,4 +46,5 @@ export const demandInitialState: DemandState = {
   compound: false,
   prices: "",
   entropyThreshold: "0.25",
+  entropyWindowSize: "3",
 };

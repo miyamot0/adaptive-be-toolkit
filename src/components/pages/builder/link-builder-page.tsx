@@ -23,6 +23,8 @@ import { DiscountingSSRLRRFields } from "./components/discounting-ssr-lrr-fields
 import { DiscountingDelaysField } from "./components/discounting-delays-field";
 import { demandReducer } from "./state/demand-reducer";
 import { discountingReducer } from "./state/discounting-reducer";
+import { Label } from "#/components/ui/label.tsx";
+import { Input } from "#/components/ui/input.tsx";
 
 /**
  * Props for the LinkBuilderPage component.
@@ -46,6 +48,7 @@ export default function LinkBuilderPage(_props: LinkBuilderPageProps) {
     compound: true,
     prices: "",
     entropyThreshold: "0.05",
+    entropyWindowSize: "3",
   });
 
   // ── Discounting section state with reducer ──────────────────────────────────
@@ -63,6 +66,7 @@ export default function LinkBuilderPage(_props: LinkBuilderPageProps) {
       llr: "100",
       delays: "",
       entropyThreshold: "0.01",
+      entropyWindowSize: "3",
     },
   );
 
@@ -77,6 +81,7 @@ export default function LinkBuilderPage(_props: LinkBuilderPageProps) {
     demandState.compound,
     demandState.prices,
     demandState.entropyThreshold,
+    demandState.entropyWindowSize,
   );
 
   const discountingUrl = buildDiscountingUrl(
@@ -91,6 +96,7 @@ export default function LinkBuilderPage(_props: LinkBuilderPageProps) {
     discountingState.llr,
     discountingState.delays,
     discountingState.entropyThreshold,
+    discountingState.entropyWindowSize,
   );
 
   // ── Render ────────────────────────────────────────────────────────────────────
@@ -145,16 +151,41 @@ export default function LinkBuilderPage(_props: LinkBuilderPageProps) {
                   />
 
                   {demandState.algorithm === AlgorithmThreshold.RegretMin && (
-                    <AlgorithmSettingsField
-                      value={demandState.entropyThreshold}
-                      onChange={(v) =>
-                        dispatchDemand({
-                          type: "SET_ENTROPY_THRESHOLD",
-                          payload: v,
-                        })
-                      }
-                      idPrefix="d"
-                    />
+                    <>
+                      <AlgorithmSettingsField
+                        value={demandState.entropyThreshold}
+                        onChange={(v) =>
+                          dispatchDemand({
+                            type: "SET_ENTROPY_THRESHOLD",
+                            payload: v,
+                          })
+                        }
+                        idPrefix="d"
+                      />
+
+                      <div className="flex flex-col gap-1.5">
+                        <Label htmlFor={`d-windowSize`}>
+                          Entropy Window Size
+                        </Label>
+                        <Input
+                          id={`d-windowSize`}
+                          type="number"
+                          min="2"
+                          max="5"
+                          step="1"
+                          value={demandState.entropyWindowSize}
+                          onChange={(e) =>
+                            dispatchDemand({
+                              type: "SET_ENTROPY_WINDOW_SIZE",
+                              payload: e.target.value,
+                            })
+                          }
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Default: 3. Minimum: 2.
+                        </p>
+                      </div>
+                    </>
                   )}
                 </div>
 
@@ -222,16 +253,41 @@ export default function LinkBuilderPage(_props: LinkBuilderPageProps) {
 
                   {discountingState.algorithm ===
                     AlgorithmThreshold.RegretMin && (
-                    <AlgorithmSettingsField
-                      value={discountingState.entropyThreshold}
-                      onChange={(v) =>
-                        dispatchDiscounting({
-                          type: "SET_ENTROPY_THRESHOLD",
-                          payload: v,
-                        })
-                      }
-                      idPrefix="c"
-                    />
+                    <>
+                      <AlgorithmSettingsField
+                        value={discountingState.entropyThreshold}
+                        onChange={(v) =>
+                          dispatchDiscounting({
+                            type: "SET_ENTROPY_THRESHOLD",
+                            payload: v,
+                          })
+                        }
+                        idPrefix="c"
+                      />
+
+                      <div className="flex flex-col gap-1.5">
+                        <Label htmlFor={`c-windowSize`}>
+                          Entropy Window Size
+                        </Label>
+                        <Input
+                          id={`c-windowSize`}
+                          type="number"
+                          min="2"
+                          max="5"
+                          step="1"
+                          value={discountingState.entropyWindowSize}
+                          onChange={(e) =>
+                            dispatchDiscounting({
+                              type: "SET_ENTROPY_WINDOW_SIZE",
+                              payload: e.target.value,
+                            })
+                          }
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Default: 3. Minimum: 2.
+                        </p>
+                      </div>
+                    </>
                   )}
                 </div>
 

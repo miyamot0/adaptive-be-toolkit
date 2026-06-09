@@ -17,6 +17,7 @@ export interface DiscountingState {
   llr: string;
   delays: string;
   entropyThreshold: string;
+  entropyWindowSize: string;
 }
 
 /**
@@ -33,7 +34,8 @@ export type DiscountingAction =
   | { type: "SET_SSR"; payload: string }
   | { type: "SET_LLR"; payload: string }
   | { type: "SET_DELAYS"; payload: string }
-  | { type: "SET_ENTROPY_THRESHOLD"; payload: string };
+  | { type: "SET_ENTROPY_THRESHOLD"; payload: string }
+  | { type: "SET_ENTROPY_WINDOW_SIZE"; payload: string };
 
 /**
  * Initial state for the Discounting section.
@@ -50,4 +52,5 @@ export const discountingInitialState: DiscountingState = {
   llr: "100",
   delays: "",
   entropyThreshold: "0.25",
+  entropyWindowSize: "3",
 };

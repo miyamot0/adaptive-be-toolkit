@@ -47,6 +47,9 @@ export function discountingReducer(
     case "SET_ENTROPY_THRESHOLD":
       return { ...state, entropyThreshold: action.payload };
 
+    case "SET_ENTROPY_WINDOW_SIZE":
+      return { ...state, entropyWindowSize: action.payload };
+
     // Default: return unchanged state for unknown actions
     default:
       return state;

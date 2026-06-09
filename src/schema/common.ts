@@ -44,4 +44,7 @@ export const commonSearchSchema = z.object({
 
   // String: Entropy threshold for stopping (0.00-0.5 range)
   entropyThreshold: z.coerce.string().optional(),
+
+  // String: Entropy window size for stopping (e.g., '3' by default)
+  entropyWindowSize: z.coerce.string().optional(),
 });
