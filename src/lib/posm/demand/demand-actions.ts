@@ -58,6 +58,7 @@ export function agent_update_beliefs_first_consumption(algo: DemandAgent) {
  * @param {BeliefUpdating} observation observed belief updating direction
  * @param {DemandAgent} algo observed reinforcer value quantity
  * @param {IncludeIndexType} includeIndex whether to explicitly protect the current index from suppression
+ * @deprecated confirm this
  */
 export function agent_update_beliefs(
   observation: BeliefUpdating,

@@ -16,3 +16,5 @@ The various measures included can be incorporated into existing survey framework
 - [x] Add in documentation for use in Qualtrics
 - [ ] Add in unit tests
 - [ ] Add in settings for demand (price display)
+- [ ] Break up arrays helper (can be in agents)
+- [ ] Scan deprecated

@@ -1,6 +1,6 @@
 // ── URL Builder Utilities ──────────────────────────────────────────────────────
 
-import { AlgorithmThreshold } from "#/types/survey.js";
+import { AlgorithmThreshold } from "#/types/survey";
 
 /**
  * Placeholder ID for participant identifiers in generated URLs.
