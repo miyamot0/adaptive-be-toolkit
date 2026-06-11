@@ -8,43 +8,76 @@ slug: iframe-documentation
 date: 2026-06-05
 ---
 
-# Iframe Embedding and Usage
+# Iframe Embedding
 
-The `LinkBuilderPage` component is responsible for creating and displaying the link to embed the Adaptive BE Toolkit measures into survey platforms. It allows users to configure various settings through URL parameters and preview the generated link.
+The purpose of the Link Builder interface is to provide researchers with an easy way to generate customized links for embedding the Adaptive BE Toolkit measures into survey platforms. This interface allows users to configure various settings through URL parameters and preview the generated link (both visually and for in-person testing), which can then be embedded in platforms like Qualtrics or REDCap. The link is especially critical because it determines the settings applied to content presented in the iframe.
 
-The `LinkBuilderPage` component provides a user interface for configuring and generating links to embed the Adaptive BE Toolkit measures into survey platforms. Users can set various parameters such as reinforcer, figures, debug mode, algorithm thresholds, maximum trials, beta values, compound options, prices, and delays.
+## IFrame Element
 
-## Discounting Tool
+An iframe is an HTML element that allows you to embed another HTML page within the current page. In the context of the Adaptive BE Toolkit, the iframe is used to embed the tasks (e.g., Adaptive Purchase Task, Adaptive Delay Discounting Task) into survey platforms. The iframe settings can be configured through URL parameters, which allow researchers to customize the behavior and appearance of the embedded tasks.
 
-### Fields/Features
+The use of an iframe is efficient when working with survey platforms that support embedding external content, as it allows for seamless integration of the Adaptive BE Toolkit measures without requiring extensive modifications to the survey platform itself. Generally, 'fighting the framework' of survey platforms invites unnecessary complexity and technical debt, so the use of iframes is a strategic choice to maintain simplicity and compatibility across a wide range of platforms.
 
-- **Reinforcer**: The commodity being purchased (e.g., "Coffee", "Cigarettes"). Displayed in question prompts.
-  - Example: `reinforcer=Coffee`
-- **Show Figures**: Toggle to display diagnostic charts.
-  - Example: `figures=true`
-- **Show Debug**: Toggle to display development stats overlay.
-  - Example: `debug=true`
-- **Algorithm**: The adaptive algorithm used (e.g., "MaximumIteration").
-  - Example: `algorithm=MaximumIteration`
-- **Maximum Trials**: Maximum number of trials allowed.
-  - Example: `maxTrials=20`
-- **Beta**: Adaptation rate for the belief-updating procedure.
-  - Example: `beta=0.25`
-- **Compound**: Toggle to enable compound interest calculations.
-  - Example: `compound=true`
-- **SSR (Smaller-Sooner Reinforcer)**: Immediate reward amount.
-  - Example: `ssr=50`
-- **LLR (Larger-Later Reinforcer)**: Delayed reward amount.
-  - Example: `llr=100`
-- **Delays**: Delays in days for each trial.
-  - Example: `delays=1,2,3`
+The iframe is generally well-supported across modern browsers and survey platforms, but it's important to be aware of potential limitations or issues that may arise, such as cross-origin restrictions or compatibility issues with certain platforms. Researchers should test the embedded content in their chosen survey platform to ensure that it functions as expected and that the iframe settings are correctly applied.
 
-### URL String Example
+## Iframe Settings and URL Parameters
 
-```plaintext
-/demand/CHANGEME/posm?reinforcer=Coffee&figures=true&debug=true&algorithm=MaximumIteration&maxTrials=20&beta=0.25&compound=true&prices=50,100,150
+The iframe settings for the Adaptive BE Toolkit can be configured through URL parameters, which allow researchers to customize various aspects of the embedded tasks. These parameters include options for reinforcer names, price ranges, delays, debug flags, algorithm choices, and more. By adjusting these parameters in the URL, researchers can tailor the tasks to fit their specific research needs and experimental designs.
+
+In addition to the core task parameters, the iframe html element provides a few other relevant properties pertaining to the presentation of the embedded content, such as width, height, and scrolling behavior. These properties can be set directly in the HTML code where the iframe is embedded, allowing for further customization of how the tasks are displayed within the survey platform. In piloting the embedded content, researchers should consider how these presentation settings interact with the content of the tasks and the overall survey design to ensure an optimal user experience for participants. Specifically, users should generally seek to ensure that the settings applied to the iframe allow for the full display of the task content without requiring excessive scrolling or resizing, which can detract from the participant's experience and potentially impact data quality.
+
+A short example of how to set iframe properties in HTML, taking up the maximum available width and reasonable height, is provided below:
+
+```html
+<iframe
+  src="https://example.com/embedded-task"
+  width="100%"
+  height="600px"
+  scrolling="no"
+></iframe>
 ```
 
-### Handling Callback
+## Handling Callbacks
 
-TODO
+Within the context of embedding the Adaptive BE Toolkit measures via iframes, it's important to consider how to handle callbacks for capturing results and interactions from the embedded content. The toolkit provides a postMessage callback API that allows the embedded tasks to communicate with the parent survey platform, enabling researchers to capture participant responses and other relevant data. That is, upon reaching the end of the task, the embedded content will always message to the parent window (the survey page is the parent) containing the results, which can then be processed and stored by the survey platform.
+
+### Saving Results
+
+In tools such as Qualtrics, this requires the setting of page-specific JavaScript that listens for messages from the specific iframe and processes the results accordingly. This typically involves adding an event listener for the 'message' event, which will capture the data sent from the embedded task (child window) and allow researchers to handle it as needed (e.g., storing it in embedded data fields, triggering specific survey logic based on responses, etc.). Proper handling of these callbacks is crucial for ensuring that the data collected from the embedded tasks is accurately captured and integrated into the overall survey data set. Researchers should refer to the documentation for their specific survey platform to understand how to implement this callback handling effectively.
+
+An example of what this could look like for Qualtrics is provided below:
+
+```javascript
+window.addEventListener("message", function (event) {
+  // Ensure the message is coming from the expected origin
+  if (event.origin !== "https://example.com") {
+    return; // Ignore messages from unexpected origins
+  }
+
+  // Process the data received from the embedded task
+  var data = event.data;
+
+  // Example: Store the results in Qualtrics embedded data fields
+  // Note: This saves the *whole* object rather than a specific field, but you can adjust as needed
+  Qualtrics.SurveyEngine.setEmbeddedData(
+    "discountingTaskResults",
+    JSON.stringify(data),
+  );
+
+  // Additional processing can be done here based on the specific requirements of the survey
+});
+```
+
+### Managing Navigation
+
+In addition to capturing results, researchers should also consider how to manage navigation within the survey platform after the participant completes the embedded task. Depending on the design of the survey and the flow of the participant experience, it may be desirable to structure or automate navigation in a way that guides participants through the survey after completing the task.
+
+For example, researchers may want to set up survey logic that triggers based on the receipt of data from the embedded task, such as 'hiding' the forward and back button until the message is received (e.g., enabling the 'next' button only after the task is completed and results are received). For convenience, the child window always presents a 'done' message upon termination, which can be used as a prompt for user navigation.
+
+Alternatively, researchers may want to implement logic that allows the survey to automatically advance to the next page or section of the survey upon completion of the task. This can often be achieved by including specific instructions in the postMessage callback or by setting up survey logic that triggers based on the receipt of data from the embedded task. Properly managing navigation can help create a more seamless experience for participants and ensure that they are guided through the survey in a logical and efficient manner. However, researchers should refer to their survey platform's documentation for guidance on how to implement this navigation logic effectively.
+
+## Summary and Recommendations
+
+The iframe approach used here is designed to maximize compatibility across a wide range of survey platforms while minimizing the technical complexity for researchers. By leveraging URL parameters for configuration and providing a postMessage callback API for capturing results, the Adaptive BE Toolkit allows for flexible and customizable embedding of tasks into surveys. Researchers are encouraged to thoroughly test the embedded content in their chosen survey platform to ensure that it functions as expected and that the iframe settings are correctly applied.
+
+Additionally, proper handling of callbacks and navigation logic helps create a smooth experience for participants and ensures that the data collected from the embedded tasks is accurately captured and integrated into the overall survey data set. Researchers should take care to carefully consider the design of their survey and how the embedded tasks fit into the overall participant experience to optimize data quality and participant engagement.
