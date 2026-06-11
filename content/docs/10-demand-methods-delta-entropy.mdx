@@ -8,6 +8,74 @@ slug: demand-methods-delta-entropy
 date: 2026-06-09
 ---
 
-# Adaptive Demand: Delta Entropy Algorithm
+# Adaptive Demand: Entropy Change Threshold
 
-TODO
+The **Entropy Change Threshold** algorithm represents a dynamic stopping criterion for the Adaptive Demand Task, where the task terminates when the belief distribution over price levels stops concentrating — that is, when additional trials are no longer contributing meaningful new information about the participant's peak levels of expenditure. Rather than running for a fixed number of questions, the task length adapts to the participant: it ends earlier for participants whose peak expenditure is quickly resolved and continues longer for those with more variable or ambiguous response patterns.
+
+This approach is more efficient on average than the fixed number threshold, as it allocates trials based on the participant's response consistency and convergence dynamics. Participants who quickly converge to a clear peak expenditure will complete the task in fewer trials, while those with noisier responses will receive more trials to allow the algorithm to refine its estimate. This results in better-calibrated per-participant estimates of peak expenditure, as the stopping criterion is directly tied to the quality of information being gathered rather than an arbitrary trial count.
+
+## Relevant Parameters and Settings
+
+The **Entropy Change Threshold** algorithm's behavior is controlled by several parameters that directly affect belief updating dynamics and the stopping criterion:
+
+| Parameter           | Default | Range/Format      | Description                                                                                                                                                                                                                                                                            |
+| ------------------- | ------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `beta`              | `0.125` | 0 – 1 (exclusive) | Adaptation rate that controls how aggressively beliefs are updated after each response. Lower values produce more conservative, gradual updates; higher values produce faster but potentially more volatile convergence. Values between `0.1` and `0.5` are recommended.               |
+| `maxTrials`         | `20`    | Minimum: 5        | Maximum number of questions. With `algo="RegretMin"`, the task terminates after exactly this many responses. Increasing this value improves estimate precision for participants with noisy or variable responding, at the cost of a longer session.                                    |
+| `compound`          | `true`  | boolean           | Whether to use compound suppression. When enabled, belief updates apply `beta^turn` instead of just `beta` each trial, causing the suppression factor to compound over time and more heavily weight recent responses over earlier ones. This can accelerate convergence in some cases. |
+| `entropyThreshold`  | `0.1`   | 0 – 1 (exclusive) | The threshold for the average per-trial entropy drop that triggers task termination. When the rolling average of the change in belief entropy over the last `entropyWindowSize` trials falls below this value, the distribution is considered to have plateaued and the task ends.     |
+| `entropyWindowSize` | `3`     | Integer ≥ 3       | The number of trials over which to compute the rolling average of the per-trial entropy drop.                                                                                                                                                                                          |
+
+Other parameters like `reinforcer` and `prices` affect task presentation but not the stopping criterion itself. Parameters like `entropyThreshold` and `entropyWindowSize` are only relevant for the `RegretMin` algorithm (i.e., entropy change threshold), not `MaximumIteration`.
+
+## Mechanics and Logic
+
+The trial-by-trial belief updating procedure for `price` is identical to the [Number Threshold Algorithm](/documentation/demand-methods-nquestions): each response scales down the probability mass of prices inconsistent with the observed choice (i.e., buy or not buy), the distribution is renormalized, and the next price is drawn from the peak of the updated distribution. In this regard, the algorithm behaves identical to the `MaximumIteration` algorithm in terms of how beliefs are updated and how the next trial is determined.
+
+What differs in the entropy change algorithm is the stopping rule. After each trial, the algorithm computes the **Shannon entropy** of the current belief distribution (once the moving window is sufficiently populated) as per the following formula:
+
+$$H_t = -\sum_{i=1}^{N} p_i \ln(p_i)$$
+
+Here, $p_i$ is the normalized belief mass on price level $i$ and $N$ is the total number of price levels. Entropy is measured in nats (natural log) for ease of interpretation.
+
+### Interpreting Entropy Change Values
+
+Upon initialization, the beliefs pertaining to peak expenditure are uniform: $H_0 = \ln(N)$. In the case of the 'default' price range provided (with 560 price points), this is approximately 6.3 nats. As the participant responds to trials, the belief distribution updates and typically becomes more concentrated around certain price levels, leading to a _decrease_ in entropy. A consistent sequence of responses that clearly indicate a peak expenditure will cause beliefs to rapidly concentrate, resulting in a steep drop in entropy. Conversely, if responses are variable or inconsistent, the belief distribution may remain more diffuse, leading to a slower decrease in entropy.
+
+After a consistent sequence of responses, entropy decreases as beliefs concentrate around the ED50 region. An entropy value near 0 would indicate near-complete certainty about a single delay. In practice, entropy converges to a small positive value reflecting irreducible uncertainty across a few neighboring delays on the grid, so having _many_ delay values with fine precision is generally advised.
+
+### Plateau Detection
+
+The stopping criterion is based on detecting when the belief distribution has plateaued, which is operationalized as the average per-trial entropy drop falling below a certain threshold. Specifically, after each trial, the algorithm computes the change in entropy from the previous trial ($\Delta H_t = H_{t-1} - H_t$) and maintains a rolling average of $\Delta H$ over the last `entropyWindowSize` trials. When this average falls below the specified `entropyThreshold`, referenced in program settings, it indicates that additional trials are no longer providing meaningful new information about the participant's peak expenditure, and the task terminates.
+
+As a working default, a minimum response count is advised to prevent early termination (`minresponses`, default: 5) during the initial exploration phase, when beliefs may need to stabilize briefly before sufficiently informative data has yet to be collected.
+
+## Results
+
+At task completion, independent of the threshold algorithm used, the final estimate of the participant's peak expenditure (the price at which peak expenditure is observed) is derived from the belief distribution over prices. Specifically, the program returns the following information via `postMessage` to the parent page:
+
+| Field                    | Description                                                                                                                                    |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ID`                     | The participant identifier provided in the URL path                                                                                            |
+| `MaxExpenditure`         | The maximum expenditure value in the task's price set                                                                                          |
+| `MaxExpenditurePrice`    | The price corresponding to the maximum expenditure point in the task's price set                                                               |
+| `MaxExpenditureQuantity` | The quantity corresponding to the maximum expenditure point in the task's price set                                                            |
+| `Beta`                   | The adaptation rate used for belief updating                                                                                                   |
+| `Responses`              | An array of the participant's responses (0 for SSR, 1 for LLR) in the order they were given                                                    |
+| `Threshold`              | The stopping criterion used (e.g., "MaximumIteration")                                                                                         |
+| `Turns`                  | The total number of questions answered (should equal `maxTrials` for this algorithm)                                                           |
+| `Levels`                 | An array of the delay levels that were presented in each trial,                                                                                |
+| `Beliefs`                | An array of belief distributions over delays after each response (each element is an array of probabilities corresponding to the delay levels) |
+
+In addition to the high-level summary above, data included provides trial-by-trial information in an array that can be extract for more detailed analyses of participant behavior and belief updating dynamics. For example, researchers can analyze how beliefs evolved across trials, how quickly convergence occurred, and whether certain delay levels were more influential in shaping the final estimate. A description of the data provided in the `Responses` arrow are provide in the table below:
+
+| Field      | Description                                                                                                                                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Price`    | The price presented on that trial                                                                                                                                                                                                                                               |
+| `Quantity` | The quantity purchased at that price (e.g., 2)                                                                                                                                                                                                                                  |
+| `Revenue`  | The total revenue generated on that trial (Price \* Quantity)                                                                                                                                                                                                                   |
+| `Entropy`  | The entropy of the belief distribution at the time of that response, measured in nats. This quantifies the uncertainty in the belief distribution, with higher values indicating more uncertainty and lower values indicating more confidence in the peak expenditure estimate. |
+
+## Summary and Suggestions
+
+Overall the **Entropy Change** algorithm provides a more efficient and participant-tailored stopping criterion for the Adaptive Demand Task compared to a fixed trial count. By terminating when the belief distribution plateaus, it allows for quicker completion for participants with consistent responses while providing more data for those with variable responding. This results in better-calibrated estimates of peak expenditure across a wider range of participant behaviors. Similarly, the algorithm has more freedom to 'self-heal' in the face of noisy responses, as it can continue gathering data until a stable estimate emerges rather than being forced to stop after a fixed number of trials.

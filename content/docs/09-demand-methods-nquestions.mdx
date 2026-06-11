@@ -1,13 +1,59 @@
 ---
-title: "Fixed Algorithm"
-description: "..."
-summary: "..."
+title: "Fixed Number Threshold"
+description: "Documentation for the number threshold stopping criterion for the Adaptive Demand Task, including mechanics, output fields, and all configurable parameters."
+summary: "Documentation for the number threshold adaptive stopping criterion, which terminates the demand task after a fixed number of participant responses."
 index: 9
 type: demand
 slug: demand-methods-nquestions
 date: 2026-05-24
 ---
 
-# Adaptive Demand: Number Threshold Algorithm
+# Adaptive Demand: Number Threshold
 
-TODO
+The **Number Threshold** algorithm represents a fixed stopping criterion for the Adaptive Demand Task, where the task terminates after a predetermined number of participant responses. This is the simplest and most straightforward stopping rule available, making it a good choice for researchers who require uniform trial counts across participants or who prefer a fixed session length. As a point of clarification, the algorithm remains _dynamic_, but only in the prices posed--not the number of questions presented.
+
+In the program, this setting is listed as "MaximumIteration" in the URL string to reflect the fact that the task will run for a maximum number of iterations (trials) before stopping. The algorithm does not adaptively determine when to stop based on participant responses or belief convergence; instead, it simply counts the number of questions answered and ends the task once the specified count is reached.
+
+## Relevant Parameters and Settings
+
+The **MaximumIteration** algorithm's behavior is controlled by several parameters that directly affect belief updating dynamics and the stopping criterion:
+
+| Parameter   | Default | Range/Format      | Description                                                                                                                                                                                                                                                                            |
+| ----------- | ------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `beta`      | `0.125` | 0 – 1 (exclusive) | Adaptation rate that controls how aggressively beliefs are updated after each response. Lower values produce more conservative, gradual updates; higher values produce faster but potentially more volatile convergence. Values between `0.1` and `0.5` are recommended.               |
+| `maxTrials` | `20`    | Minimum: 5        | Maximum number of questions. With `algo="MaximumIteration"`, the task terminates after exactly this many responses. Increasing this value improves estimate precision for participants with noisy or variable responding, at the cost of a longer session.                             |
+| `compound`  | `true`  | boolean           | Whether to use compound suppression. When enabled, belief updates apply `beta^turn` instead of just `beta` each trial, causing the suppression factor to compound over time and more heavily weight recent responses over earlier ones. This can accelerate convergence in some cases. |
+
+Other parameters like `reinforcer` and `prices` affect task presentation but not the stopping criterion itself. Parameters like `entropyThreshold` and `entropyWindowSize` are only relevant for the `RegretMin` algorithm (i.e., entropy change threshold), not `MaximumIteration`.
+
+## Results
+
+At task completion, independent of the threshold algorithm used, the final estimate of the participant's peak expenditure (the price at which peak expenditure is observed) is derived from the belief distribution over prices. Specifically, the program returns the following information via `postMessage` to the parent page:
+
+| Field                    | Description                                                                                                                                    |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ID`                     | The participant identifier provided in the URL path                                                                                            |
+| `MaxExpenditure`         | The maximum expenditure value in the task's price set                                                                                          |
+| `MaxExpenditurePrice`    | The price corresponding to the maximum expenditure point in the task's price set                                                               |
+| `MaxExpenditureQuantity` | The quantity corresponding to the maximum expenditure point in the task's price set                                                            |
+| `Beta`                   | The adaptation rate used for belief updating                                                                                                   |
+| `Responses`              | An array of the participant's responses (0 for SSR, 1 for LLR) in the order they were given                                                    |
+| `Threshold`              | The stopping criterion used (e.g., "MaximumIteration")                                                                                         |
+| `Turns`                  | The total number of questions answered (should equal `maxTrials` for this algorithm)                                                           |
+| `Levels`                 | An array of the delay levels that were presented in each trial,                                                                                |
+| `Beliefs`                | An array of belief distributions over delays after each response (each element is an array of probabilities corresponding to the delay levels) |
+
+In addition to the high-level summary above, data included provides trial-by-trial information in an array that can be extract for more detailed analyses of participant behavior and belief updating dynamics. For example, researchers can analyze how beliefs evolved across trials, how quickly convergence occurred, and whether certain delay levels were more influential in shaping the final estimate. A description of the data provided in the `Responses` arrow are provide in the table below:
+
+| Field      | Description                                                                                                                                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Price`    | The price presented on that trial                                                                                                                                                                                                                                               |
+| `Quantity` | The quantity purchased at that price (e.g., 2)                                                                                                                                                                                                                                  |
+| `Revenue`  | The total revenue generated on that trial (Price \* Quantity)                                                                                                                                                                                                                   |
+| `Entropy`  | The entropy of the belief distribution at the time of that response, measured in nats. This quantifies the uncertainty in the belief distribution, with higher values indicating more uncertainty and lower values indicating more confidence in the peak expenditure estimate. |
+
+## Summary and Suggestions
+
+Overall the **Number Threshold** algorithm provides a simple and predictable stopping criterion for the Adaptive Discounting Task, making it suitable for studies that require consistent trial counts across participants. However, it does not adapt to individual participant behavior or convergence dynamics, which may lead to less efficient data collection for some participants (e.g., those who converge quickly or have very noisy responses). Researchers should consider the trade-offs between simplicity and efficiency when choosing this algorithm, and may want to adjust the `maxTrials` parameter based on their specific research goals and participant population.
+
+Additionally, for those wishing to conduct statistical analysis that may required powered comparisons, a fixed trial count can simplify power calculations and ensure that all participants contribute the same amount of data, which can be advantageous for certain experimental designs.
