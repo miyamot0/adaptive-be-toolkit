@@ -31,6 +31,15 @@ import { Input } from "#/components/ui/input.tsx";
  */
 interface LinkBuilderPageProps {}
 
+const defaultShowFigures = false;
+const defaultShowDebug = false;
+const defaultAlgorithm = AlgorithmThreshold.RegretMin;
+const defaultMaxTrials = "10";
+const defaultBeta = "0.125";
+const defaultCompoundSuppress = true;
+const defaultEntropyThreshold = "0.1";
+const defaultEntropyWindowSize = "3";
+
 /**
  * Main Link Builder page component.
  * Orchestrates demand and discounting task configuration through tabs.
@@ -40,15 +49,15 @@ export default function LinkBuilderPage(_props: LinkBuilderPageProps) {
   // ── Demand section state with reducer ───────────────────────────────────────
   const [demandState, dispatchDemand] = useReducer(demandReducer, {
     reinforcer: "Chicken Wings",
-    showFigures: false,
-    showDebug: false,
-    algorithm: AlgorithmThreshold.RegretMin,
-    maxTrials: "10",
-    beta: "0.125",
-    compound: true,
+    showFigures: defaultShowFigures,
+    showDebug: defaultShowDebug,
+    algorithm: defaultAlgorithm,
+    maxTrials: defaultMaxTrials,
+    beta: defaultBeta,
+    compound: defaultCompoundSuppress,
+    entropyThreshold: defaultEntropyThreshold,
+    entropyWindowSize: defaultEntropyWindowSize,
     prices: "",
-    entropyThreshold: "0.05",
-    entropyWindowSize: "3",
   });
 
   // ── Discounting section state with reducer ──────────────────────────────────
@@ -56,17 +65,17 @@ export default function LinkBuilderPage(_props: LinkBuilderPageProps) {
     discountingReducer,
     {
       reinforcer: "Dollars",
-      showFigures: false,
-      showDebug: false,
-      algorithm: AlgorithmThreshold.RegretMin,
-      maxTrials: "10",
-      beta: "0.25",
-      compound: true,
+      showFigures: defaultShowFigures,
+      showDebug: defaultShowDebug,
+      algorithm: defaultAlgorithm,
+      maxTrials: defaultMaxTrials,
+      beta: defaultBeta,
+      compound: defaultCompoundSuppress,
+      entropyThreshold: defaultEntropyThreshold,
+      entropyWindowSize: defaultEntropyWindowSize,
       ssr: "50",
       llr: "100",
       delays: "",
-      entropyThreshold: "0.01",
-      entropyWindowSize: "3",
     },
   );
 

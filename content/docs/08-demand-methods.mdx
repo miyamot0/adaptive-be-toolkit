@@ -10,55 +10,46 @@ date: 2026-05-24
 
 # Adaptive Demand Tasks
 
-The **Adaptive Demand Task** is an agent-based, adaptive operant demand procedure. The goal is to efficiently estimate **O_max** (the maximum total expenditure a participant exhibits) and **P_max** (the price at which that maximum expenditure occurs). Rather than presenting a fixed list of prices, the algorithm uses a belief-updating procedure to select the next price point based on the participant's response history, converging on the demand curve's peak expenditure region with a minimal number of trials (default maximum: 20).
+The concept of demand refers to the relationship between the price of a commodity and the quantity that consumers are willing to purchase. Traditional demand procedures present participants with a fixed list of prices and ask them to indicate how many units of a commodity they would purchase at each price. While straightforward to administer, fixed-price procedures can be inefficient, as many of the trials may be far from the participant's "true" peak response expenditure, contributing little new information about the work that a given reinforcer might sustain.
 
-## Settings and Parameters
+The **Adaptive Demand Task** replaces the fixed price approach with an adaptive algorithm that selects price values on each trial based on the participant's prior responses. The algorithm maintains a belief distribution over possible peak expenditure points and updates this distribution after each choice, concentrating future trials in the region most likely to contain the maximum amount of work a reinforcer would sustain. This allows for precise estimation of key demand parameters, such as O_max (the maximum total expenditure) and P_max (the price at which that maximum expenditure occurs), with fewer trials, reducing participant burden while maintaining measurement quality. Furthermore, the algorithm has a 'self-healing' quality, whereby errant responses (e.g., a single inconsistent choice) do not unduly bias the estimate, as the belief distribution can recover and re-concentrate around the true peak expenditure point over subsequent trials.
 
-The Adaptive Demand Task can be customized with various settings and parameters to tailor the experience to different research needs. Key parameters include:
+## Question Presentation
 
-- **Reinforcer**: The commodity being purchased (e.g., "Coffee", "Cigarettes").
-- **Price Range**: The range of prices presented to participants.
-- **Beta**: The adaptation rate, which controls how aggressively beliefs are updated.
-- **Max Trials**: The maximum number of trials allowed in the task.
-- **Entropy Threshold**: The threshold for belief concentration that can trigger early stopping.
-- **Entropy Window**: The number of recent trials considered when calculating the rolling average of entropy drop for stopping criteria.
+The task presents a series of continuous choices (e.g., how many units of a commodity would you purchase at a given price) with the price `X` selected adaptively by the algorithm on each trial, based on the participant's previous responses. The user selects their preference via a simple input (e.g., slider or numeric entry) and the internal belief distribution is updated accordingly per the total expenditure. After each choice, the algorithm updates its internal belief distribution about where the peak expenditure point lies and selects the next price accordingly.
 
-## Mechanics and Logic
+The process continues until a stopping criterion is met, which can be defined in various ways (e.g., a fixed number of trials, an entropy-based threshold, etc.). The final estimate of the peak expenditure point is derived from the belief distribution at task completion, providing a precise measure of the participant's demand behavior, or alternatively by the user through the processing of the raw data across prices (e.g., quantity purchased at each price). Analysis of the raw data can be done through a variety of methods, may be preferred for users attempting to apply a nonlinear modeling approach to the data provided.
 
-The task presents a binary choice on each trial:
+### Algorithm Mechanics and Question Logic
 
-> _"How many \_\_\_\_ would you purchase at a price of `X`?"_
+The dynamic task, independent of stopping threshold, presents a continuous choice for each trial:
 
-The price `X` is selected adaptively by the algorithm on each trial. After the participant responds, the algorithm updates its internal model of where the indifference point lies and selects the next price accordingly. This continues until a stopping criterion is met.
+> _"How many units of the commodity would you purchase at `X` price?"_
 
-## Stopping Criteria
+If the participant indicates a new peak level of expenditure (i.e., quantity * price), the algorithm updates its belief distribution to concentrate more mass around that price point, as it suggests that the participant is willing to spend more at that price. If the participant indicates a lower expenditure than the current peak, given the direction of the change, the algorithm updates its belief distribution to concentrate less mass around that price point and direction of change. Alternatively, if the participant *does not* indicate a new peak expenditure (i.e., quantity * price is less than the current peak) in that direction of price change, the algorithm updates its belief distribution to concentrate less mass around that price point and direction.
 
-The task terminates when one of the following criteria is met:
+Under the hood, the algorithm maintains a **belief distribution** (a probability array over all possible price levels) pertaining to a "true" peak expenditure point. At initialization, this distribution is uniform: every price is equally likely to be the true peak expenditure point (see Figures/Debugging), after each response, the distribution is updated by scaling down the probability mass of prices inconsistent with the observed choice. The price with the highest current probability mass is presented on the next trial and the process continues.
 
-- **Maximum Iteration**: The default maximum number of trials (20).
-- **Regret Min**: The participant's entropy change drops below a certain threshold.
-- **Belief Concentration**: The algorithm's belief mass around the estimated indifference point reaches a specified level.
+Over successive trials, the belief distribution narrows around the "true" or most likely peak expenditure point. The final estimate is the price corresponding to the peak of the belief distribution at task completion. As a note, it is generally advised to select _many_ possible price levels (e.g., hundreds) to allow for a finely grained belief distribution and precise estimation of the peak expenditure point, though this is not strictly necessary for the algorithm to function.
 
-## Output Payload
+### Thresholds for Task Termination
 
-The task returns the following payload fields:
+The task continues until a stopping criterion is met. The choice of stopping criterion involves a tradeoff between efficiency and precision. Two common approaches are: a fixed number of adaptive questions/queries and an entropy-based threshold with a dynamic stopping rule (i.e., varying question number). Each provides a different implementation of the algorithm, with its own merits and tradeoffs, particularly regarding the quantity of data produced at the conclusion (e.g., more questions may be more desirable for downstream nonlinear model fitting).
 
-- `ID`: The unique identifier for the participant/session.
-- `MaxExpenditure`: The maximum total expenditure observed across all trials.
-- `MaxExpenditurePrice`: The price at which the maximum expenditure occurs.
-- `MaxExpenditureQuantity`: The quantity of the reinforcer purchased at the maximum expenditure price.
-- `Beta`: The adaptation rate used in the algorithm.
+#### Number Threshold
 
-## Example Usage
+The simplest stopping criterion represents stoppage when a certain, fixed number of questions have been answered. For example, a researcher might specify that the task should terminate after 20 trials, meaning that every participant will answer exactly 20 questions before the task ends and the final estimate is derived from the belief distribution at that point. This represents a fixed number of questions. The task runs for exactly `n` trials and then terminates, regardless of the shape of the belief distribution at that point.
 
-To use the Adaptive Demand Task, researchers can access it via a URL with participant-specific parameters:
+This approach is straightforward and easy to implement, and it provides a consistent data structure across participants (i.e., every participant has the same number of trials). It is also easier to communicate and understand, as it simply requires specifying a fixed number of questions. However, it may be less efficient for participants whose peak expenditure is resolved quickly, as they will continue answering questions that contribute little new information, while participants with more complex response patterns may not achieve the same level of precision within the fixed number of trials.
 
-```plaintext
-/demand/<participantId>/posm?reinforcer=Coffee&figures=true&debug=true
-```
+Various other considerations exist for the number threshold approach, including settings and parameter documentation, and more information is available on the [Number Threshold Algorithm](/documentation/demand-methods-nquestions) page.
 
-The participant `id` is embedded in the URL path and is echoed back verbatim in the completion payload.
+### Entropy Change Threshold
 
-## Summary and Recap
+The entropy change threshold represents a more dynamic stopping criterion that allows for variable question numbers across participants. Instead of specifying a fixed number of trials, this approach monitors the change in Shannon entropy of the belief distribution after each trial and terminates when the rate of information gain falls below a certain threshold. This means that the task can end earlier for participants whose peak expenditure is quickly resolved (i.e., their belief distribution concentrates rapidly), while allowing for more trials for participants with noisier or more complex response patterns, ultimately yielding better-calibrated estimates on a per-participant basis.
 
-TODO
+Shannon entropy $H = -\sum_i p_i \ln(p_i)$ measures the spread of the belief distribution. High entropy means beliefs are diffuse and the estimate of interest is uncertain. Low entropy means beliefs have concentrated, and for adaptive demand purposes, that the algorithm has identified the peak expenditure region with confidence. The algorithm computes the per-trial entropy drop $\Delta H = H_{t-1} - H_t$ after each response. When the rolling average of $\Delta H$ over recent trials (i.e., entropy window) falls below a small threshold, the distribution is no longer concentrating meaningfully across questions and the task ends.
+
+This approach is more efficient for participants whose peak expenditure is readily resolved — the task terminates earlier for them — while continuing longer for participants with noisier or more complex response patterns. It yields better-calibrated estimates on a per-participant basis.
+
+Various other considerations exist for the entropy change threshold approach, including settings and parameter documentation, and more information is available on the [Entropy Threshold Algorithm](/documentation/demand-methods-entropy) page.

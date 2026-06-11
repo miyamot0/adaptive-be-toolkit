@@ -10,26 +10,51 @@ date: 2026-05-24
 
 # General Information
 
-The Adaptive BE Toolkit is a browser-based research instrument designed to support the study of decision-making from an operant behavioral economics perspective. It delivers psychometrically adaptive versions of two foundational demand-side measures — operant demand (purchase tasks) and delay discounting — and packages them in a format that can be embedded into any existing online survey platform with minimal setup.
-
-The toolkit takes its theoretical grounding from the behavioral economics of reinforcement: the idea that consumption choices, preferences for immediacy, and sensitivity to price all follow lawful, quantifiable patterns. The measures included are designed to efficiently estimate the key parameters of those patterns at the level of the individual participant — without requiring long fixed-format questionnaires that have traditionally been necessary to obtain stable estimates.
+The Adaptive BE Toolkit is a browser-based research instrument designed to support the study of decision-making from an operant behavioral economics perspective. It delivers psychometrically adaptive instruments for studying delay discounting as well as operant demand. The toolkit is designed to provide an interface for collecting research information in a manner agnostic to survey platform--something easily embedded into Qualtrics, REDCap, or custom web studies with minimal setup.
 
 ## Novel Features and Capabilities
 
-The defining feature of the toolkit is its use of **agent-based adaptive algorithms** for both included measures. Rather than presenting a predetermined sequence of prices or delays, each task maintains a probabilistic belief distribution over possible response parameter values and uses that distribution to select the most informative stimulus for each subsequent trial. Beliefs are updated after every response and concentrated progressively around the region of greatest uncertainty — the area of the demand curve near peak expenditure, or the delay range near the discounting indifference point.
+The defining feature of the toolkit is its use of **agent-based adaptive algorithms** for delay discounting and operant demand. Rather than presenting a predetermined sequence of prices or delays (i.e., fixed delays or fixed price lists), each task maintains a probabilistic belief distribution over possible response parameter values (e.g., delays associated with ED50, prices associated with O<sub>max</sub>) and updates that distribution in real time based on participant responses to select the most informative stimulus for each subsequent trial (i.e., "smart" questions).
 
-This approach yields two practical advantages over fixed-list procedures:
+This dynamic approach yields two practical advantages over fixed procedures:
 
-- **Efficiency.** Reliable parameter estimates are obtained in substantially fewer trials. Both tasks converge in a maximum of 20 questions, compared to the 27–30+ items typical of fixed-price-list demand tasks or fixed-delay-sequence discounting tasks. In practice, the stopping criteria often terminate sessions even earlier.
+- **Efficiency.** Reliable estimates of key metrics are obtained in substantially fewer trials. Both tasks generally converge in less 20 questions and provide a means of 'healing' in cases of inconsistent or inaccurate responding. In short, this approach asks fewer questions that are more immediately relevant to the key metrics of interest.
 
-- **Adaptivity.** Stimulus selection is individualized in real time. Participants who show high sensitivity to price or delay receive questions in the region most relevant to their own behavior, rather than being walked through stimulus values far outside their plausible response range.
+- **Adaptivity.** Stimulus selection is individualized in real time and is not predetermined. The algorithms run locally, without any server infrastructure, and are designed to be robust to a wide range of response patterns. The specific algorithm parameters (e.g., prices ranges, adaptability rates) can be customized by researchers to suit the needs of their specific study population.
+
+## Intended Use Cases
+
+The toolkit is intended for researchers studying behavioral phenomena that depend on deriving metrics central to a reinforcement-based account of decision-making. These include, but are not limited to, sensitivity to commodity price, preference for immediate over delayed rewards, and the patterns of consumption that characterize different populations or conditions. Relevant application areas include:
+
+- **Substance use and addiction research** — Estimating the reinforcing value of substances (e.g., alcohol, tobacco, cannabis) and how that value changes across experimental conditions or treatment stages
+
+- **Consumer and health behavior research** — Measuring hypothetical demand for food, beverages, or health-related commodities as a function of cost
+
+- **Behavioral pharmacology** — Assessing the reinforcing efficacy of drug or non-drug reinforcers across subject groups
+
+- **Intertemporal choice research** — Characterizing individual differences in delay discounting rates and their relationship to impulsivity, substance use, or other behavioral outcomes
+
+The toolkit is **not** a statistical analysis platform. It delivers raw estimates (e.g., O<sub>max</sub>, P<sub>max</sub>, ED50), which would serve as the inputs to downstream analyses and comparisons. Researchers are expected to handle model fitting, group comparisons, and inferential statistics in their preferred analysis environment (R, Python, SPSS, etc.) using the data exported from their survey platform.
+
+Because the measures are embedded in the researcher's existing survey flow, they are easily combined with self-report questionnaires, demographic items, and other instruments in a single session. This strategy was deliberate to minimize complexity while maintaining security and reliability in research. The output fields returned at task completion are plain numeric values or strings that can be stored as embedded data variables alongside all other survey responses.
+
+## Intended User and Analyst
+
+The toolkit is designed to be accessible to researchers who have little or no programming experience. That is, adaptive procedures can be easily incorporated without having to manually design them for specific research purposes. Configuration is handled entirely through URL query parameters. No code needs to be written inside the toolkit itself, and no server needs to be deployed or maintained. Embedding a measure in a Qualtrics or REDCap survey requires only the ability to insert an HTML iframe element and add a short JavaScript event listener to a survey page.
+
+The expected level of technical skill is roughly equivalent to what is already required to use advanced features of common survey platforms: constructing embedded data fields, using piped text to inject response IDs, and adding question-level JavaScript. Researchers comfortable with those tasks should find the integration straightforward.
+
+## Actively Supported Assessment Tools
+
+The toolkit presently supports a total of _two_ adaptive measures of behavioral economic demand and delay discounting.
 
 Two measures are currently included:
 
-- **Adaptive Purchase Task** — estimates the peak of the operant demand curve, specifically O<sub>max</sub> (maximum total expenditure) and P<sub>max</sub> (the price at which that expenditure occurs), using an adaptive price-selection algorithm.
-- **Adaptive Delay Discounting Task** — estimates the ED50 indifference point (the delay at which a participant is equally likely to choose an immediate versus a delayed reward) using an adaptive delay-selection algorithm.
+- **Adaptive Purchase Task** — Estimates the peak of a work output curve (i.e., response levels alongside demand curves), specifically O<sub>max</sub> (maximum total expenditure) and the associated P<sub>max</sub> (the price at which that expenditure occurs).
 
-Both tasks operate entirely within the participant's browser. No server infrastructure is required, and no response data is stored or transmitted by the toolkit itself — all output is returned directly to the host survey platform at task completion.
+- **Adaptive Delay Discounting Task** — Estimates the ED50 indifference point (the delay at which a participant is equally likely to choose an immediate versus a delayed reward).
+
+Both tasks operate entirely within the participant's browser. No server infrastructure is required, and no response data is stored or transmitted by the toolkit itself — all output is returned directly to the host survey platform at task completion. For all intents and purposes, the user essentially never leaves the core survey environment, and the toolkit functions as a seamless extension of the survey platform's existing capabilities.
 
 ## Researcher Customization
 
@@ -43,18 +68,21 @@ Researchers can customize the Adaptive BE Toolkit by configuring URL query param
 These parameters can be overridden by appending them as query parameters to the task URL. For example:
 
 ```
-/demand/12345?reinforcer=Coffee&priceRange=0-100&breakpoint=50
+/demand/PARTICIPANTID/posm?reinforcer=Coffee
 ```
+
+For convenience, the toolkit provides a 'Link Builder' interface that allows researchers to generate customized task URLs without needing to manually construct query strings. This interface guides users through the available configuration options and produces a ready-to-use URL for embedding in their survey platform and supports testing to ensure that the algorithm suits their research purposes.
 
 ## Survey Platform Integration
 
-The Adaptive BE Toolkit can be easily integrated into existing survey platforms such as Qualtrics, REDCap, and custom web studies. The toolkit operates entirely within the participant's browser, requiring no server infrastructure or data storage by the toolkit itself. Results are returned directly to the host survey platform via the browser's native `postMessage` API.
+The Adaptive BE Toolkit can be easily integrated into existing survey platforms such as Qualtrics, REDCap, and custom web studies. The toolkit operates entirely within the participant's browser, requiring no server infrastructure or data storage by the toolkit itself. Results are returned directly to the host survey platform via the browser's native `postMessage` API, which can be flexibly managed in the host platform's JavaScript environment.
 
-### Qualtrics Integration
+### Example: Qualtrics Integration
 
-To integrate the Adaptive BE Toolkit into a Qualtrics survey, follow these steps:
+To integrate the Adaptive BE Toolkit into a Qualtrics survey, users can follow these general steps:
 
-1. Embed an HTML iframe element in your Qualtrics survey page.
+1. Embed an HTML iframe element in your Qualtrics survey page (e.g., creating a Label element and overriding the base HTML code).
+
 2. Add a short JavaScript event listener to capture the results and post them back to the parent window using `postMessage`.
 
 Example code snippet for Qualtrics integration:
@@ -62,6 +90,7 @@ Example code snippet for Qualtrics integration:
 ```javascript
 // Embed the Adaptive BE Toolkit iframe
 const iframe = document.createElement("iframe");
+
 iframe.src =
   "https://example.com/demand/12345?reinforcer=Coffee&priceRange=0-100";
 document.body.appendChild(iframe);
@@ -75,23 +104,4 @@ window.addEventListener("message", function (event) {
 });
 ```
 
-## Intended Use Cases
-
-The toolkit is intended for researchers studying behavioral phenomena that depend on demand-side measurement: sensitivity to commodity price, preference for immediate over delayed rewards, and the patterns of consumption that characterize different populations or conditions. Relevant application areas include:
-
-- **Substance use and addiction research** — estimating the reinforcing value of substances (e.g., alcohol, tobacco, cannabis) and how that value changes across experimental conditions or treatment stages
-- **Consumer and health behavior research** — measuring hypothetical demand for food, beverages, or health-related commodities as a function of cost
-- **Behavioral pharmacology** — assessing the reinforcing efficacy of drug or non-drug reinforcers across subject groups
-- **Intertemporal choice research** — characterizing individual differences in delay discounting rates and their relationship to impulsivity, substance use, or other behavioral outcomes
-
-The toolkit is **not** a statistical analysis platform. It delivers raw parameter estimates — O<sub>max</sub>, P<sub>max</sub>, and ED50 — that serve as inputs to downstream analyses. Researchers are expected to handle model fitting, group comparisons, and inferential statistics in their preferred analysis environment (R, Python, SPSS, etc.) using the data exported from their survey platform.
-
-Because the measures are embedded in the researcher's existing survey flow, they are easily combined with self-report questionnaires, demographic items, and other instruments in a single session. The output fields returned at task completion are plain numeric values that can be stored as embedded data variables alongside all other survey responses.
-
-## Intended User and Analyst
-
-The toolkit is designed to be accessible to researchers who have little or no programming experience. Configuration is handled entirely through URL query parameters — no code needs to be written inside the toolkit itself, and no server needs to be deployed or maintained. Embedding a measure in a Qualtrics or REDCap survey requires only the ability to insert an HTML iframe element and add a short JavaScript event listener to a survey page.
-
-The expected level of technical skill is roughly equivalent to what is already required to use advanced features of common survey platforms: constructing embedded data fields, using piped text to inject response IDs, and adding question-level JavaScript. Researchers comfortable with those tasks should find the integration straightforward.
-
-For analysts, the output of each task is a small set of interpretable numeric fields that map directly to established behavioral economic constructs. No specialized software is needed to use the results — the values are ready for import into any standard statistical package as soon as they are captured by the survey platform.
+Additional information on customizing and securing these links is provided in later sections of the documentation.

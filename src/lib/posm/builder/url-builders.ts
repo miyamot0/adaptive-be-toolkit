@@ -12,14 +12,7 @@ export const PLACEHOLDER_ID = "CHANGEME";
  * Origin URL for demand task links.
  * Uses development server in DEV mode, production Vercel app otherwise.
  */
-const DEMAND_ORIGIN = import.meta.env.VITE_APP_URL ?? "http://localhost:3000";
-
-/**
- * Origin URL for discounting task links (uses runtime window origin).
- */
-function getDiscountingOrigin(): string {
-  return typeof window !== "undefined" ? window.location.origin : "";
-}
+const BASE_ORIGIN = import.meta.env.VITE_APP_URL ?? "http://localhost:3000";
 
 /**
  * Builds a demand task URL with query parameters.
@@ -75,7 +68,7 @@ export function buildDemandUrl(
     params.set("entropyWindowSize", String(windowSizeNum));
   }
 
-  return `${DEMAND_ORIGIN}/demand/${PLACEHOLDER_ID}/posm?${params.toString()}`;
+  return `${BASE_ORIGIN}/demand/${PLACEHOLDER_ID}/posm?${params.toString()}`;
 }
 
 /**
@@ -140,5 +133,5 @@ export function buildDiscountingUrl(
     params.set("entropyWindowSize", String(windowSizeNum));
   }
 
-  return `${getDiscountingOrigin()}/discounting/${PLACEHOLDER_ID}/posm?${params.toString()}`;
+  return `${BASE_ORIGIN}/discounting/${PLACEHOLDER_ID}/posm?${params.toString()}`;
 }
