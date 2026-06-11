@@ -1,5 +1,5 @@
 ---
-title: "Program Debugging"
+title: "Testing and Debugging"
 description: "This page provides an overview of the debug and figure settings available in the Adaptive BE Toolkit, including how to enable them through URL parameters and what information they display during task execution."
 summary: "An overview of the debug and figure settings available in the Adaptive BE Toolkit, including how to enable them through URL parameters and what information they display during task execution."
 index: 3
@@ -8,24 +8,48 @@ slug: debug-figure-settings
 date: 2026-06-05
 ---
 
-# Debugging and Visualizations
+# Testing and Debugging
 
-## Beliefs Distribution
+The Adaptive BE Toolkit includes a set of debug and figure settings that can be enabled through URL parameters for testing and piloting purposes. As a reminder, these are _not_ intended for use in live data collection, as they can impact performance and may reveal information that could bias participant responses (e.g., distracting, confusing).
 
-The **Beliefs Distribution** figure provides insights into the algorithm's belief distribution over levels (e.g., delays or prices) based on participant responses. This distribution is updated using a Bayesian approach, where each response shifts the probability mass towards the estimated target region.
+Enabling these settings allows researchers to visualize information related to question selection, relevant metrics, and development stats during task execution. These are especially useful for (A) researchers seeking to understand the inner workings of the algorithm during piloting and (B) developers who are building on top of the toolkit and want to ensure that their customizations are functioning as intended. It is heavily recommended that those new to the adaptive algorithm use these options to better understand the algorithm, particularly regarding how questions are selected and when the program chooses to 'terminate' (i.e., stop asking questions and return results).
 
-### Certainty and ED50/OMAX/PMAX
+A short description of each of the core figures and debug information is provided below.
 
-Certainty in beliefs is represented by the height of the belief distribution at different levels. The **ED50** (Discounting) or **OMAX/PMAX** (Demand) values are key points where the algorithm converges, indicating the most likely expenditure region. Higher certainty around these values suggests that additional trials are unlikely to provide new information.
+## Figures Provided
 
-### Belief Update (Bayesian Update)
+The program provides several figures that can be enabled through the `figures=true` URL parameter. Each of these speaks to a range of relevant information pertaining to the algorithm as well as the data being recorded.
 
-The algorithm updates its beliefs using a Bayesian approach, where each response shifts the probability mass towards the estimated target region. This update process is crucial for selecting the next question and refining the estimate of **ED50** or **OMAX/PMAX**.
+### Beliefs Distribution
 
-## Entropy and Average Entropy Change
+The **Beliefs Distribution** figure provides insights into the algorithm's belief distribution over levels based on participant responses. Specifically, this figure shows the probability distribution over possible parameter values (e.g., delays or prices) that the algorithm maintains and updates in real time. Each response from the participant shifts the probability mass towards the estimated target region, allowing researchers to visualize how the algorithm is converging on key metrics like **ED50** for discounting or **OMAX/PMAX** for demand.
 
-The **Entropy** figure provides insights into the uncertainty of beliefs across levels. Shannon entropy measures concentration of information and provides a metric for the amount of information for us to feel some level of 'confidence' that no further exploration would provide more precise estimates. The **Average Entropy Change** figure tracks how entropy changes across trials, indicating how much new information is being gained with each response (i.e., less change happening = less to gain from further queries).
+Over time, the distribution should become more concentrated around a "true" parameter value, indicating increased certainty. This figure is particularly useful for understanding how the algorithm is processing participant responses and how it is refining its estimates across trials.
 
-### Dynamic Stop Point
+### Entropy and Average Entropy Change
 
-Changes in entropy can indicate when additional trials are unlikely to contribute new information. A plateau in entropy suggests that the algorithm has converged and is likely at or near the optimal solution. This helps in determining a dynamic 'stop point' for the task. As a general baseline rule, a value of around 0.1 bits of average entropy change (nats) is a reasonable threshold for considering termination, but this can be adjusted based on the specific research context and desired precision.
+The **Entropy** figure provides insights into the uncertainty of beliefs across levels. Specifically, it tracks the Shannon entropy of the belief distribution, which quantifies the amount of uncertainty or randomness in the algorithm's beliefs about the parameter values. Higher entropy indicates more uncertainty, while lower entropy suggests that the algorithm has more confidence in its estimates.
+
+The program track the change in entropy across trials, which can indicate how much _new_ information is being gained with each added participant response. The **Average Entropy Change** figure shows how the entropy changes from one trial to the next, providing a metric for the amount of information gained with each response. A plateau in this figure suggests that the algorithm has converged and that additional trials are unlikely to provide new information, which can help in determining a dynamic 'stop point' for the task. As a general baseline rule, a value of around 0.1 bits of average entropy change (nats) is a reasonable threshold for considering termination, but this can be adjusted based on the specific research context and desired precision (Note: the 'window' of entropy change can be extended further to minimize risks of local minimums).
+
+### Raw Data Recorded
+
+The **Raw Data Recorded** figure provides a visual representation of the participant's responses across trials. This includes the specific choices made by the participant (e.g., selecting the immediate reward vs. the delayed reward in discounting tasks, or how much to spend at a certain price in demand tasks) and how those choices evolve over time. This figure can help researchers identify patterns in responding, such as consistent preferences or shifts in behavior across trials or prices, which can inform interpretations of the algorithm's performance and the participant's decision-making process.
+
+As a note, the program returns **both** the most likely parameter values (e.g., ED50, OMAX), the full belief distribution over levels, and the raw data provided. This means that researchers can analyze not only the point estimates but also the uncertainty around those estimates and the raw data itself, which can be particularly informative for understanding individual differences in decision-making processes.
+
+## Other Relevant Information
+
+### Belief Updating and Adaptation Rate
+
+The algorithm updates its beliefs using a Bayesian approach, where each response shifts the probability mass towards the estimated target region by a set value (beta). The beta parameter controls the rate of adaptation, with higher values leading to more rapid updates and lower values resulting in more gradual updates. Additionally, options for compounding suppression provide a way to more heavily weight _recent_ and more targeted responses over more general ones earlier in the task, which may support faster convergence in some cases.
+
+### Entropy Change and Termination
+
+Changes in entropy can indicate when additional trials are unlikely to contribute much "new" information. A plateau in entropy suggests that the algorithm has converged and is likely at or near the optimal solution. This helps in determining a dynamic 'stop point' for the task. As a general baseline rule, a value of around 0.1 bits of average entropy change (nats) is a reasonable threshold for considering termination, but this can be adjusted based on the specific research context and desired precision. This is another setting that can be customized by researchers to suit the needs of their specific study population.
+
+## Summary and Recap
+
+It is heavily recommended that researchers utilize the debug and figure settings during piloting to better understand the inner workings of the algorithm, particularly regarding how questions are selected and when the program chooses to 'terminate' (i.e., stop asking questions and return results). These settings provide valuable insights into the belief distribution, entropy changes, and raw data recorded during task execution, which can inform interpretations of the algorithm's performance and the participant's decision-making process.
+
+Alternatively, should the researchers find that the settings provided invite too much freedom, certain aspects of the algorithm can be further constrained to promote more consistency (e.g., a fixed stop point based on trial count to balance the _amount_ of data for each participant).
