@@ -1,5 +1,5 @@
 ---
-title: "Fixed Algorithm"
+title: "Fixed Number Threshold"
 description: "Documentation for the number threshold stopping criterion for the Adaptive Discounting Task, including mechanics, output fields, and all configurable parameters."
 summary: "Documentation for the number threshold adaptive stopping criterion, which terminates the discounting task after a fixed number of participant responses."
 index: 6
@@ -21,7 +21,7 @@ The **MaximumIteration** algorithm's behavior is controlled by several parameter
 | Parameter   | Default | Range/Format      | Description                                                                                                                                                                                                                                                                            |
 | ----------- | ------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `beta`      | `0.125` | 0 – 1 (exclusive) | Adaptation rate that controls how aggressively beliefs are updated after each response. Lower values produce more conservative, gradual updates; higher values produce faster but potentially more volatile convergence. Values between `0.1` and `0.5` are recommended.               |
-| `maxTrials` | `20`    | Minimum: 5        | Maximum number of questions. With `algo=MaximumIteration`, the task terminates after exactly this many responses. Increasing this value improves estimate precision for participants with noisy or variable responding, at the cost of a longer session.                               |
+| `maxTrials` | `20`    | Minimum: 5        | Maximum number of questions. With `algo="MaximumIteration"`, the task terminates after exactly this many responses. Increasing this value improves estimate precision for participants with noisy or variable responding, at the cost of a longer session.                             |
 | `compound`  | `true`  | boolean           | Whether to use compound suppression. When enabled, belief updates apply `beta^turn` instead of just `beta` each trial, causing the suppression factor to compound over time and more heavily weight recent responses over earlier ones. This can accelerate convergence in some cases. |
 
 Other parameters like `reinforcer`, `ssr`, `llr`, and `delays` affect task presentation but not the stopping criterion itself. Parameters like `entropyThreshold` and `entropyWindowSize` are only relevant for the `RegretMin` algorithm (i.e., entropy change threshold), not `MaximumIteration`.
