@@ -1,7 +1,7 @@
 {
   "name": "adaptive-be-toolkit",
   "description": "This is a web-based platform for integrating various forms of decision-making tasks in common survey-based platforms",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": {
     "name": "Shawn P. Gilroy",
     "email": "sgilroy1@lsu.edu"

@@ -9,22 +9,10 @@ Several adaptive measures are included and hosted in the toolkit:
 
 The various measures included can be incorporated into existing survey frameworks via customized iframes with various parameters allowing for customizability.
 
-## Use Case: Delay Discounting
+## TODO List
 
-### TODO: Adaptive Survey (Fixed Questions)
-
-...
-
-### TODO: Adaptive Survey (Dynamic Question Number)
-
-...
-
-## Use Case: Operant Demand
-
-### TODO: Adaptive Survey (Fixed Questions)
-
-...
-
-### TODO: Adaptive Survey (Dynamic Question Number)
-
-...
+- [x] Add documentation for the number threshold stopping criterion for the Adaptive Discounting Task, including mechanics, output fields, and all configurable parameters.
+- [x] Add documentation for the entropy change threshold stopping criterion for the Adaptive Discounting Task, including mechanics, output fields, and all configurable parameters.
+- [x] Add in documentation for use in Qualtrics
+- [ ] Add in unit tests
+- [ ] Add in settings for demand (price display)
