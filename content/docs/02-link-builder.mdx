@@ -1,5 +1,5 @@
 ---
-title: "Program Link Builder"
+title: "Link Builder Interface"
 description: "An overview of how to embed toolkit measures into survey platforms via iframes, configure tasks through URL parameters, and capture results through the postMessage callback API."
 summary: "An overview of how to embed toolkit measures into survey platforms via iframes, configure tasks through URL parameters, and capture results through the postMessage callback API."
 index: 2
@@ -8,22 +8,24 @@ slug: link-builder
 date: 2026-06-05
 ---
 
-# Program Link Builder
+# Link Builder Interface
 
-The `LinkBuilderPage` component is responsible for creating and displaying the link to embed the Adaptive BE Toolkit measures into survey platforms. It allows users to configure various settings through URL parameters and preview the generated link.
+The `LinkBuilderPage` page is provided to researchers as an easy way to generate customized links for embedding the Adaptive BE Toolkit measures into survey platforms. This interface allows users to configure various settings through URL parameters and preview the generated link (both visually and for in-person testing), which can then be embedded in platforms like Qualtrics or REDCap.
 
-The `LinkBuilderPage` component provides a user interface for configuring and generating links to embed the Adaptive BE Toolkit measures into survey platforms. Users can set various parameters such as reinforcer references, figures, debug mode, algorithm thresholds, maximum trials, beta values, compound options, prices, and delays.
+Users can and should use this page to explore the available configuration options and generate the appropriate URL for their research needs. The interface supports setting parameters such as reinforcer names, price ranges, delays, debug flags, algorithm choices, and more. Researchers are encouraged to experiment with various parameters such as algorithm thresholds, algorithm stop points, beta values, compounding belief updates, and specific prices/delays.
+
+A short description of the parameters in each link builder tab is provided below (one for demand, another for discounting), along with example URL strings. For a more detailed explanation of each parameter and its effects, please refer to the documentation for the respective task (Adaptive Purchase Task or Adaptive Delay Discounting Task).
 
 ## Adaptive Discounting Link Builder
 
+The Adaptive Discounting Tab in the link builder page is designed to support the configuration of the Adaptive Delay Discounting Task. This task is designed to reveal an ED50 indifference point, which is the delay at which a participant is equally likely to choose an immediate versus a delayed reward.
+
 ### Fields/Features
+
+An example providing an overview of the available URL parameters for the Adaptive Discounting Task is provided below:
 
 - **Reinforcer**: The commodity being purchased (e.g., "Coffee", "Cigarettes"). Displayed in question prompts.
   - Example: `reinforcer=Coffee`
-- **Show Figures**: Toggle to display diagnostic charts.
-  - Example: `figures=true`
-- **Show Debug**: Toggle to display development stats overlay.
-  - Example: `debug=true`
 - **Algorithm**: The termination algorithm used (e.g., "MaximumIteration", "RegretMin").
   - Example: `algorithm=MaximumIteration`
 - **Maximum Trials**: Maximum number of trials allowed.
@@ -37,31 +39,24 @@ The `LinkBuilderPage` component provides a user interface for configuring and ge
 - **LLR (Larger-Later Reinforcer)**: Delayed reward amount.
   - Example: `llr=100`
 - **Delays**: Delays in days for each trial.
-  - Example: `delays=1,2,3`
+  - Example: `delays=1,2,3,4,5,6,7,14,30,60,90,180,365,730,1095,1825,3650,5475,7300,10950,18250,36500`
 
-### URL String Example
+An example URL string for the Adaptive Discounting Task with these various parameters set is provided below:
 
 ```plaintext
-/demand/CHANGEME/posm?reinforcer=Coffee&figures=true&debug=true&algorithm=ED50&maxTrials=20&beta=0.5&compound=true&prices=50,100,150
+/discounting/CHANGEME/posm?reinforcer=Coffee&algorithm=ED50&maxTrials=20&beta=0.25&compound=true&delays=1,2,3,4,5,6,7,14,30,60,90,180,365,730,1095,1825,3650,5475,7300,10950,18250,36500&ssr=50&llr=100
 ```
-
-## Debug and Figure Flags
-
-- **Show Figures**: Visualize information related to question selection and relevant metrics.
-  - Example: `figures=true`
-- **Show Debug**: Display development stats overlay for debugging purposes.
-  - Example: `debug=true`
 
 ## Adaptive Demand Link Builder
 
+The Adaptive Demand Tab in the link builder page is designed to support the configuration of the Adaptive Purchase Task. This task is designed to reveal O<sub>max</sub> (maximum total expenditure) and the associated P<sub>max</sub> (the price at which that expenditure occurs).
+
 ### Fields/Features
+
+An example providing an overview of the available URL parameters for the Adaptive Purchase Task is provided below:
 
 - **Reinforcer**: The commodity being purchased (e.g., "Coffee", "Cigarettes"). Displayed in question prompts.
   - Example: `reinforcer=Coffee`
-- **Show Figures**: Toggle to display diagnostic charts.
-  - Example: `figures=true`
-- **Show Debug**: Toggle to display development stats overlay.
-  - Example: `debug=true`
 - **Algorithm**: The adaptive algorithm used.
   - Example: `algorithm=MaximumIteration`
 - **Maximum Trials**: Maximum number of trials allowed.
@@ -71,10 +66,35 @@ The `LinkBuilderPage` component provides a user interface for configuring and ge
 - **Compound**: Toggle to enable compound interest calculations.
   - Example: `compound=true`
 - **Prices**: Prices presented to the participant for a given quantity of the reinforcer.
-  - Example: `prices=50,100,150`
+  - Example: `prices=0.5, 1, 2, 4, 8, 16, 32, 64, 128`
 
-### URL String Example
+An example URL string for the Adaptive Purchase Task with these various parameters set is provided below:
 
 ```plaintext
-/discounting/CHANGEME/posm?reinforcer=Dollars&ssr=20&llr=100&delays=1,2,3
+/discounting/CHANGEME/posm?reinforcer=Coffee&algorithm=MaximumIteration&maxTrials=20&beta=0.25&compound=true&prices=0.5,1,2,4,8,16,32,64,128
 ```
+
+## Debug and Figure Flags
+
+In addition to the core task parameters, the link builder interface also allows users to enable debug and figure output for testing and piloting purposes. These flags can be set as query parameters in the URL to visualize information related to question selection, relevant metrics, and development stats. These are espcially useful for (A) researchers seeking to understand the inner workings of the algorithm during piloting and (B) developers who are building on top of the toolkit and want to ensure that their customizations are functioning as intended.
+
+### Fields/Features
+
+The specific fields available for debugging and figure output are as follows:
+
+- **Show Figures**: Visualize information related to question selection and relevant metrics.
+  - Example: `figures=true`
+- **Show Debug**: Display development stats overlay for debugging purposes.
+  - Example: `debug=true`
+
+Additionally to enabling these flags through the link builder interface, researchers can also append these parameters directly to the task URL for quick testing. For example:
+
+```plaintext
+/discounting/CHANGEME/posm?reinforcer=Coffee&algorithm=ED50&maxTrials=20&beta=0.25&compound=true&delays=1,2,3,4,5,6,7,14,30,60,90,180,365,730,1095,1825,3650,5475,7300,10950,18250,36500&ssr=50&llr=100&figures=true&debug=true
+```
+
+## Summary and Recap
+
+The Link Builder Interface provides a user-friendly way for researchers to generate customized URLs for embedding the Adaptive BE Toolkit measures into survey platforms. By configuring various parameters through the interface, researchers can tailor the tasks to their specific research needs and easily test different configurations during piloting. The generated URLs can then be embedded in platforms like Qualtrics or REDCap, allowing for easy integration of the toolkit measures into existing survey workflows.
+
+As a general reminder, it is **heavily encouraged** that researchers utilize the Link Builder Interface to explore the available configuration options and rigorously test/vet the URLs used for their research purposes.
