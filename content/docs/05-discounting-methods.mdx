@@ -1,5 +1,5 @@
 ---
-title: "Discounting Tasks"
+title: "Adaptive Discounting Task"
 description: "This page provides an overview of the Adaptive Discounting Task, a tool used to assess consumer discounting behavior and preferences in various contexts."
 summary: "This page provides an overview of the Adaptive Discounting Task, a tool used to assess consumer discounting behavior and preferences in various contexts."
 index: 5
@@ -10,43 +10,48 @@ date: 2026-05-24
 
 # Adaptive Delay Discounting Tasks
 
-Delay discounting refers to the tendency to value rewards less as the delay to receiving them increases. A person who prefers $50 today over $100 in six months is discounting the future reward — a pattern that varies substantially across individuals and is associated with a wide range of behavioral outcomes.
+Delay discounting refers to the tendency to value rewards less as the delay to receiving them increases. Traditional delay discounting procedures present participants with a fixed list of delay values (e.g., 1 day, 1 week, 1 month, 6 months, 1 year) and ask them to choose between a smaller-sooner reward (SSR) and a larger-later reward (LLR) at each delay. While straightforward to administer, fixed-delay procedures are often inefficient: with many of the trials quite far from the participant's "true" indifference point and these values often contribute little new information about where that point lies (e.g., now vs 20 years from now).
 
-Traditional delay discounting procedures present participants with a fixed list of delay values (e.g., 1 day, 1 week, 1 month, 6 months, 1 year) and ask them to choose between a smaller-sooner reward (SSR) and a larger-later reward (LLR) at each delay. While straightforward to administer, fixed-delay procedures are inefficient: many of the trials are far from the participant's true indifference point and contribute little new information about where that point lies.
+The **Adaptive Delay Discounting Task** replaces the fixed delay approach with an adaptive algorithm that selects delay values on each trial based on the participant's prior responses. The algorithm maintains a belief distribution over possible indifference points and updates this distribution after each choice, concentrating future trials in the region most likely to contain the true indifference point. This allows for precise estimation of the ED50 (the delay at which the participant is indifferent between the SSR and LLR) with fewer trials, reducing participant burden while maintaining measurement quality. Furthermore, the algorithm has a 'self-healing' quality, whereby errant responses (e.g., a single inconsistent choice) do not unduly bias the estimate, as the belief distribution can recover and re-concentrate around the true indifference point over subsequent trials.
 
-The **Adaptive Discounting Task** replaces the fixed delay list with a belief-updating procedure that selects each trial's delay based on the participant's prior responses. Rather than covering the entire delay range uniformly, the algorithm concentrates queries in the region most likely to contain the indifference point — the delay at which the participant is equally likely to choose either option. This yields a precise estimate of the indifference point (**ED50**) with fewer trials, reducing participant burden without sacrificing measurement quality.
+## Question Presentation
 
-## Mechanics and Logic
+The task presents a series of binary choices between a fixed SSR (e.g., $50 now) and a variable LLR (e.g., $100 in X days). The delay `X` is selected adaptively by the algorithm on each trial, based on the participant's previous responses, but the `reinforcer`, the `llr`, and the `ssr` can be set in the program settings (e.g., if exploring a magnitude effect). The user selects their preference via a simple binary choice (i.e., button press) and the internal belief distribution is updated accordingly. After each choice, the algorithm updates its internal belief distribution about where the indifference point lies and selects the next delay accordingly.
 
-The task presents a binary choice on each trial:
+The process continues until a stopping criterion is met, which can be defined in various ways (e.g., a fixed number of trials, an entropy-based threshold, etc.). The final estimate of the ED50 is derived from the belief distribution at task completion, providing a precise measure of the participant's discounting behavior, or alternatively by the user through the processing of the raw data across delays (e.g., 1 = waited, 0 = did not wait). Analysis of the raw data can be done through a variety of methods, may be preferred for users attempting to apply a logistic-based modeling approach to the data provided.
+
+### Algorithm Mechanics and Question Logic
+
+The dynamic task, independent of stopping threshold, presents a binary choice on each trial:
 
 > _"Would you prefer $50 now, or $100 in X days?"_
 
-The delay `X` is selected adaptively by the algorithm on each trial. After the participant responds, the algorithm updates its internal model of where the indifference point lies and selects the next delay accordingly. This continues until a stopping criterion is met.
+If the participant **waits** (chooses the LLR), the chosen delay was not long enough to cause switching — the algorithm down-weights shorter delays.
 
-Under the hood, the algorithm maintains a **belief distribution** — a probability array over all possible delay levels. At initialization, this distribution is uniform: every delay is equally likely to be the true indifference point. After each response, the distribution is updated by scaling down the probability mass of delays that are inconsistent with the observed choice. The delay with the highest current probability mass is presented on the next trial.
+If the participant **does not wait** (chooses the SSR), the chosen delay was too long — the algorithm down-weights longer delays.
 
-- If the participant **waits** (chooses the LLR), the chosen delay was not long enough to cause switching — the algorithm down-weights shorter delays.
-- If the participant **does not wait** (chooses the SSR), the chosen delay was too long — the algorithm down-weights longer delays.
+Under the hood, the algorithm maintains a **belief distribution** (a probability array over all possible delay levels) pertaining to a "true" indifference point. At initialization, this distribution is uniform: every delay is equally likely to be the true indifference point (see Figures/Debugging), after each response, the distribution is updated by scaling down the probability mass of delays inconsistent with the observed choice. The delay with the highest current probability mass is presented on the next trial and the process continues.
 
-Over successive trials, the belief distribution narrows around the true ED50. The final estimate is the delay corresponding to the peak of the belief distribution at task completion.
+Over successive trials, the belief distribution narrows around the "true" or most likely ED50. The final estimate is the delay corresponding to the peak of the belief distribution at task completion. As a note, it is generally advised to select _many_ possible delay levels (e.g., hundreds) to allow for a finely grained belief distribution and precise estimation of the ED50, though this is not strictly necessary for the algorithm to function.
 
-### Number Threshold Algorithm
+### Thresholds for Task Termination
 
-The simplest stopping criterion is a fixed number of questions. The task runs for exactly `n` trials and then terminates, regardless of the shape of the belief distribution at that point.
+The task continues until a stopping criterion is met. The choice of stopping criterion involves a tradeoff between efficiency and precision. Two common approaches are: a fixed number of adaptive questions/queries and an entropy-based threshold with a dynamic stopping rule (i.e., varying question number). Each provides a different implementation of the algorithm, with its own merits and tradeoffs, particularly regarding the quantity of data produced at the conclusion (e.g., more questions may be more desirable for downstream nonlinear model fitting).
 
-This approach is easy to reason about and easy to communicate: every participant answers the same number of questions, which supports uniform time allocation across participants and simplifies power calculations in research designs. It also ensures a minimum data floor — no participant completes fewer trials than the researcher specifies.
+#### Number Threshold
 
-The tradeoff is efficiency. A participant whose indifference point is resolved quickly will continue answering questions that contribute diminishing information, while a participant with a more diffuse or inconsistent response pattern may terminate at the same count without having achieved comparable precision.
+The simplest stopping criterion represents stoppage when a certain, fixed number of questions have been answered. For example, a researcher might specify that the task should terminate after 20 trials, meaning that every participant will answer exactly 20 questions before the task ends and the final estimate is derived from the belief distribution at that point. This represents a fixed number of questions. The task runs for exactly `n` trials and then terminates, regardless of the shape of the belief distribution at that point.
 
-See the [Number Threshold Algorithm](/documentation/discounting-methods-nquestions) page for full settings and parameter documentation.
+This approach is straightforward and easy to implement, and it provides a consistent data structure across participants (i.e., every participant has the same number of trials). It is also easier to communicate and understand, as it simply requires specifying a fixed number of questions. However, it may be less efficient for participants whose indifference point is resolved quickly, as they will continue answering questions that contribute little new information, while participants with more complex response patterns may not achieve the same level of precision within the fixed number of trials.
 
-### Entropy Algorithm
+Various other considerations exist for the number threshold approach, including settings and parameter documentation, and more information is available on the [Number Threshold Algorithm](/documentation/discounting-methods-nquestions) page.
 
-The entropy-based stopping criterion monitors how much new information each trial is contributing to the belief distribution, and terminates once that rate of gain falls below a threshold — i.e., once the distribution has effectively stopped changing.
+### Entropy Change Threshold
 
-Shannon entropy $H = -\sum_i p_i \ln(p_i)$ measures the spread of the belief distribution. High entropy means beliefs are diffuse and the estimate is uncertain. Low entropy means beliefs have concentrated and the algorithm has identified the ED50 region with confidence. The algorithm computes the per-trial entropy drop $\Delta H = H_{t-1} - H_t$ after each response. When the rolling average of $\Delta H$ over recent trials falls below a small threshold, the distribution is no longer concentrating meaningfully and the task ends.
+The entropy change threshold represents a more dynamic stopping criterion that allows for variable question numbers across participants. Instead of specifying a fixed number of trials, this approach monitors the change in Shannon entropy of the belief distribution after each trial and terminates when the rate of information gain falls below a certain threshold. This means that the task can end earlier for participants whose indifference point is quickly resolved (i.e., their belief distribution concentrates rapidly), while allowing for more trials for participants with noisier or more complex response patterns, ultimately yielding better-calibrated estimates on a per-participant basis.
+
+Shannon entropy $H = -\sum_i p_i \ln(p_i)$ measures the spread of the belief distribution. High entropy means beliefs are diffuse and the estimate of interest is uncertain. Low entropy means beliefs have concentrated, and for delay discounting purposes, that the algorithm has identified the ED50 region with confidence. The algorithm computes the per-trial entropy drop $\Delta H = H_{t-1} - H_t$ after each response. When the rolling average of $\Delta H$ over recent trials (i.e., entropy window) falls below a small threshold, the distribution is no longer concentrating meaningfully across questions and the task ends.
 
 This approach is more efficient for participants whose indifference point is readily resolved — the task terminates earlier for them — while continuing longer for participants with noisier or more complex response patterns. It yields better-calibrated estimates on a per-participant basis.
 
-See the [Entropy Algorithm](/documentation/discounting-methods-delta-entropy) page for full settings and parameter documentation.
+Various other considerations exist for the entropy change threshold approach, including settings and parameter documentation, and more information is available on the [Entropy Threshold Algorithm](/documentation/discounting-methods-entropy) page.
